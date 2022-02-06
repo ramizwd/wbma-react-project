@@ -5,7 +5,12 @@ module.exports = {
     es2020: true,
     'react-native/react-native': true,
   },
-  extends: ['google', 'eslint:recommended', 'plugin:react/recommended', 'plugin:prettier/recommended'],
+  extends: [
+    'google',
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:prettier/recommended',
+  ],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
@@ -17,7 +22,7 @@ module.exports = {
     ecmaVersion: 13,
     sourceType: 'module',
     requireConfigFile: 'false',
-    babelOptions: { configFile: './babel.config.js' },
+    babelOptions: {configFile: './babel.config.js'},
   },
   plugins: ['react', 'react-native', 'prettier'],
   rules: {
@@ -37,9 +42,9 @@ module.exports = {
     },
     propWrapperFunctions: [
       'forbidExtraProps',
-      { property: 'freeze', object: 'Object' },
-      { property: 'myFavoriteWrapper' },
+      {property: 'freeze', object: 'Object'},
+      {property: 'myFavoriteWrapper'},
     ],
-    linkComponents: ['Hyperlink', { name: 'Link', linkAttribute: 'to' }],
+    linkComponents: ['Hyperlink', {name: 'Link', linkAttribute: 'to'}],
   },
 };
