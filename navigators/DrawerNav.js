@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -8,6 +8,8 @@ import Messaging from '../views/Messaging';
 import Notifications from '../views/Notifications';
 import Search from '../views/Search';
 import Settings from '../views/Search';
+import Login from '../views/Login';
+import {MainContext} from '../contexts/MainContext';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -37,18 +39,24 @@ const DrawerScreen = () => {
   );
 };
 
-const StackScreen = () => {
+const DrawerNavigator = () => {
+  const {loggedIn} = useContext(MainContext);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Drawer"
-          component={DrawerScreen}
-          options={{headerShown: false}}
-        />
+        {loggedIn ? (
+          <Stack.Screen
+            name="Drawer"
+            component={DrawerScreen}
+            options={{headerShown: false}}
+          />
+        ) : (
+          <Stack.Screen name="Login" component={Login}></Stack.Screen>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-export default StackScreen;
+export default DrawerNavigator;
