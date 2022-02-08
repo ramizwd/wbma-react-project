@@ -9,6 +9,7 @@ import Notifications from '../views/Notifications';
 import Search from '../views/Search';
 import Settings from '../views/Search';
 import Login from '../views/Login';
+import Register from '../views/Register';
 import {MainContext} from '../contexts/MainContext';
 
 const Stack = createNativeStackNavigator();
@@ -54,6 +55,7 @@ const DrawerNavigator = () => {
         ) : (
           <Stack.Screen name="Login" component={Login}></Stack.Screen>
         )}
+        <Stack.Screen name="Register" component={Register}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

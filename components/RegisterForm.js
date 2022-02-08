@@ -1,12 +1,10 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {Text, View, TextInput, Button} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
-import {useLogin} from '../hooks/ApiHooks';
-import {MainContext} from '../contexts/MainContext';
+import {useUser} from '../hooks/ApiHooks';
 
-const LoginForm = () => {
-  const {setLoggedIn} = useContext(MainContext);
-  const {postLogin} = useLogin();
+const RegisterForm = () => {
+  const {postUser} = useUser();
 
   const {
     control,
@@ -21,8 +19,9 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      await postLogin(data);
-      setLoggedIn(true);
+      delete data.confirm_password;
+      await postUser(data);
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -30,6 +29,14 @@ const LoginForm = () => {
 
   return (
     <View>
+      <Controller
+        control={control}
+        render={({field: {onChange, onBlur, value}}) => (
+          <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
+        )}
+        name="full_name"
+      />
+
       <Controller
         control={control}
         rules={{
@@ -50,13 +57,37 @@ const LoginForm = () => {
         render={({field: {onChange, onBlur, value}}) => (
           <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
         )}
+        name="email"
+      />
+      {errors.email && <Text>This is required.</Text>}
+
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({field: {onChange, onBlur, value}}) => (
+          <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
+        )}
         name="password"
       />
       {errors.password && <Text>This is required.</Text>}
+
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({field: {onChange, onBlur, value}}) => (
+          <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
+        )}
+        name="confirm_password"
+      />
+      {errors.confirm_password && <Text>This is required.</Text>}
 
       <Button title="Submit" onPress={handleSubmit(onSubmit)} />
     </View>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
