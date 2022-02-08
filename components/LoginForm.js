@@ -1,8 +1,13 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Text, View, TextInput, Button} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
+import {login} from '../hooks/ApiHooks';
+import {MainContext} from '../contexts/MainContext';
 
 const LoginForm = () => {
+  const {setLoggedIn} = useContext(MainContext);
+  const {postLogin} = login();
+
   const {
     control,
     handleSubmit,
@@ -13,7 +18,15 @@ const LoginForm = () => {
       password: '',
     },
   });
-  const onSubmit = (data) => console.log(data);
+
+  const onSubmit = async (data) => {
+    try {
+      await postLogin(data);
+      setLoggedIn(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View>
@@ -32,7 +45,7 @@ const LoginForm = () => {
       <Controller
         control={control}
         rules={{
-          maxLength: 100,
+          required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
