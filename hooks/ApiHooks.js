@@ -41,7 +41,24 @@ const useUser = () => {
       throw new Error(error.message);
     }
   };
-  return {postUser};
+
+  const getUserByToken = async (token) => {
+    try {
+      const res = await fetch(baseUrl + 'users/user', {
+        headers: {'x-access-token': token},
+      });
+      const jsonRes = await res.json();
+
+      if (res.ok) {
+        return jsonRes;
+      } else {
+        throw new Error(`${jsonRes.message}: ${jsonRes.error}`);
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+  return {postUser, getUserByToken};
 };
 
 export {useLogin, useUser};

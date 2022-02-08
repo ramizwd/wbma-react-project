@@ -3,6 +3,7 @@ import {Text, View, TextInput, Button} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {useLogin} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginForm = () => {
   const {setLoggedIn} = useContext(MainContext);
@@ -21,7 +22,8 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      await postLogin(data);
+      const userData = await postLogin(data);
+      await AsyncStorage.setItem('token', userData.token);
       setLoggedIn(true);
     } catch (error) {
       console.log(error);
