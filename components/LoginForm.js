@@ -38,7 +38,12 @@ const LoginForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
+          <TextInput
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            placeholder="Username"
+          />
         )}
         name="username"
       />
@@ -50,7 +55,12 @@ const LoginForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
+          <TextInput
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            placeholder="Password"
+          />
         )}
         name="password"
       />
