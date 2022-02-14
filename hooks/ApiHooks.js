@@ -85,22 +85,19 @@ const useUser = () => {
   return {postUser, getUserByToken};
 };
 
-const useMedia = (appFilesOnly) => {
+const useMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {update, user} = useContext(MainContext);
-  const loadMedia = async (start = 0, limit = 10) => {
+  const {update} = useContext(MainContext);
+
+  const fetchMedia = async () => {
     setLoading(true);
     try {
-      let json = await useTag().getFilesByTag(appId);
-      if (appFilesOnly) {
-        json = json.filter((file) => file.user_id === user.user_id);
-      }
+      const json = await useTag().getFilesByTag(appId);
       const media = await Promise.all(
         json.map(async (item) => {
-          const response = await fetch(baseUrl + 'media/' + item.file_id);
-          const mediaData = await response.json();
-          return mediaData;
+          const response = await fetch(`${baseUrl}media/${item.file_id}`);
+          return await response.json();
         })
       );
       setMediaArray(media);
@@ -112,7 +109,7 @@ const useMedia = (appFilesOnly) => {
   };
 
   useEffect(() => {
-    loadMedia();
+    fetchMedia();
   }, [update]);
 
   const postMedia = async (formData, token) => {
@@ -152,7 +149,7 @@ const useMedia = (appFilesOnly) => {
     return await doFetch(`${baseUrl}media/${fileId}`, options);
   };
 
-  return {mediaArray, postMedia, putMedia, deleteMedia, loading};
+  return {mediaArray: mediaArray, postMedia, putMedia, deleteMedia, loading};
 };
 
 const useTag = () => {
