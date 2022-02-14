@@ -32,7 +32,12 @@ const RegisterForm = () => {
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
+          <TextInput
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            placeholder="Full name"
+          />
         )}
         name="full_name"
       />
@@ -43,7 +48,12 @@ const RegisterForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
+          <TextInput
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            placeholder="Username"
+          />
         )}
         name="username"
       />
@@ -55,7 +65,12 @@ const RegisterForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
+          <TextInput
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            placeholder="Email"
+          />
         )}
         name="email"
       />
@@ -67,7 +82,12 @@ const RegisterForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
+          <TextInput
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            placeholder="Password"
+          />
         )}
         name="password"
       />
@@ -79,7 +99,12 @@ const RegisterForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput onBlur={onBlur} onChangeText={onChange} value={value} />
+          <TextInput
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            placeholder="Confirm password"
+          />
         )}
         name="confirm_password"
       />
