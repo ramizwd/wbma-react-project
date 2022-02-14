@@ -37,6 +37,7 @@ const DrawerScreen = () => {
       <Drawer.Screen name="Notifications" component={Notifications} />
       <Drawer.Screen name="Explore" component={Search} />
       <Drawer.Screen name="Settings" component={Settings} />
+      <Drawer.Screen name="Log out" component={Login} />
     </Drawer.Navigator>
   );
 };
