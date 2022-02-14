@@ -11,6 +11,7 @@ import Settings from '../views/Search';
 import Login from '../views/Login';
 import Register from '../views/Register';
 import {MainContext} from '../contexts/MainContext';
+import Upload from '../views/Upload';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -47,11 +48,14 @@ const DrawerNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator>
         {loggedIn ? (
-          <Stack.Screen
-            name="Drawer"
-            component={DrawerScreen}
-            options={{headerShown: false}}
-          />
+          <>
+            <Stack.Screen
+              name="Drawer"
+              component={DrawerScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen name="Upload post" component={Upload}></Stack.Screen>
+          </>
         ) : (
           <Stack.Screen name="Login" component={Login}></Stack.Screen>
         )}
