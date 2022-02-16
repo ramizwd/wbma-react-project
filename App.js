@@ -9,8 +9,8 @@ const App = () => {
     <>
       <MainProvider>
         <DrawerNavigator />
-        <StatusBar style="auto" />
       </MainProvider>
+      <StatusBar style="auto" />
     </>
   );
 };

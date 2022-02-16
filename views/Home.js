@@ -1,27 +1,26 @@
 import React from 'react';
-import {Button, SafeAreaView, Text, View} from 'react-native';
-import {PropTypes} from 'prop-types';
+import {SafeAreaView} from 'react-native';
 import Card from '../components/Card';
+import PostButton from '../components/PostButton';
 
-const Home = ({navigation}) => {
+const Home = () => {
   return (
-    <View>
-      <Text>Home Screen</Text>
-      <Button
-        title="Post"
+    <SafeAreaView>
+      <Card />
+      {/* <Button
+        style={{
+          margin: 2,
+        }}
+        appearance="filled"
         onPress={() => {
           navigation.navigate('Upload post');
         }}
-      />
-      <SafeAreaView>
-        <Card />
-      </SafeAreaView>
-    </View>
+      >
+        Post
+      </Button> */}
+      <PostButton />
+    </SafeAreaView>
   );
-};
-
-Home.propTypes = {
-  navigation: PropTypes.object,
 };
 
 export default Home;

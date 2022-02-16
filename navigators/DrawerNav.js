@@ -1,4 +1,5 @@
 import React, {useContext} from 'react';
+import * as eva from '@eva-design/eva';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -12,6 +13,7 @@ import Login from '../views/Login';
 import Register from '../views/Register';
 import {MainContext} from '../contexts/MainContext';
 import Upload from '../views/Upload';
+import {ApplicationProvider} from '@ui-kitten/components';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -24,7 +26,7 @@ const DrawerScreen = () => {
         drawerType: 'slide',
         headerTitleAlign: 'center',
         headerStyle: {
-          height: 90,
+          height: 80,
           borderBottomLeftRadius: 10,
           borderBottomRightRadius: 10,
           backgroundColor: '#0496FF',
@@ -42,27 +44,35 @@ const DrawerScreen = () => {
   );
 };
 
-const DrawerNavigator = () => {
+const StackScreen = () => {
   const {loggedIn} = useContext(MainContext);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {loggedIn ? (
-          <>
-            <Stack.Screen
-              name="Drawer"
-              component={DrawerScreen}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen name="Upload post" component={Upload}></Stack.Screen>
-          </>
-        ) : (
-          <Stack.Screen name="Login" component={Login}></Stack.Screen>
-        )}
-        <Stack.Screen name="Register" component={Register}></Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator>
+      {loggedIn ? (
+        <>
+          <Stack.Screen
+            name="Drawer"
+            component={DrawerScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="Upload post" component={Upload}></Stack.Screen>
+        </>
+      ) : (
+        <Stack.Screen name="Login" component={Login}></Stack.Screen>
+      )}
+      <Stack.Screen name="Register" component={Register}></Stack.Screen>
+    </Stack.Navigator>
+  );
+};
+
+const DrawerNavigator = () => {
+  return (
+    <ApplicationProvider {...eva} theme={eva.light}>
+      <NavigationContainer>
+        <StackScreen />
+      </NavigationContainer>
+    </ApplicationProvider>
   );
 };
 
