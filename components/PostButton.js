@@ -1,18 +1,13 @@
+import {Text} from '@ui-kitten/components';
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import {PropTypes} from 'prop-types';
-import {Button} from '@ui-kitten/components';
 
-const PostButton = ({navigation}) => {
+const PostButton = ({onPress}) => {
   return (
-    <Button
-      style={styles.buttonStyle}
-      onPress={() => {
-        navigation.navigate('Upload post');
-      }}
-    >
-      +
-    </Button>
+    <TouchableOpacity onPress={onPress} style={styles.buttonStyle}>
+      <Text>+</Text>
+    </TouchableOpacity>
   );
 };
 
@@ -31,7 +26,7 @@ const styles = StyleSheet.create({
 });
 
 PostButton.propTypes = {
-  navigation: PropTypes.object,
+  onPress: PropTypes.func,
 };
 
 export default PostButton;
