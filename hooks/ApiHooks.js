@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {appId, baseUrl} from '../utils/variables';
 
-const doFetch = async (url, options = {}) => {
+const baseFetch = async (url, options = {}) => {
   try {
     const response = await fetch(url, options);
     const json = await response.json();
@@ -122,7 +122,7 @@ const useMedia = () => {
       },
       body: formData,
     };
-    const result = await doFetch(baseUrl + 'media', options);
+    const result = await baseFetch(baseUrl + 'media', options);
     if (result) {
       setLoading(false);
     }
@@ -138,7 +138,7 @@ const useMedia = () => {
       },
       body: JSON.stringify(data),
     };
-    return await doFetch(`${baseUrl}media/${fileId}`, options);
+    return await baseFetch(`${baseUrl}media/${fileId}`, options);
   };
 
   const deleteMedia = async (fileId, token) => {
@@ -146,7 +146,7 @@ const useMedia = () => {
       method: 'DELETE',
       headers: {'x-access-token': token},
     };
-    return await doFetch(`${baseUrl}media/${fileId}`, options);
+    return await baseFetch(`${baseUrl}media/${fileId}`, options);
   };
 
   return {mediaArray: mediaArray, postMedia, putMedia, deleteMedia, loading};
@@ -162,11 +162,11 @@ const useTag = () => {
       },
       body: JSON.stringify(tagData),
     };
-    return await doFetch(baseUrl + 'tags/', options);
+    return await baseFetch(baseUrl + 'tags/', options);
   };
 
   const getFilesByTag = async (tag) => {
-    return await doFetch(baseUrl + 'tags/' + tag);
+    return await baseFetch(baseUrl + 'tags/' + tag);
   };
   return {postTag, getFilesByTag};
 };

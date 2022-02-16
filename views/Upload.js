@@ -38,7 +38,6 @@ const Upload = ({navigation}) => {
   });
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,

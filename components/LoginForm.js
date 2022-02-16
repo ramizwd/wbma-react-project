@@ -6,7 +6,7 @@ import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginForm = () => {
-  const {setLoggedIn, setUser} = useContext(MainContext);
+  const {setLoggedIn} = useContext(MainContext);
   const {postLogin} = useLogin();
 
   const {
@@ -24,7 +24,6 @@ const LoginForm = () => {
     try {
       const userData = await postLogin(data);
       await AsyncStorage.setItem('token', userData.token);
-      setUser(userData.user);
       setLoggedIn(true);
     } catch (error) {
       console.log(error);
