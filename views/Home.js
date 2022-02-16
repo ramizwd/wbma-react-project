@@ -8,17 +8,7 @@ const Home = ({navigation}) => {
   return (
     <SafeAreaView>
       <Card />
-      {/* <Button
-        style={{
-          margin: 2,
-        }}
-        appearance="filled"
-        onPress={() => {
-          navigation.navigate('Upload post');
-        }}
-      >
-        Post
-      </Button> */}
+
       <PostButton
         onPress={() => {
           navigation.navigate('Upload post');
