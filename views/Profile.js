@@ -1,19 +1,12 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {
-  View,
-  Button,
-  Image,
-  StyleSheet,
-  ImageBackground,
-  Alert,
-} from 'react-native';
+import React, {useContext, useEffect} from 'react';
+import {View, Image, StyleSheet, ImageBackground, Alert} from 'react-native';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
-import {Card, Text, ListItem, Avatar} from '@ui-kitten/components';
+import {Card, Text} from '@ui-kitten/components';
 
 const Profile = ({navigation}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);

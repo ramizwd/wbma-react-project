@@ -1,17 +1,9 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {View, Alert, ScrollView, StyleSheet} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {Alert, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
-import {Image} from 'react-native-elements';
 import {useForm, Controller} from 'react-hook-form';
-import {
-  Button,
-  Input,
-  Text,
-  ListItem,
-  Avatar,
-  Card,
-} from '@ui-kitten/components';
+import {Button, Input, Avatar, Card} from '@ui-kitten/components';
 import {PropTypes} from 'prop-types';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import * as ImagePicker from 'expo-image-picker';
@@ -106,11 +98,9 @@ const ModifyProfile = ({navigation}) => {
   return (
     <ScrollView>
       <Card style={styles.container}>
-        <Image
-          source={{uri: avatar}}
-          style={styles.pfImage}
-          onPress={pickImage}
-        />
+        <TouchableOpacity onPress={pickImage} style={styles.pfImageTo}>
+          <Avatar source={{uri: avatar}} style={styles.pfImage} />
+        </TouchableOpacity>
         <Controller
           control={control}
           rules={{
@@ -250,8 +240,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100%',
     paddingTop: 100,
+  },
+  pfImageTo: {
+    width: 170,
+    height: 170,
   },
   pfImage: {
     width: '100%',
