@@ -44,11 +44,17 @@ const CardContent = ({navigation, post}) => {
   }, []);
 
   return (
-    <Card>
+    <Card
+      onPress={() => {
+        navigation.navigate('Single post', {file: post});
+      }}
+    >
       <Layout style={styles.postHeader}>
         <Avatar source={{uri: avatar}} size="large" />
-        <Text>{postOwner.username}</Text>
-        <Text>{post.title}</Text>
+        <View style={styles.headerContent}>
+          <Text category="h6">{postOwner.username}</Text>
+          <Text category="h6">{post.title}</Text>
+        </View>
       </Layout>
 
       <Image
@@ -63,13 +69,6 @@ const CardContent = ({navigation, post}) => {
         <DislikeIcon style={styles.icon} />
         <CommentIcon style={styles.icon} />
       </View>
-      <Button
-        onPress={() => {
-          navigation.navigate('Single post', {file: post});
-        }}
-      >
-        View post
-      </Button>
     </Card>
   );
 };
@@ -77,6 +76,10 @@ const CardContent = ({navigation, post}) => {
 const styles = StyleSheet.create({
   postHeader: {
     flexDirection: 'row',
+  },
+  headerContent: {
+    paddingLeft: 10,
+    flexDirection: 'column',
   },
   image: {
     height: 250,
