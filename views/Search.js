@@ -24,7 +24,6 @@ const Search = ({navigation}) => {
     mode: 'onBlur',
   });
   const {mediaArray} = useMedia();
-  let result;
 
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
@@ -32,18 +31,23 @@ const Search = ({navigation}) => {
 
     try {
       const response = await searchMedia(data, token);
-      setSearchResult(response);
+      const result = response.filter((x) => {
+        return mediaArray.some((y) => {
+          return x.file_id == y.file_id;
+        });
+      });
+      if (result.length < 1) {
+        Alert.alert('No match');
+      }
+      setSearchResult(result);
+      // setSearchResult(response);
       // console.log('(Search) search result:', result);
-      console.log('mediaarry', mediaArray);
+      // console.log('mediaarry', mediaArray);
     } catch (error) {
       // console.error(error.message);
       console.log('search error');
     }
   };
-
-  useEffect(() => {
-    onSubmit();
-  }, result);
 
   return (
     <View>
