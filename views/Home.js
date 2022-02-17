@@ -7,7 +7,7 @@ import {PropTypes} from 'prop-types';
 const Home = ({navigation}) => {
   return (
     <SafeAreaView>
-      <Card />
+      <Card navigation={navigation} />
 
       <PostButton
         onPress={() => {
