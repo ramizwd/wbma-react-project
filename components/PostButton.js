@@ -5,7 +5,11 @@ import {PropTypes} from 'prop-types';
 
 const PostButton = ({onPress}) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.buttonStyle}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.buttonStyle}
+      activeOpacity={0.9}
+    >
       <Text>+</Text>
     </TouchableOpacity>
   );
