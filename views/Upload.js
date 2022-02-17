@@ -2,11 +2,13 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   Image,
   StyleSheet,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
+import {Card, Input, Button} from '@ui-kitten/components';
 import React, {useCallback, useContext, useState} from 'react';
 import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
@@ -19,7 +21,8 @@ import {useMedia, useTag} from '../hooks/ApiHooks';
 
 const Upload = ({navigation}) => {
   const imageUri = 'https://place-hold.it/300x200&text=Choose';
-  const [image, setImage] = useState(imageUri);
+  const [image, setImage] = useState(/*imageUri*/);
+  const [imageName, setImageName] = useState();
   const [imageSelected, setImageSelected] = useState(false);
   const [type, setType] = useState('');
   const {postMedia} = useMedia();
@@ -46,6 +49,9 @@ const Upload = ({navigation}) => {
 
     if (!result.cancelled) {
       setImage(result.uri);
+      const imgName = result.uri.split('/').pop();
+      setImageName(result.fileName);
+      console.log('img name', result);
       setImageSelected(true);
       setType(result.type);
     }
@@ -69,6 +75,7 @@ const Upload = ({navigation}) => {
       Alert.alert('Please, select a file');
       return;
     }
+    console.log('submit pressed');
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('description', data.description);
@@ -105,25 +112,24 @@ const Upload = ({navigation}) => {
   };
 
   return (
-    <View>
-      <Text>Upload</Text>
-
+    <KeyboardAvoidingView style={styles.container}>
       <Controller
         control={control}
         rules={{required: true}}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          <Input
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
-            placeholder="Title"
+            placeholder="Enter the title"
             errorMessage={errors.title && 'This is required.'}
+            style={[styles.title, styles.input]}
+            textStyle={[styles.inputText]}
           />
         )}
         name="title"
       />
-
       <Controller
         control={control}
         rules={{
@@ -131,31 +137,66 @@ const Upload = ({navigation}) => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          <Input
+            style={styles.input}
             onBlur={onBlur}
+            multiline={true}
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
             placeholder="Description"
             errorMessage={errors.description && 'This is required.'}
+            textStyle={[styles.description, styles.inputText]}
           />
         )}
         name="description"
       />
-      <Image source={{uri: image}} style={styles.image} onPress={pickImage} />
-      <Button title="Choose file" onPress={pickImage} />
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
-    </View>
+      <Text>{imageName}</Text>
+      {imageSelected ? (
+        <Image source={{uri: image}} style={styles.image} onPress={pickImage} />
+      ) : (
+        <Text>No file selected</Text>
+      )}
+      <Button onPress={pickImage} style={styles.button}>
+        Choose file
+      </Button>
+      <Button
+        onPress={handleSubmit(onSubmit)}
+        style={[styles.button, {backgroundColor: '#26A96C', marginTop: 20}]}
+      >
+        Submit
+      </Button>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '80%',
+  },
+  input: {
+    width: '60%',
+    borderRadius: 20,
+    marginVertical: 10,
+  },
+  inputText: {fontSize: 18},
+  /* title: {
+    fontSize: 30,
+  }, */
+  description: {
+    minHeight: '30%',
+    textAlignVertical: 'top',
+  },
   image: {
-    width: '100%',
-    height: undefined,
+    width: undefined,
+    height: '20%',
     aspectRatio: 1,
-    marginBottom: 15,
     resizeMode: 'contain',
+  },
+  button: {
+    borderRadius: 20,
   },
 });
 
