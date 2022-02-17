@@ -1,12 +1,16 @@
-import {Text} from '@ui-kitten/components';
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {PropTypes} from 'prop-types';
+import PlusIcon from '../assets/svg/plus.svg';
 
 const PostButton = ({onPress}) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.buttonStyle}>
-      <Text>+</Text>
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.buttonStyle}
+      activeOpacity={0.9}
+    >
+      <PlusIcon style={styles.icon} />
     </TouchableOpacity>
   );
 };
@@ -14,8 +18,8 @@ const PostButton = ({onPress}) => {
 const styles = StyleSheet.create({
   buttonStyle: {
     position: 'absolute',
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
     right: 30,
@@ -30,6 +34,11 @@ const styles = StyleSheet.create({
       width: 6,
       height: 6,
     },
+  },
+  icon: {
+    height: 25,
+    width: 25,
+    color: 'black',
   },
 });
 

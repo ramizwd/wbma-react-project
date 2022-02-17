@@ -99,7 +99,15 @@ const useUser = () => {
     };
     return await baseFetch(baseUrl + 'users', options);
   };
-  return {postUser, getUserByToken, checkUsername, putUser};
+
+  const getUserById = async (userId, token) => {
+    const options = {
+      headers: {'x-access-token': token},
+    };
+    return await baseFetch(`${baseUrl}users/${userId}`, options);
+  };
+
+  return {postUser, getUserByToken, checkUsername, putUser, getUserById};
 };
 
 const useMedia = () => {
@@ -202,8 +210,9 @@ const useTag = () => {
   };
 
   const getFilesByTag = async (tag) => {
-    return await baseFetch(baseUrl + 'tags/' + tag);
+    return await baseFetch(`${baseUrl}tags/${tag}`);
   };
+
   return {postTag, getFilesByTag};
 };
 
