@@ -57,10 +57,7 @@ const CardContent = ({navigation, post}) => {
         </View>
       </Layout>
 
-      <Image
-        source={{uri: uploadsUrl + post.thumbnails.w640}}
-        style={styles.image}
-      />
+      <Image source={{uri: uploadsUrl + post.filename}} style={styles.image} />
       <View>
         <Text>{post.description}</Text>
       </View>
