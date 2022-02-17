@@ -82,7 +82,15 @@ const useUser = () => {
       throw new Error(error.message);
     }
   };
-  return {postUser, getUserByToken};
+
+  const getUserById = async (userId, token) => {
+    const options = {
+      method: 'GET',
+      headers: {'x-access-token': token},
+    };
+    return await baseFetch(`${baseUrl}users/${userId}`, options);
+  };
+  return {postUser, getUserByToken, getUserById};
 };
 
 const useMedia = () => {
