@@ -33,4 +33,5 @@ const Profile = ({navigation}) => {
 Profile.propTypes = {
   navigation: PropTypes.object,
 };
+
 export default Profile;
