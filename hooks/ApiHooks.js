@@ -174,8 +174,9 @@ const useTag = () => {
   };
 
   const getFilesByTag = async (tag) => {
-    return await baseFetch(baseUrl + 'tags/' + tag);
+    return await baseFetch(`${baseUrl}tags/${tag}`);
   };
+
   return {postTag, getFilesByTag};
 };
 
