@@ -8,7 +8,7 @@ import {MainContext} from '../contexts/MainContext';
 
 const Login = ({navigation}) => {
   const {getUserByToken} = useUser();
-  const {setLoggedIn} = useContext(MainContext);
+  const {setLoggedIn, setUser} = useContext(MainContext);
 
   const authUser = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -18,6 +18,7 @@ const Login = ({navigation}) => {
     try {
       const userData = await getUserByToken(token);
       console.log('user by token', userData);
+      setUser(userData);
       setLoggedIn(true);
     } catch (error) {
       console.error(error);

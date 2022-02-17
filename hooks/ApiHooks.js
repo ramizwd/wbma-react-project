@@ -82,7 +82,24 @@ const useUser = () => {
       throw new Error(error.message);
     }
   };
-  return {postUser, getUserByToken};
+
+  const checkUsername = async (username) => {
+    const result = await baseFetch(baseUrl + 'users/username/' + username);
+    return result.available;
+  };
+
+  const putUser = async (data, token) => {
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+      body: JSON.stringify(data),
+    };
+    return await baseFetch(baseUrl + 'users', options);
+  };
+  return {postUser, getUserByToken, checkUsername, putUser};
 };
 
 const useMedia = () => {
@@ -149,7 +166,26 @@ const useMedia = () => {
     return await baseFetch(`${baseUrl}media/${fileId}`, options);
   };
 
-  return {mediaArray: mediaArray, postMedia, putMedia, deleteMedia, loading};
+  const searchMedia = async (data, token) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+    return await baseFetch(baseUrl + 'media/search', options);
+  };
+
+  return {
+    mediaArray: mediaArray,
+    postMedia,
+    putMedia,
+    deleteMedia,
+    loading,
+    searchMedia,
+  };
 };
 
 const useTag = () => {
