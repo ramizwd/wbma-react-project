@@ -217,4 +217,12 @@ const useTag = () => {
   return {postTag, getFilesByTag};
 };
 
-export {useLogin, useUser, useMedia, useTag};
+const useComment = () => {
+  const [commentArray, setCommentArray] = useState([]);
+  const getCommentsByPost = async (fileId) => {
+    return await baseFetch(`${baseUrl}comments/file/${fileId}`);
+  };
+  return {getCommentsByPost};
+};
+
+export {useLogin, useUser, useMedia, useTag, useComment};

@@ -1,20 +1,23 @@
 import {View, Text, Image} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {Avatar, Card} from '@ui-kitten/components';
+import {Avatar, Card, List, ListItem} from '@ui-kitten/components';
 import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import {useTag, useUser} from '../hooks/ApiHooks';
+import {useComment, useTag, useUser} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
+import CardContent from '../components/CardContent';
 
 const Single = ({route}) => {
   const {file} = route.params;
   const videoRef = useRef(null);
   const {getUserById} = useUser();
   const {getFilesByTag} = useTag();
+  const {getCommentsByPost} = useComment();
 
   const [owner, setOwner] = useState({username: 'Fetching the user...'});
   const [avatar, setAvatar] = useState('https://placekitten.com/200/300');
+  const [comments, setComments] = useState([]);
 
   const getOwner = async () => {
     try {
@@ -22,6 +25,9 @@ const Single = ({route}) => {
       const token = await AsyncStorage.getItem('token');
       const userData = await getUserById(file.user_id, token);
       setOwner(userData);
+
+      const d = await getCommentsByPost(file.file_id);
+      console.log('comments', d);
     } catch (error) {
       console.error('getOwner error', error);
     }
@@ -40,9 +46,24 @@ const Single = ({route}) => {
     }
   };
 
+  const getComments = async () => {
+    try {
+      const comments = await getCommentsByPost(file.file_id);
+      setComments(comments);
+    } catch (error) {
+      console.error('getComments error', error);
+    }
+  };
+
+  const commentItem = ({comments}) => {
+    console.log('co', comments);
+    return <ListItem title={comments.comment} />;
+  };
+
   useEffect(() => {
     getOwner();
     getAvatar();
+    getComments();
   }, []);
 
   return (
@@ -68,6 +89,13 @@ const Single = ({route}) => {
             resizeMode="contain"
           ></Video>
         )}
+      </View>
+      <View>
+        <Text>Comments</Text>
+        <List
+          data={comments}
+          renderItem={({item}) => <ListItem title={item.comment} />}
+        ></List>
       </View>
     </Card>
   );
