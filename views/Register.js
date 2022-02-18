@@ -17,16 +17,16 @@ const Register = ({navigation}) => {
           <Text>Moment</Text>
           <RegisterForm />
 
-          <Layout style={styles.singUp}>
-            <Text style={styles.singUpText}>Already have an account?</Text>
+          <Layout style={styles.singIn}>
+            <Text style={styles.singInText}>Already have an account?</Text>
             <Button
-              style={styles.singUpBtn}
+              style={styles.singInBtn}
               onPress={() => navigation.navigate('Login')}
               appearance="ghost"
               status="success"
             >
               {(evaProps) => (
-                <Text {...evaProps} style={styles.singUpBtn}>
+                <Text {...evaProps} style={styles.singInBtn}>
                   Sign in
                 </Text>
               )}
@@ -44,16 +44,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  singUp: {
+  singIn: {
     marginTop: 20,
     flexDirection: 'row',
   },
-  singUpText: {
+  singInText: {
     textAlign: 'center',
     justifyContent: 'center',
     marginTop: 13,
   },
-  singUpBtn: {
+  singInBtn: {
     color: '#26A96C',
   },
 });

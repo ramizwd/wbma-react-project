@@ -89,7 +89,7 @@ const LoginForm = () => {
       />
       {errors.password && <Text>This is required.</Text>}
 
-      <Button onPress={handleSubmit(onSubmit)} style={styles.submit}>
+      <Button onPress={handleSubmit(onSubmit)} style={styles.loginBtn}>
         Login
       </Button>
     </Layout>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginVertical: 10,
   },
-  submit: {
+  loginBtn: {
     height: 56,
     marginTop: 20,
   },
