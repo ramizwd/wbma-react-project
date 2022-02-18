@@ -1,19 +1,37 @@
 import {View, Text, Image} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {Avatar, Card, List, ListItem} from '@ui-kitten/components';
+import {
+  Avatar,
+  Button,
+  Card,
+  Input,
+  List,
+  ListItem,
+} from '@ui-kitten/components';
 import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 import {useComment, useTag, useUser} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
 import CardContent from '../components/CardContent';
+import {Controller, useForm} from 'react-hook-form';
 
 const Single = ({route}) => {
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    setValue,
+  } = useForm({
+    defaultValues: {
+      comment: '',
+    },
+  });
   const {file} = route.params;
   const videoRef = useRef(null);
   const {getUserById} = useUser();
   const {getFilesByTag} = useTag();
-  const {getCommentsByPost} = useComment();
+  const {getCommentsByPost, postComment} = useComment();
 
   const [owner, setOwner] = useState({username: 'Fetching the user...'});
   const [avatar, setAvatar] = useState('https://placekitten.com/200/300');
@@ -55,6 +73,20 @@ const Single = ({route}) => {
     }
   };
 
+  const createComment = async (data, string) => {
+    console.log('here', data);
+    const formData = new FormData();
+    formData.append('comment', data.comment);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await postComment(data, file.file_id, token);
+      console.log('postC', response);
+      getComments();
+    } catch (error) {
+      console.error('postComment error', error);
+    }
+  };
+
   useEffect(() => {
     getOwner();
     getAvatar();
@@ -86,7 +118,27 @@ const Single = ({route}) => {
         )}
       </View>
       <View>
-        <Text>Comments</Text>
+        <Text>{`Comments (${comments.length})`}</Text>
+        <Controller
+          control={control}
+          rules={{
+            maxLength: 100,
+            required: true,
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              onBlur={onBlur}
+              multiline={true}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder="Write a comment"
+              errorMessage={errors.description && 'This is required.'}
+            />
+          )}
+          name="comment"
+        />
+        <Button onPress={handleSubmit(createComment)}>Send</Button>
         <List
           data={comments}
           renderItem={({item}) => <ListItem title={item.comment} />}
