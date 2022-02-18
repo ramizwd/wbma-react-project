@@ -1,14 +1,14 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState, useCallback} from 'react';
 import {View, Alert, ScrollView, StyleSheet} from 'react-native';
 import {PropTypes} from 'prop-types';
-import {Button, Input} from '@ui-kitten/components';
+import {Button, Input, Card} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
 import {useForm, Controller} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useMedia} from '../hooks/ApiHooks';
-import Card from '../components/Card';
 import CardContent from '../components/CardContent';
 import {List} from '@ui-kitten/components';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Search = ({navigation}) => {
   const {searchMedia} = useMedia();
@@ -17,6 +17,7 @@ const Search = ({navigation}) => {
     control,
     handleSubmit,
     formState: {errors},
+    setValue,
   } = useForm({
     defaultValues: {
       title: '',
@@ -27,7 +28,6 @@ const Search = ({navigation}) => {
 
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
-    // console.log('search title:', data);
 
     try {
       const response = await searchMedia(data, token);
@@ -40,38 +40,48 @@ const Search = ({navigation}) => {
         Alert.alert('No match');
       }
       setSearchResult(result);
-      // setSearchResult(response);
-      // console.log('(Search) search result:', result);
-      // console.log('mediaarry', mediaArray);
+      setValue('title', '');
     } catch (error) {
-      // console.error(error.message);
-      console.log('search error');
+      console.error(error.message);
     }
   };
 
+  const reset = () => {
+    setSearchResult([]);
+    setValue('title', '');
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => reset();
+    }, [])
+  );
+
   return (
     <View>
-      <Controller
-        control={control}
-        rules={{
-          required: {value: true, message: 'This is required.'},
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-            placeholder="Search by title"
-            errorMessage={errors.title && errors.title.message}
-          />
-        )}
-        name="title"
-      />
+      <Card>
+        <Controller
+          control={control}
+          rules={{
+            required: {value: true, message: 'This is required.'},
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder="Search by title"
+              errorMessage={errors.title && errors.title.message}
+            />
+          )}
+          name="title"
+        />
 
-      <Button title="Search" onPress={handleSubmit(onSubmit)}>
-        Search
-      </Button>
+        <Button title="Search" onPress={handleSubmit(onSubmit)}>
+          Search
+        </Button>
+      </Card>
 
       <List
         data={searchResult}
