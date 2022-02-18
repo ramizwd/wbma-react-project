@@ -55,11 +55,6 @@ const Single = ({route}) => {
     }
   };
 
-  const commentItem = ({comments}) => {
-    console.log('co', comments);
-    return <ListItem title={comments.comment} />;
-  };
-
   useEffect(() => {
     getOwner();
     getAvatar();
