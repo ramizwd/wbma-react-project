@@ -138,15 +138,15 @@ const RegisterForm = () => {
             value={value}
             accessoryRight={renderIcon}
             secureTextEntry={secureTextEntry}
-            placeholder="Confirm password*"
-            label="confirm_password"
+            placeholder="Insert password again*"
+            label="Confirm Password"
           />
         )}
-        name="password"
+        name="confirm_password"
       />
-      {errors.password && <Text>This is required.</Text>}
+      {errors.confirm_password && <Text>This is required.</Text>}
 
-      <Button onPress={handleSubmit(onSubmit)} style={styles.submit}>
+      <Button onPress={handleSubmit(onSubmit)} style={styles.registerBtn}>
         Register
       </Button>
     </Layout>
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginVertical: 10,
   },
-  submit: {
+  registerBtn: {
     height: 56,
     marginTop: 20,
   },
