@@ -1,16 +1,25 @@
 import React, {useContext, useEffect} from 'react';
-import {View, Image, StyleSheet, ImageBackground, Alert} from 'react-native';
+import {
+  View,
+  Image,
+  StyleSheet,
+  ImageBackground,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useTag} from '../hooks/ApiHooks';
+import {useTag, useMedia} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
-import {Card, Text} from '@ui-kitten/components';
+import {Card, Text, List} from '@ui-kitten/components';
+import CardContent from '../components/CardContent';
 
 const Profile = ({navigation}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
   console.log('user:', user);
+  const {mediaArray} = useMedia();
 
   const {getFilesByTag} = useTag();
   console.log('user:', user);
@@ -30,59 +39,71 @@ const Profile = ({navigation}) => {
     fetchAvatar();
   }, []);
   return (
-    <View style={styles.container}>
-      {/* <TouchableOpacity> */}
-      <ImageBackground
-        source={{
-          uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGUJD0DgCxdTDAbvk6u3gVm25AqOS6Ksnt9Q&usqp=CAU',
-        }}
-        style={styles.bgImage}
-        // resizeMode="contain"
-      />
-      {/* </TouchableOpacity> */}
-      <Image
-        source={{uri: avatar}}
-        style={styles.pfImage}
-        // resizeMode="contain"
-      />
-      <Text style={styles.uName}>Welcome back {user.username}!</Text>
-      <View style={styles.cardInfo}>
-        <Card>
-          <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
+    <>
+      <View style={styles.container}>
+        {/* <TouchableOpacity> */}
+        <ImageBackground
+          source={{
+            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGUJD0DgCxdTDAbvk6u3gVm25AqOS6Ksnt9Q&usqp=CAU',
+          }}
+          style={styles.bgImage}
+          // resizeMode="contain"
+        />
+        {/* </TouchableOpacity> */}
+        <Image
+          source={{uri: avatar}}
+          style={styles.pfImage}
+          // resizeMode="contain"
+        />
+        <Text style={styles.uName}>Welcome back {user.username}!</Text>
+        <View style={styles.cardInfo}>
+          <Card>
+            <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
 
-          <Text style={styles.userInfo}>User email: {user.email}</Text>
-          <Text style={styles.userInfo}>User id: {user.user_id}</Text>
-        </Card>
-      </View>
+            <Text style={styles.userInfo}>User email: {user.email}</Text>
+            <Text style={styles.userInfo}>User id: {user.user_id}</Text>
+          </Card>
+        </View>
 
-      <Icon
-        name="account-edit"
-        color="#4F8EF7"
-        size={32}
-        style={styles.editIcon}
-        onPress={() => {
-          navigation.navigate('ModifyProfile');
-        }}
-      />
-      <Icon
-        name="logout"
-        color="#4F8EF7"
-        size={30}
-        style={styles.logoutIcon}
-        onPress={() => {
-          Alert.alert('Logout', 'Are you sure you want to logout?', [
-            {text: 'Cancel'},
-            {
-              text: 'OK',
-              onPress: async () => {
-                await AsyncStorage.clear();
-                setLoggedIn(false);
+        <Icon
+          name="account-edit"
+          color="#4F8EF7"
+          size={32}
+          style={styles.editIcon}
+          onPress={() => {
+            navigation.navigate('ModifyProfile');
+          }}
+        />
+        <Icon
+          name="logout"
+          color="#4F8EF7"
+          size={30}
+          style={styles.logoutIcon}
+          onPress={() => {
+            Alert.alert('Logout', 'Are you sure you want to logout?', [
+              {text: 'Cancel'},
+              {
+                text: 'OK',
+                onPress: async () => {
+                  await AsyncStorage.clear();
+                  setLoggedIn(false);
+                },
               },
-            },
-          ]);
-        }}
-      />
-    </View>
+            ]);
+          }}
+        />
+      </View>
+      <ScrollView>
+        <List
+          data={mediaArray}
+          style={styles.postList}
+          keyExtractor={(item) => item.file_id.toString()}
+          renderItem={({item}) => (
+            <CardContent post={item} navigation={navigation} />
+          )}
+        ></List>
+      </ScrollView>
+    </>
   );
 };
 
@@ -132,6 +153,10 @@ const styles = StyleSheet.create({
     top: '30%',
   },
   cardPost: {
+    position: 'absolute',
+    top: '45%',
+  },
+  postList: {
     position: 'absolute',
     top: '45%',
   },
