@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import LoginForm from '../components/LoginForm';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,7 +31,7 @@ const Login = ({navigation}) => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <Layout style={styles.container}>
       <Text>Moment</Text>
       <LoginForm />
       <Layout style={styles.singUp}>
@@ -49,7 +49,7 @@ const Login = ({navigation}) => {
           )}
         </Button>
       </Layout>
-    </View>
+    </Layout>
   );
 };
 
