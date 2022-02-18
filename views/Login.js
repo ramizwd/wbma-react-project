@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {StyleSheet} from 'react-native';
+import {Keyboard, StyleSheet, TouchableOpacity} from 'react-native';
 import LoginForm from '../components/LoginForm';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,25 +31,31 @@ const Login = ({navigation}) => {
   }, []);
 
   return (
-    <Layout style={styles.container}>
-      <Text>Moment</Text>
-      <LoginForm />
-      <Layout style={styles.singUp}>
-        <Text style={styles.singUpText}>Don't have an account?</Text>
-        <Button
-          style={styles.singUpBtn}
-          onPress={() => navigation.navigate('Register')}
-          appearance="ghost"
-          status="success"
-        >
-          {(evaProps) => (
-            <Text {...evaProps} style={styles.singUpBtn}>
-              Sing Up
-            </Text>
-          )}
-        </Button>
+    <TouchableOpacity
+      onPress={() => Keyboard.dismiss()}
+      style={{flex: 1}}
+      activeOpacity={1}
+    >
+      <Layout style={styles.container}>
+        <Text>Moment</Text>
+        <LoginForm />
+        <Layout style={styles.singUp}>
+          <Text style={styles.singUpText}>Don't have an account?</Text>
+          <Button
+            style={styles.singUpBtn}
+            onPress={() => navigation.navigate('Register')}
+            appearance="ghost"
+            status="success"
+          >
+            {(evaProps) => (
+              <Text {...evaProps} style={styles.singUpBtn}>
+                Sign Up
+              </Text>
+            )}
+          </Button>
+        </Layout>
       </Layout>
-    </Layout>
+    </TouchableOpacity>
   );
 };
 
@@ -58,7 +64,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: '80%',
   },
   singUp: {
     marginTop: 20,

@@ -66,9 +66,17 @@ const StackScreen = () => {
           <Stack.Screen name="Single post" component={Single}></Stack.Screen>
         </>
       ) : (
-        <Stack.Screen name="Login" component={Login}></Stack.Screen>
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{headerShown: false}}
+        ></Stack.Screen>
       )}
-      <Stack.Screen name="Register" component={Register}></Stack.Screen>
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{headerTitleAlign: 'center'}}
+      ></Stack.Screen>
     </Stack.Navigator>
   );
 };
