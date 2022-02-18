@@ -1,20 +1,13 @@
 import {View, Text, Image} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  Avatar,
-  Button,
-  Card,
-  Input,
-  List,
-  ListItem,
-} from '@ui-kitten/components';
+import {Avatar, Button, Card, Input, List} from '@ui-kitten/components';
 import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 import {useComment, useTag, useUser} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
-import CardContent from '../components/CardContent';
 import {Controller, useForm} from 'react-hook-form';
+import Comment from '../components/Comment';
 
 const Single = ({route}) => {
   const {
@@ -39,13 +32,12 @@ const Single = ({route}) => {
 
   const getOwner = async () => {
     try {
-      console.log('file', file);
+      // console.log('file', file);
       const token = await AsyncStorage.getItem('token');
       const userData = await getUserById(file.user_id, token);
       setOwner(userData);
 
-      const d = await getCommentsByPost(file.file_id);
-      console.log('comments', d);
+      // console.log('comments', d);
     } catch (error) {
       console.error('getOwner error', error);
     }
@@ -141,7 +133,11 @@ const Single = ({route}) => {
         <Button onPress={handleSubmit(createComment)}>Send</Button>
         <List
           data={comments}
-          renderItem={({item}) => <ListItem title={item.comment} />}
+          renderItem={({item}) => (
+            <View>
+              <Comment comment={item} />
+            </View>
+          )}
         ></List>
       </View>
     </Card>
