@@ -1,10 +1,10 @@
 import React, {useContext, useState} from 'react';
-import {Text, View, TouchableWithoutFeedback, StyleSheet} from 'react-native';
+import {Text, TouchableWithoutFeedback, StyleSheet} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {useLogin} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Input, Button} from '@ui-kitten/components';
+import {Input, Button, Layout} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const LoginForm = () => {
@@ -48,7 +48,7 @@ const LoginForm = () => {
   );
 
   return (
-    <View>
+    <Layout>
       <Controller
         control={control}
         rules={{
@@ -90,9 +90,9 @@ const LoginForm = () => {
       {errors.password && <Text>This is required.</Text>}
 
       <Button onPress={handleSubmit(onSubmit)} style={styles.submit}>
-        Submit
+        Login
       </Button>
-    </View>
+    </Layout>
   );
 };
 

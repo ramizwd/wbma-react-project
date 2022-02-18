@@ -1,10 +1,13 @@
-import React from 'react';
-import {Text, View, TextInput, Button} from 'react-native';
+import React, {useState} from 'react';
+import {Text, TouchableWithoutFeedback, StyleSheet} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
+import {Input, Button, Layout} from '@ui-kitten/components';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useUser} from '../hooks/ApiHooks';
 
 const RegisterForm = () => {
   const {postUser} = useUser();
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const {
     control,
@@ -27,16 +30,35 @@ const RegisterForm = () => {
     }
   };
 
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const renderIcon = (props) => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      <Icon
+        {...props}
+        name={secureTextEntry ? 'eye-off-outline' : 'eye-outline'}
+        style={{fontSize: 20}}
+      />
+    </TouchableWithoutFeedback>
+  );
+
   return (
-    <View>
+    <Layout>
       <Controller
         control={control}
+        rules={{
+          required: true,
+        }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          <Input
+            style={styles.input}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            placeholder="Full name"
+            placeholder="Insert full name"
+            label="Full name"
           />
         )}
         name="full_name"
@@ -48,11 +70,14 @@ const RegisterForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          <Input
+            style={styles.input}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            placeholder="Username"
+            secureTextEntry={secureTextEntry}
+            placeholder="Insert username*"
+            label="Username"
           />
         )}
         name="username"
@@ -65,11 +90,14 @@ const RegisterForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          <Input
+            style={styles.input}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            placeholder="Email"
+            secureTextEntry={secureTextEntry}
+            placeholder="Insert email*"
+            label="Email"
           />
         )}
         name="email"
@@ -82,11 +110,15 @@ const RegisterForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          <Input
+            style={styles.input}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            placeholder="Password"
+            accessoryRight={renderIcon}
+            secureTextEntry={secureTextEntry}
+            placeholder="Insert password*"
+            label="Password"
           />
         )}
         name="password"
@@ -99,20 +131,38 @@ const RegisterForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          <Input
+            style={styles.input}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            placeholder="Confirm password"
+            accessoryRight={renderIcon}
+            secureTextEntry={secureTextEntry}
+            placeholder="Confirm password*"
+            label="confirm_password"
           />
         )}
-        name="confirm_password"
+        name="password"
       />
-      {errors.confirm_password && <Text>This is required.</Text>}
+      {errors.password && <Text>This is required.</Text>}
 
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
-    </View>
+      <Button onPress={handleSubmit(onSubmit)} style={styles.submit}>
+        Register
+      </Button>
+    </Layout>
   );
 };
+
+const styles = StyleSheet.create({
+  input: {
+    width: '90%',
+    borderRadius: 20,
+    marginVertical: 10,
+  },
+  submit: {
+    height: 56,
+    marginTop: 20,
+  },
+});
 
 export default RegisterForm;
