@@ -1,13 +1,16 @@
-import React, {useContext} from 'react';
-import {Text, View, TextInput, Button} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {Text, View, TouchableWithoutFeedback, StyleSheet} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {useLogin} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Input, Button} from '@ui-kitten/components';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const LoginForm = () => {
   const {setLoggedIn} = useContext(MainContext);
   const {postLogin} = useLogin();
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const {
     control,
@@ -30,6 +33,20 @@ const LoginForm = () => {
     }
   };
 
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const renderIcon = (props) => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      <Icon
+        {...props}
+        name={secureTextEntry ? 'eye-off-outline' : 'eye-outline'}
+        style={{fontSize: 20}}
+      />
+    </TouchableWithoutFeedback>
+  );
+
   return (
     <View>
       <Controller
@@ -38,11 +55,13 @@ const LoginForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          <Input
+            style={styles.input}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            placeholder="Username"
+            placeholder="Insert username"
+            label="Username"
           />
         )}
         name="username"
@@ -55,20 +74,38 @@ const LoginForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          <Input
+            style={styles.input}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            placeholder="Password"
+            accessoryRight={renderIcon}
+            secureTextEntry={secureTextEntry}
+            placeholder="Insert password"
+            label="Password"
           />
         )}
         name="password"
       />
       {errors.password && <Text>This is required.</Text>}
 
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+      <Button onPress={handleSubmit(onSubmit)} style={styles.submit}>
+        Submit
+      </Button>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  input: {
+    width: '90%',
+    borderRadius: 20,
+    marginVertical: 10,
+  },
+  submit: {
+    height: 56,
+    marginTop: 20,
+  },
+});
 
 export default LoginForm;

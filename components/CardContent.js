@@ -2,13 +2,12 @@ import {View, Image, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Text, Card, Avatar, Layout, Button} from '@ui-kitten/components';
+import {Text, Card, Avatar, Layout} from '@ui-kitten/components';
 import LikeIcon from '../assets/svg/like.svg';
 import DislikeIcon from '../assets/svg/dislike.svg';
 import CommentIcon from '../assets/svg/comment.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTag, useUser} from '../hooks/ApiHooks';
-// import DefaultAvatar from '../assets/svg/userProfile.svg';
 
 const CardContent = ({navigation, post}) => {
   const {getUserById} = useUser();

@@ -1,14 +1,11 @@
 import {
-  View,
   Text,
-  TextInput,
   Image,
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
-  ScrollView,
 } from 'react-native';
-import {Card, Input, Button} from '@ui-kitten/components';
+import {Input, Button} from '@ui-kitten/components';
 import React, {useCallback, useContext, useState} from 'react';
 import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
