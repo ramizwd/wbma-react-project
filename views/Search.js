@@ -28,7 +28,6 @@ const Search = ({navigation}) => {
 
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
-    // console.log('search title:', data);
 
     try {
       const response = await searchMedia(data, token);
@@ -41,12 +40,9 @@ const Search = ({navigation}) => {
         Alert.alert('No match');
       }
       setSearchResult(result);
-      // setSearchResult(response);
-      // console.log('(Search) search result:', result);
-      // console.log('mediaarry', mediaArray);
+      setValue('title', '');
     } catch (error) {
-      // console.error(error.message);
-      console.log('search error');
+      console.error(error.message);
     }
   };
 
