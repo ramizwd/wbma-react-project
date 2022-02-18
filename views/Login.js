@@ -37,12 +37,16 @@ const Login = ({navigation}) => {
       <Layout style={styles.singUp}>
         <Text style={styles.singUpText}>Don't have an account?</Text>
         <Button
-          style={styles.button}
+          style={styles.singUpBtn}
           onPress={() => navigation.navigate('Register')}
           appearance="ghost"
           status="success"
         >
-          Sing Up
+          {(evaProps) => (
+            <Text {...evaProps} style={styles.singUpBtn}>
+              Sing Up
+            </Text>
+          )}
         </Button>
       </Layout>
     </View>
@@ -64,6 +68,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
     marginTop: 13,
+  },
+  singUpBtn: {
+    color: '#26A96C',
   },
 });
 
