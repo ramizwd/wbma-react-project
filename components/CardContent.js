@@ -3,9 +3,8 @@ import React, {useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
 import {Text, Card, Avatar, Layout} from '@ui-kitten/components';
-import LikeIcon from '../assets/svg/like.svg';
-import DislikeIcon from '../assets/svg/dislike.svg';
-import CommentIcon from '../assets/svg/comment.svg';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTag, useUser} from '../hooks/ApiHooks';
 
@@ -61,9 +60,24 @@ const CardContent = ({navigation, post}) => {
         <Text>{post.description}</Text>
       </View>
       <View style={styles.feedback}>
-        <LikeIcon style={styles.icon} />
-        <DislikeIcon style={styles.icon} />
-        <CommentIcon style={styles.icon} />
+        <AntDesignIcon
+          name="like2"
+          style={styles.icon}
+          size={25}
+          onPress={() => console.log('Like clicked')}
+        />
+        <AntDesignIcon
+          name="dislike2"
+          style={styles.icon}
+          size={25}
+          onPress={() => console.log('Dislike clicked')}
+        />
+        <FontistoIcon
+          name="comment"
+          style={styles.icon}
+          size={20}
+          onPress={() => console.log('comments clicked')}
+        />
       </View>
     </Card>
   );
@@ -89,8 +103,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   icon: {
-    height: 20,
-    width: 20,
     color: 'black',
     marginRight: 10,
   },
