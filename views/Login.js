@@ -55,6 +55,7 @@ const Login = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     height: '80%',
@@ -62,7 +63,6 @@ const styles = StyleSheet.create({
   singUp: {
     marginTop: 20,
     flexDirection: 'row',
-    backgroundColor: '#F2F2F2',
   },
   singUpText: {
     textAlign: 'center',
