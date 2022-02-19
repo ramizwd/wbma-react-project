@@ -217,7 +217,6 @@ const useTag = () => {
 };
 
 const useComment = () => {
-  const [commentArray, setCommentArray] = useState([]);
   const getCommentsByPost = async (fileId) => {
     return await baseFetch(`${baseUrl}comments/file/${fileId}`);
   };

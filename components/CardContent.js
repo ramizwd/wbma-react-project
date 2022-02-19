@@ -1,21 +1,28 @@
 import {View, Image, StyleSheet} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
 import {Text, Card, Avatar, Layout} from '@ui-kitten/components';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
+import {useComment, useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {Spinner} from '@ui-kitten/components';
+import {MainContext} from '../contexts/MainContext';
 
+// Media post content component that takes navigation and post props and renders poster's avatar,
+// username and the post information
 const CardContent = ({navigation, post}) => {
   const {getUserById} = useUser();
   const {getFilesByTag} = useTag();
-  const [postOwner, setPostOwner] = useState({username: 'Loading...'});
-  const [posterAvatar, setPosterAvatar] = useState();
   const {loading} = useMedia();
+  const {getCommentsByPost} = useComment();
+  const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
+  const [posterAvatar, setPosterAvatar] = useState();
+  const [comments, setComments] = useState([]);
+  const {update} = useContext(MainContext);
 
+  // fetching post owner data by ID and setting it to the posterOwner state hook
   const fetchOwner = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -27,26 +34,45 @@ const CardContent = ({navigation, post}) => {
     }
   };
 
+  // fetch comments for comment count
+  const fetchComments = async () => {
+    try {
+      const comments = await getCommentsByPost(post.file_id);
+      setComments(comments);
+    } catch (error) {
+      console.error('fetching comments error', error);
+    }
+  };
+
+  // function to get poster's avatar by fetching the file
   const fetchAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag(`avatar_${post.user_id}`);
       if (avatarArray.length === 0) return;
-      const avatar = avatarArray.pop();
-      setPosterAvatar(uploadsUrl + avatar.filename);
+      setPosterAvatar(uploadsUrl + avatarArray.pop().filename);
     } catch (error) {
       console.error('avatar fetch error', error);
     }
   };
 
+  // fetch both owner and avatar on component render
   useEffect(() => {
     fetchOwner();
     fetchAvatar();
   }, []);
 
+  useEffect(() => {
+    fetchComments();
+  }, [update]);
+
   return (
     <Card
       onPress={() => {
-        navigation.navigate('Single post', {file: post});
+        navigation.navigate('Single post', {
+          file: post,
+          posterAvatar: posterAvatar,
+          owner: postOwner,
+        });
       }}
     >
       <Layout style={styles.postHeader}>
@@ -92,12 +118,18 @@ const CardContent = ({navigation, post}) => {
           size={25}
           onPress={() => console.log('Dislike clicked')}
         />
+
         <FontistoIcon
           name="comment"
           style={styles.icon}
           size={20}
           onPress={() => console.log('comments clicked')}
         />
+        <Text>
+          {comments.length > 1
+            ? comments.length + ' comments'
+            : comments.length + ' comment'}
+        </Text>
       </View>
     </Card>
   );
