@@ -1,60 +1,30 @@
 import {View, Text, Image} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Avatar, Button, Card, Input, List} from '@ui-kitten/components';
 import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import {useComment, useTag, useUser} from '../hooks/ApiHooks';
+import {useComment} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
 import {Controller, useForm} from 'react-hook-form';
 import Comment from '../components/Comment';
+import {MainContext} from '../contexts/MainContext';
 
 const Single = ({route}) => {
+  const [comments, setComments] = useState([]);
+  const {file, posterAvatar, owner} = route.params;
+  const {getCommentsByPost, postComment} = useComment();
+  const {setUpdate, update} = useContext(MainContext);
+  const videoRef = useRef(null);
   const {
     control,
     handleSubmit,
     formState: {errors},
-    setValue,
   } = useForm({
     defaultValues: {
       comment: '',
     },
   });
-  const {file} = route.params;
-  const videoRef = useRef(null);
-  const {getUserById} = useUser();
-  const {getFilesByTag} = useTag();
-  const {getCommentsByPost, postComment} = useComment();
-
-  const [owner, setOwner] = useState({username: 'Fetching the user...'});
-  const [avatar, setAvatar] = useState('https://placekitten.com/200/300');
-  const [comments, setComments] = useState([]);
-
-  const getOwner = async () => {
-    try {
-      // console.log('file', file);
-      const token = await AsyncStorage.getItem('token');
-      const userData = await getUserById(file.user_id, token);
-      setOwner(userData);
-
-      // console.log('comments', d);
-    } catch (error) {
-      console.error('getOwner error', error);
-    }
-  };
-
-  const getAvatar = async () => {
-    try {
-      const avatars = await getFilesByTag(`avatar_${file.user_id}`);
-      if (avatars.length === 0) {
-        return;
-      }
-      const avatar = avatars.pop();
-      setAvatar(uploadsUrl + avatar.filename);
-    } catch (error) {
-      console.error('getAvatar error', error);
-    }
-  };
 
   const getComments = async () => {
     try {
@@ -65,14 +35,13 @@ const Single = ({route}) => {
     }
   };
 
-  const createComment = async (data, string) => {
-    console.log('here', data);
+  const createComment = async (data) => {
     const formData = new FormData();
     formData.append('comment', data.comment);
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await postComment(data, file.file_id, token);
-      console.log('postC', response);
+      await postComment(data, file.file_id, token);
+      setUpdate(update + 1);
       getComments();
     } catch (error) {
       console.error('postComment error', error);
@@ -80,15 +49,13 @@ const Single = ({route}) => {
   };
 
   useEffect(() => {
-    getOwner();
-    getAvatar();
     getComments();
-  }, []);
+  }, [update]);
 
   return (
     <Card>
       <View style={{flexDirection: 'row'}}>
-        <Avatar source={{uri: avatar}} size={'large'} />
+        <Avatar source={{uri: posterAvatar}} size={'large'} />
         <Text>{`By: ${owner.username}`}</Text>
       </View>
       <View>
@@ -131,6 +98,7 @@ const Single = ({route}) => {
           name="comment"
         />
         <Button onPress={handleSubmit(createComment)}>Send</Button>
+
         <List
           data={comments}
           renderItem={({item}) => (
