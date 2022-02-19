@@ -1,6 +1,6 @@
 import {View, Text, Image} from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Avatar, Button, Card, Input, List} from '@ui-kitten/components';
+import {Button, Card, Input, List} from '@ui-kitten/components';
 import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
@@ -9,10 +9,11 @@ import {uploadsUrl} from '../utils/variables';
 import {Controller, useForm} from 'react-hook-form';
 import Comment from '../components/Comment';
 import {MainContext} from '../contexts/MainContext';
+import Avatar from '../components/Avatar';
 
 const Single = ({route}) => {
   const [comments, setComments] = useState([]);
-  const {file, posterAvatar, owner} = route.params;
+  const {file, owner} = route.params;
   const {getCommentsByPost, postComment} = useComment();
   const {setUpdate, update} = useContext(MainContext);
   const videoRef = useRef(null);
@@ -55,7 +56,7 @@ const Single = ({route}) => {
   return (
     <Card>
       <View style={{flexDirection: 'row'}}>
-        <Avatar source={{uri: posterAvatar}} size={'large'} />
+        <Avatar userAvatar={file.user_id} />
         <Text>{`By: ${owner.username}`}</Text>
       </View>
       <View>

@@ -2,23 +2,22 @@ import {View, Image, StyleSheet} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Text, Card, Avatar, Layout} from '@ui-kitten/components';
+import {Text, Card, Layout} from '@ui-kitten/components';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useComment, useMedia, useTag, useUser} from '../hooks/ApiHooks';
+import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
 import {Spinner} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
+import Avatar from './Avatar';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
 const CardContent = ({navigation, post}) => {
   const {getUserById} = useUser();
-  const {getFilesByTag} = useTag();
   const {loading} = useMedia();
   const {getCommentsByPost} = useComment();
   const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
-  const [posterAvatar, setPosterAvatar] = useState();
   const [comments, setComments] = useState([]);
   const {update} = useContext(MainContext);
 
@@ -44,21 +43,9 @@ const CardContent = ({navigation, post}) => {
     }
   };
 
-  // function to get poster's avatar by fetching the file
-  const fetchAvatar = async () => {
-    try {
-      const avatarArray = await getFilesByTag(`avatar_${post.user_id}`);
-      if (avatarArray.length === 0) return;
-      setPosterAvatar(uploadsUrl + avatarArray.pop().filename);
-    } catch (error) {
-      console.error('avatar fetch error', error);
-    }
-  };
-
   // fetch both owner and avatar on component render
   useEffect(() => {
     fetchOwner();
-    fetchAvatar();
   }, []);
 
   useEffect(() => {
@@ -70,21 +57,12 @@ const CardContent = ({navigation, post}) => {
       onPress={() => {
         navigation.navigate('Single post', {
           file: post,
-          posterAvatar: posterAvatar,
           owner: postOwner,
         });
       }}
     >
       <Layout style={styles.postHeader}>
-        <Avatar
-          source={
-            posterAvatar === undefined
-              ? require('../assets/defaultAvatar.png')
-              : {uri: posterAvatar}
-          }
-          size="large"
-        ></Avatar>
-
+        <Avatar userAvatar={post.user_id} />
         <View style={styles.headerContent}>
           <Text category="h6">{postOwner.username}</Text>
           <Text category="h6">{post.title}</Text>
