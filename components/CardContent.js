@@ -6,13 +6,15 @@ import {Text, Card, Avatar, Layout} from '@ui-kitten/components';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useTag, useUser} from '../hooks/ApiHooks';
+import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
+import {Spinner} from '@ui-kitten/components';
 
 const CardContent = ({navigation, post}) => {
   const {getUserById} = useUser();
   const {getFilesByTag} = useTag();
-  const [postOwner, setPostOwner] = useState({});
-  const [avatar, setAvatar] = useState();
+  const [postOwner, setPostOwner] = useState({username: 'Loading...'});
+  const [posterAvatar, setPosterAvatar] = useState();
+  const {loading} = useMedia();
 
   const fetchOwner = async () => {
     try {
@@ -30,7 +32,7 @@ const CardContent = ({navigation, post}) => {
       const avatarArray = await getFilesByTag(`avatar_${post.user_id}`);
       if (avatarArray.length === 0) return;
       const avatar = avatarArray.pop();
-      setAvatar(uploadsUrl + avatar.filename);
+      setPosterAvatar(uploadsUrl + avatar.filename);
     } catch (error) {
       console.error('avatar fetch error', error);
     }
@@ -48,14 +50,32 @@ const CardContent = ({navigation, post}) => {
       }}
     >
       <Layout style={styles.postHeader}>
-        <Avatar source={{uri: avatar}} size="large" />
+        <Avatar
+          source={
+            posterAvatar === undefined
+              ? require('../assets/defaultAvatar.png')
+              : {uri: posterAvatar}
+          }
+          size="large"
+        ></Avatar>
+
         <View style={styles.headerContent}>
           <Text category="h6">{postOwner.username}</Text>
           <Text category="h6">{post.title}</Text>
         </View>
       </Layout>
 
-      <Image source={{uri: uploadsUrl + post.filename}} style={styles.image} />
+      {!loading ? (
+        <Image
+          source={{uri: uploadsUrl + post.filename}}
+          style={styles.image}
+        />
+      ) : (
+        <Layout style={styles.spinner}>
+          <Spinner />
+        </Layout>
+      )}
+
       <View>
         <Text>{post.description}</Text>
       </View>
@@ -98,6 +118,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 8,
   },
+  spinner: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    justifyContent: 'center',
+    height: 250,
+  },
+
   feedback: {
     flexDirection: 'row',
     marginTop: 20,

@@ -4,6 +4,7 @@ import CardContent from './CardContent';
 import {List} from '@ui-kitten/components';
 import PropTypes from 'prop-types';
 
+// Card component that renders the posts with their content
 const Card = ({navigation}) => {
   const {mediaArray} = useMedia();
 

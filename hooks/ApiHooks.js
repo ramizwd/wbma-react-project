@@ -119,7 +119,6 @@ const useMedia = () => {
     setLoading(true);
     try {
       const json = await useTag().getFilesByTag(appId);
-      console.log('zzzzzzzzzzzzzzzzz', json);
       const media = await Promise.all(
         json.map(async (item) => {
           const response = await fetch(`${baseUrl}media/${item.file_id}`);
