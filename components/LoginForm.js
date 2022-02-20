@@ -17,13 +17,11 @@ const LoginForm = () => {
     handleSubmit,
     formState: {errors},
   } = useForm({
-    defaultValues: {
-      username: '',
-      password: '',
-    },
     mode: 'onBlur',
   });
 
+  // send user data to postLogin function, save users token in AsyncStorage
+  // and setLoggedIn to true on form submission
   const onSubmit = async (data) => {
     try {
       const userData = await postLogin(data);
@@ -31,15 +29,17 @@ const LoginForm = () => {
       setUser(userData.user);
       setLoggedIn(true);
     } catch (error) {
-      Alert.alert('Error', error.toString(), [{text: 'ok'}]);
+      Alert.alert('Error', error.message, [{text: 'ok'}]);
       console.log(error);
     }
   };
 
+  // toggle password visibility hook
   const toggleSecureEntry = () => {
     setSecureTextEntry(!secureTextEntry);
   };
 
+  // render the proper password icon
   const renderIcon = (props) => (
     <TouchableWithoutFeedback onPress={toggleSecureEntry}>
       <Icon
@@ -66,7 +66,7 @@ const LoginForm = () => {
             placeholder="Insert username"
             label="Username"
             status={errors.username ? 'warning' : 'basic'}
-            caption={errors.username ? 'Username is required.' : ''}
+            caption={errors.username ? 'Please enter you username' : ''}
           />
         )}
         name="username"
@@ -88,7 +88,7 @@ const LoginForm = () => {
             placeholder="Insert password"
             label="Password"
             status={errors.password ? 'warning' : 'basic'}
-            caption={errors.password ? 'Password is required.' : ''}
+            caption={errors.password ? 'Please enter your password' : ''}
           />
         )}
         name="password"
