@@ -28,12 +28,22 @@ const baseFetch = async (url, options = {}) => {
 // Custom Login hook for logging in
 const useLogin = () => {
   const postLogin = async (loginData) => {
-    const options = {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(loginData),
-    };
-    return await baseFetch(baseUrl + 'login', options);
+    try {
+      const res = await fetch(baseUrl + 'login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(loginData),
+      });
+      const jsonRes = await res.json();
+
+      if (res.ok) {
+        return jsonRes;
+      } else {
+        throw new Error(`${jsonRes.message}: ${jsonRes.error}`);
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
   };
   return {postLogin};
 };
@@ -41,20 +51,40 @@ const useLogin = () => {
 // Hook for user related data
 const useUser = () => {
   const postUser = async (registerData) => {
-    const options = {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(registerData),
-    };
-    return await baseFetch(baseUrl + 'users', options);
+    try {
+      const res = await fetch(baseUrl + 'users', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(registerData),
+      });
+      const jsonRes = await res.json();
+
+      if (res.ok) {
+        return jsonRes;
+      } else {
+        throw new Error(`${jsonRes.message}: ${jsonRes.error}`);
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
   };
 
   // getting user by token
   const getUserByToken = async (token) => {
-    const options = {
-      headers: {'x-access-token': token},
-    };
-    return await baseFetch(baseUrl + 'users/user', options);
+    try {
+      const res = await fetch(baseUrl + 'users/user', {
+        headers: {'x-access-token': token},
+      });
+      const jsonRes = await res.json();
+
+      if (res.ok) {
+        return jsonRes;
+      } else {
+        throw new Error(`${jsonRes.message}: ${jsonRes.error}`);
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
   };
 
   // function for checking if username is available
