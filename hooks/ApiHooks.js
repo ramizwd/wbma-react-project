@@ -27,7 +27,7 @@ const baseFetch = async (url, options = {}) => {
 
 // Custom Login hook for logging in
 const useLogin = () => {
-  const postLogin = async (loginData) => {
+  /* const postLogin = async (loginData) => {
     try {
       const res = await fetch(baseUrl + 'login', {
         method: 'POST',
@@ -44,13 +44,21 @@ const useLogin = () => {
     } catch (error) {
       throw new Error(error.message);
     }
+  }; */
+  const postLogin = async (loginData) => {
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(loginData),
+    };
+    return await baseFetch(baseUrl + 'login', options);
   };
   return {postLogin};
 };
 
 // Hook for user related data
 const useUser = () => {
-  const postUser = async (registerData) => {
+  /* const postUser = async (registerData) => {
     try {
       const res = await fetch(baseUrl + 'users', {
         method: 'POST',
@@ -67,10 +75,18 @@ const useUser = () => {
     } catch (error) {
       throw new Error(error.message);
     }
+  }; */
+  const postUser = async (registerData) => {
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(registerData),
+    };
+    return await baseFetch(baseUrl + 'users', options);
   };
 
   // getting user by token
-  const getUserByToken = async (token) => {
+  /* const getUserByToken = async (token) => {
     try {
       const res = await fetch(baseUrl + 'users/user', {
         headers: {'x-access-token': token},
@@ -85,6 +101,12 @@ const useUser = () => {
     } catch (error) {
       throw new Error(error.message);
     }
+  }; */
+  const getUserByToken = async (token) => {
+    const options = {
+      headers: {'x-access-token': token},
+    };
+    return await baseFetch(baseUrl + 'users/user', options);
   };
 
   // function for checking if username is available
