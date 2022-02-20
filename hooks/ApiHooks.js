@@ -232,7 +232,18 @@ const useComment = () => {
     };
     return await baseFetch(`${baseUrl}comments`, options);
   };
-  return {getCommentsByPost, postComment};
+  const deleteComment = async (commentId, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {'x-access-token': token},
+    };
+    try {
+      return await baseFetch(`${baseUrl}comments/${commentId}`, options);
+    } catch (error) {
+      console.error('deleteComment hook error', error);
+    }
+  };
+  return {getCommentsByPost, postComment, deleteComment};
 };
 
 export {useLogin, useUser, useMedia, useTag, useComment};
