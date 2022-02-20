@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {Text, TouchableWithoutFeedback, StyleSheet, Alert} from 'react-native';
+import {TouchableWithoutFeedback, StyleSheet, Alert} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {useLogin} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
