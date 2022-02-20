@@ -41,7 +41,11 @@ const Profile = ({navigation}) => {
       />
       {/* </TouchableOpacity> */}
       <Image
-        source={{uri: avatar}}
+        source={
+          avatar === undefined
+            ? require('../assets/defaultAvatar.png')
+            : {uri: avatar}
+        }
         style={styles.pfImage}
         // resizeMode="contain"
       />

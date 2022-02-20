@@ -7,10 +7,12 @@ import {useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {Button, Layout, Text} from '@ui-kitten/components';
 
+// Login view
 const Login = ({navigation}) => {
   const {getUserByToken} = useUser();
   const {setLoggedIn, setUser} = useContext(MainContext);
 
+  // authenticate the user if token is found and login automatically
   const authUser = async () => {
     const token = await AsyncStorage.getItem('token');
     if (!token) {
@@ -26,10 +28,12 @@ const Login = ({navigation}) => {
     }
   };
 
+  // launch authUser when the view is rendered
   useEffect(() => {
     authUser();
   }, []);
 
+  // Login layout
   return (
     <TouchableOpacity
       onPress={() => Keyboard.dismiss()}
@@ -40,7 +44,7 @@ const Login = ({navigation}) => {
         <Text>Moment</Text>
         <LoginForm />
         <Layout style={styles.singUp}>
-          <Text style={styles.singUpText}>Don't have an account?</Text>
+          <Text style={styles.singUpText}>{"Don't have an account?"}</Text>
           <Button
             style={styles.singUpBtn}
             onPress={() => navigation.navigate('Register')}
