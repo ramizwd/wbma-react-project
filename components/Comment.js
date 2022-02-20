@@ -2,33 +2,31 @@ import {View, Text} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PropTypes} from 'prop-types';
-import {useTag, useUser} from '../hooks/ApiHooks';
-// import {Avatar} from '@ui-kitten/components';
-import {uploadsUrl} from '../utils/variables';
+import {useUser} from '../hooks/ApiHooks';
 import Avatar from './Avatar';
 import {Button} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
 
+// Component for individual comment. Takes comment prop.
+// Renders comments owners username and avatar, comment text and time when comment was added
 const Comment = ({comment}) => {
   const [commentOwner, setCommentOwner] = useState([]);
-  const [avatar, setAvatar] = useState();
   const {getUserById} = useUser();
-  const {getFilesByTag} = useTag();
-  const {user, update, setUpdate} = useContext(MainContext);
+  const {user} = useContext(MainContext);
 
+  // Fetch user who posted the comment
   const getCommentOwner = async () => {
     try {
-      console.log('comment obj', comment);
       const token = await AsyncStorage.getItem('token');
       const user = await getUserById(comment.user_id, token);
       setCommentOwner(user);
-      // console.log('commentOwner:', commentOwner);
     } catch (error) {
       console.error('getCommentOwner error', error);
     }
   };
 
-  const deleteComment = async () => {
+  // Delete comment (didn't get to work yet)
+  /* const deleteComment = async () => {
     console.log('delete pressed', comment.comment_id);
     try {
       setUpdate(update + 1);
@@ -38,8 +36,9 @@ const Comment = ({comment}) => {
     } catch (error) {
       console.error('deleteComment error', error);
     }
-  };
+  }; */
 
+  // Something to format the date for now
   const formatDate = (date) => {
     const d = new Date(date);
     const month = d.getMonth() + 1;
@@ -53,6 +52,7 @@ const Comment = ({comment}) => {
     return formattedDate;
   };
 
+  // Fetch comments owner
   useEffect(() => {
     getCommentOwner();
   }, []);
