@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {Text, TouchableWithoutFeedback, StyleSheet} from 'react-native';
+import {Text, TouchableWithoutFeedback, StyleSheet, Alert} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {useLogin} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -8,7 +8,7 @@ import {Input, Button, Layout} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const LoginForm = () => {
-  const {setLoggedIn} = useContext(MainContext);
+  const {setLoggedIn, setUser} = useContext(MainContext);
   const {postLogin} = useLogin();
   const [secureTextEntry, setSecureTextEntry] = useState(true);
 
@@ -21,14 +21,17 @@ const LoginForm = () => {
       username: '',
       password: '',
     },
+    mode: 'onBlur',
   });
 
   const onSubmit = async (data) => {
     try {
       const userData = await postLogin(data);
       await AsyncStorage.setItem('token', userData.token);
+      setUser(userData.user);
       setLoggedIn(true);
     } catch (error) {
+      Alert.alert('Error', error.toString(), [{text: 'ok'}]);
       console.log(error);
     }
   };
@@ -62,11 +65,12 @@ const LoginForm = () => {
             value={value}
             placeholder="Insert username"
             label="Username"
+            status={errors.username ? 'warning' : 'basic'}
+            caption={errors.username ? 'Username is required.' : ''}
           />
         )}
         name="username"
       />
-      {errors.username && <Text>This is required.</Text>}
 
       <Controller
         control={control}
@@ -83,12 +87,12 @@ const LoginForm = () => {
             secureTextEntry={secureTextEntry}
             placeholder="Insert password"
             label="Password"
+            status={errors.password ? 'warning' : 'basic'}
+            caption={errors.password ? 'Password is required.' : ''}
           />
         )}
         name="password"
       />
-      {errors.password && <Text>This is required.</Text>}
-
       <Button onPress={handleSubmit(onSubmit)} style={styles.loginBtn}>
         Login
       </Button>
