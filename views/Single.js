@@ -29,6 +29,7 @@ const Single = ({route}) => {
 
   const getComments = async () => {
     try {
+      console.log('get comments');
       const comments = await getCommentsByPost(file.file_id);
       setComments(comments);
     } catch (error) {
@@ -101,7 +102,8 @@ const Single = ({route}) => {
         <Button onPress={handleSubmit(createComment)}>Send</Button>
 
         <List
-          data={comments}
+          style={{maxHeight: '70%'}}
+          data={comments.reverse()}
           renderItem={({item}) => (
             <View>
               <Comment comment={item} />
