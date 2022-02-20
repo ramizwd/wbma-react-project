@@ -11,6 +11,7 @@ import Comment from '../components/Comment';
 import {MainContext} from '../contexts/MainContext';
 import Avatar from '../components/Avatar';
 
+// View for single post
 const Single = ({route}) => {
   const [comments, setComments] = useState([]);
   const {file, owner} = route.params;
@@ -27,6 +28,7 @@ const Single = ({route}) => {
     },
   });
 
+  // Get comments for the post
   const getComments = async () => {
     try {
       console.log('get comments');
@@ -37,6 +39,7 @@ const Single = ({route}) => {
     }
   };
 
+  // Add new comment to the post
   const createComment = async (data) => {
     const formData = new FormData();
     formData.append('comment', data.comment);
@@ -49,6 +52,7 @@ const Single = ({route}) => {
     }
   };
 
+  // Getting comments when new comment is added
   useEffect(() => {
     getComments();
   }, [update]);
