@@ -5,6 +5,7 @@ import RegisterForm from '../components/RegisterForm';
 import {Button, Layout, Text} from '@ui-kitten/components';
 import PropTypes from 'prop-types';
 
+// Register views
 const Register = ({navigation}) => {
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>

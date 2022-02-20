@@ -44,7 +44,6 @@ const Single = ({route}) => {
       const token = await AsyncStorage.getItem('token');
       await postComment(data, file.file_id, token);
       setUpdate(update + 1);
-      getComments();
     } catch (error) {
       console.error('postComment error', error);
     }

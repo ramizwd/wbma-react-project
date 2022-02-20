@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 
 const MainContext = React.createContext({});
 
+// The main Context provider for sharing data across the app
 const MainProvider = ({children}) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({});
   const [update, setUpdate] = useState(0);
-  const [avatar, setAvatar] = useState('../assets/defaultAvatar.png');
+  const [avatar, setAvatar] = useState();
 
   return (
     <MainContext.Provider
