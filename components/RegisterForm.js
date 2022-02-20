@@ -75,7 +75,6 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            secureTextEntry={secureTextEntry}
             placeholder="Insert username*"
             label="Username"
           />
@@ -95,7 +94,6 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            secureTextEntry={secureTextEntry}
             placeholder="Insert email*"
             label="Email"
           />
