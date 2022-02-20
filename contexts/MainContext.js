@@ -8,7 +8,7 @@ const MainProvider = ({children}) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({});
   const [update, setUpdate] = useState(0);
-  const [avatar, setAvatar] = useState();
+  const [avatar, setAvatar] = useState('../assets/defaultAvatar.png');
 
   return (
     <MainContext.Provider
