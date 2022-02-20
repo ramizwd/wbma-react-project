@@ -16,6 +16,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 
+// This view is for uploading a new post
 const Upload = ({navigation}) => {
   const imageUri = 'https://place-hold.it/300x200&text=Choose';
   const [image, setImage] = useState();
@@ -36,6 +37,7 @@ const Upload = ({navigation}) => {
     },
   });
 
+  // Pick image/video from devices library using Image Picker
   const pickFile = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -63,7 +65,9 @@ const Upload = ({navigation}) => {
     }, [])
   );
 
+  // When formdata is submitted
   const onSubmit = async (data) => {
+    // File must be selected to submit the post
     if (!imageSelected) {
       Alert.alert('Please, select a file');
       return;
