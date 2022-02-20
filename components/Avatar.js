@@ -4,7 +4,7 @@ import {uploadsUrl} from '../utils/variables';
 import {Avatar as KittenAvatar} from '@ui-kitten/components';
 import PropTypes from 'prop-types';
 
-const Avatar = ({userAvatar}) => {
+const Avatar = ({userAvatar, avatarSize = 'large'}) => {
   const {getFilesByTag} = useTag();
   const [avatar, setAvatar] = useState();
 
@@ -29,13 +29,14 @@ const Avatar = ({userAvatar}) => {
           ? require('../assets/defaultAvatar.png')
           : {uri: avatar}
       }
-      size="large"
+      size={avatarSize}
     ></KittenAvatar>
   );
 };
 
 Avatar.propTypes = {
   userAvatar: PropTypes.number,
+  avatarSize: PropTypes.string,
 };
 
 export default Avatar;
