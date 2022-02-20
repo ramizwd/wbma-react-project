@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 // Register views
 const Register = ({navigation}) => {
   return (
-    <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
+    <KeyboardAwareScrollView>
       <TouchableOpacity
         onPress={() => Keyboard.dismiss()}
         style={{flex: 1}}
