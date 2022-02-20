@@ -48,6 +48,7 @@ const CardContent = ({navigation, post}) => {
     fetchOwner();
   }, []);
 
+  // update the comments count when a new comment is posted
   useEffect(() => {
     fetchComments();
   }, [update]);
