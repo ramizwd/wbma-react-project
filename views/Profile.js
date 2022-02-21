@@ -40,61 +40,63 @@ const Profile = ({navigation}) => {
     fetchAvatar();
   }, []);
   return (
-    <>
-      <View style={styles.container}>
-        {/* <TouchableOpacity> */}
-        <ImageBackground
-          source={{
-            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGUJD0DgCxdTDAbvk6u3gVm25AqOS6Ksnt9Q&usqp=CAU',
-          }}
-          style={styles.bgImage}
-          // resizeMode="contain"
-        />
-        {/* </TouchableOpacity> */}
-        <Image
-          source={{uri: avatar}}
-          style={styles.pfImage}
-          // resizeMode="contain"
-        />
-        <Text style={styles.uName}>Welcome back {user.username}!</Text>
-        <View style={styles.cardInfo}>
-          <Card>
-            <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
+    <View style={styles.container}>
+      {/* <TouchableOpacity> */}
+      <ImageBackground
+        source={{
+          uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGUJD0DgCxdTDAbvk6u3gVm25AqOS6Ksnt9Q&usqp=CAU',
+        }}
+        style={styles.bgImage}
+        // resizeMode="contain"
+      />
+      {/* </TouchableOpacity> */}
+      <Image
+        source={
+          avatar === undefined
+            ? require('../assets/defaultAvatar.png')
+            : {uri: avatar}
+        }
+        style={styles.pfImage}
+        // resizeMode="contain"
+      />
+      <Text style={styles.uName}>Welcome back {user.username}!</Text>
+      <View style={styles.cardInfo}>
+        <Card>
+          <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
 
-            <Text style={styles.userInfo}>User email: {user.email}</Text>
-            <Text style={styles.userInfo}>User id: {user.user_id}</Text>
-          </Card>
-        </View>
-
-        <Icon
-          name="account-edit"
-          color="#4F8EF7"
-          size={32}
-          style={styles.editIcon}
-          onPress={() => {
-            navigation.navigate('ModifyProfile');
-          }}
-        />
-        <Icon
-          name="logout"
-          color="#4F8EF7"
-          size={30}
-          style={styles.logoutIcon}
-          onPress={() => {
-            Alert.alert('Logout', 'Are you sure you want to logout?', [
-              {text: 'Cancel'},
-              {
-                text: 'OK',
-                onPress: async () => {
-                  await AsyncStorage.clear();
-                  setLoggedIn(false);
-                },
-              },
-            ]);
-          }}
-        />
+          <Text style={styles.userInfo}>User email: {user.email}</Text>
+          <Text style={styles.userInfo}>User id: {user.user_id}</Text>
+        </Card>
       </View>
-    </>
+
+      <Icon
+        name="account-edit"
+        color="#4F8EF7"
+        size={32}
+        style={styles.editIcon}
+        onPress={() => {
+          navigation.navigate('ModifyProfile');
+        }}
+      />
+      <Icon
+        name="logout"
+        color="#4F8EF7"
+        size={30}
+        style={styles.logoutIcon}
+        onPress={() => {
+          Alert.alert('Logout', 'Are you sure you want to logout?', [
+            {text: 'Cancel'},
+            {
+              text: 'OK',
+              onPress: async () => {
+                await AsyncStorage.clear();
+                setLoggedIn(false);
+              },
+            },
+          ]);
+        }}
+      />
+    </View>
   );
 };
 

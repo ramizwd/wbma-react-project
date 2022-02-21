@@ -8,7 +8,6 @@ const Home = ({navigation}) => {
   return (
     <SafeAreaView>
       <Card navigation={navigation} />
-
       <PostButton
         onPress={() => {
           navigation.navigate('Upload post');

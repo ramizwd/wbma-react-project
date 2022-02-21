@@ -1,14 +1,11 @@
 import {
-  View,
   Text,
-  TextInput,
   Image,
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
-  ScrollView,
 } from 'react-native';
-import {Card, Input, Button} from '@ui-kitten/components';
+import {Input, Button} from '@ui-kitten/components';
 import React, {useCallback, useContext, useState} from 'react';
 import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
@@ -19,10 +16,10 @@ import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 
+// This view is for uploading a new post
 const Upload = ({navigation}) => {
   const imageUri = 'https://place-hold.it/300x200&text=Choose';
-  const [image, setImage] = useState(/*imageUri*/);
-  const [imageName, setImageName] = useState();
+  const [image, setImage] = useState();
   const [imageSelected, setImageSelected] = useState(false);
   const [type, setType] = useState('');
   const {postMedia} = useMedia();
@@ -40,7 +37,8 @@ const Upload = ({navigation}) => {
     },
   });
 
-  const pickImage = async () => {
+  // Pick image/video from devices library using Image Picker
+  const pickFile = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -49,9 +47,6 @@ const Upload = ({navigation}) => {
 
     if (!result.cancelled) {
       setImage(result.uri);
-      const imgName = result.uri.split('/').pop();
-      setImageName(result.fileName);
-      console.log('img name', result);
       setImageSelected(true);
       setType(result.type);
     }
@@ -70,12 +65,13 @@ const Upload = ({navigation}) => {
     }, [])
   );
 
+  // When formdata is submitted
   const onSubmit = async (data) => {
+    // File must be selected to submit the post
     if (!imageSelected) {
       Alert.alert('Please, select a file');
       return;
     }
-    console.log('submit pressed');
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('description', data.description);
@@ -151,13 +147,12 @@ const Upload = ({navigation}) => {
         )}
         name="description"
       />
-      <Text>{imageName}</Text>
       {imageSelected ? (
-        <Image source={{uri: image}} style={styles.image} onPress={pickImage} />
+        <Image source={{uri: image}} style={styles.image} onPress={pickFile} />
       ) : (
         <Text>No file selected</Text>
       )}
-      <Button onPress={pickImage} style={styles.button}>
+      <Button onPress={pickFile} style={styles.button}>
         Choose file
       </Button>
       <Button

@@ -2,6 +2,7 @@ import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {appId, baseUrl} from '../utils/variables';
 
+// Generic function for fetching and handling error
 const baseFetch = async (url, options = {}) => {
   try {
     const response = await fetch(url, options);
@@ -24,8 +25,9 @@ const baseFetch = async (url, options = {}) => {
   }
 };
 
+// Custom Login hook for logging in
 const useLogin = () => {
-  const postLogin = async (loginData) => {
+  /* const postLogin = async (loginData) => {
     try {
       const res = await fetch(baseUrl + 'login', {
         method: 'POST',
@@ -42,12 +44,21 @@ const useLogin = () => {
     } catch (error) {
       throw new Error(error.message);
     }
+  }; */
+  const postLogin = async (loginData) => {
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(loginData),
+    };
+    return await baseFetch(baseUrl + 'login', options);
   };
   return {postLogin};
 };
 
+// Hook for user related data
 const useUser = () => {
-  const postUser = async (registerData) => {
+  /* const postUser = async (registerData) => {
     try {
       const res = await fetch(baseUrl + 'users', {
         method: 'POST',
@@ -64,9 +75,18 @@ const useUser = () => {
     } catch (error) {
       throw new Error(error.message);
     }
+  }; */
+  const postUser = async (registerData) => {
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(registerData),
+    };
+    return await baseFetch(baseUrl + 'users', options);
   };
 
-  const getUserByToken = async (token) => {
+  // getting user by token
+  /* const getUserByToken = async (token) => {
     try {
       const res = await fetch(baseUrl + 'users/user', {
         headers: {'x-access-token': token},
@@ -81,13 +101,21 @@ const useUser = () => {
     } catch (error) {
       throw new Error(error.message);
     }
+  }; */
+  const getUserByToken = async (token) => {
+    const options = {
+      headers: {'x-access-token': token},
+    };
+    return await baseFetch(baseUrl + 'users/user', options);
   };
 
+  // function for checking if username is available
   const checkUsername = async (username) => {
     const result = await baseFetch(baseUrl + 'users/username/' + username);
     return result.available;
   };
 
+  // function for updating user
   const putUser = async (data, token) => {
     const options = {
       method: 'PUT',
@@ -100,6 +128,7 @@ const useUser = () => {
     return await baseFetch(baseUrl + 'users', options);
   };
 
+  // getting user by ID
   const getUserById = async (userId, token) => {
     const options = {
       headers: {'x-access-token': token},
@@ -110,22 +139,24 @@ const useUser = () => {
   return {postUser, getUserByToken, checkUsername, putUser, getUserById};
 };
 
+// Hook for media related functions
 const useMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
   const {update} = useContext(MainContext);
 
-  const fetchMedia = async () => {
+  // fetching media files and mapping them
+  const getMedia = async () => {
     setLoading(true);
     try {
       const json = await useTag().getFilesByTag(appId);
-      console.log('zzzzzzzzzzzzzzzzz', json);
       const media = await Promise.all(
         json.map(async (item) => {
           const response = await fetch(`${baseUrl}media/${item.file_id}`);
           return await response.json();
         })
       );
+      // state hook for storing the fetched media
       setMediaArray(media);
     } catch (error) {
       console.error(error);
@@ -134,10 +165,12 @@ const useMedia = () => {
     }
   };
 
+  // effect hook for refetching the media
   useEffect(() => {
-    fetchMedia();
+    getMedia();
   }, [update]);
 
+  // posting media
   const postMedia = async (formData, token) => {
     setLoading(true);
     const options = {
@@ -155,6 +188,7 @@ const useMedia = () => {
     return result;
   };
 
+  // updating media
   const putMedia = async (data, token, fileId) => {
     const options = {
       method: 'PUT',
@@ -167,6 +201,7 @@ const useMedia = () => {
     return await baseFetch(`${baseUrl}media/${fileId}`, options);
   };
 
+  // deleting media
   const deleteMedia = async (fileId, token) => {
     const options = {
       method: 'DELETE',
@@ -175,6 +210,7 @@ const useMedia = () => {
     return await baseFetch(`${baseUrl}media/${fileId}`, options);
   };
 
+  // search for media
   const searchMedia = async (data, token) => {
     const options = {
       method: 'POST',
@@ -188,7 +224,7 @@ const useMedia = () => {
   };
 
   return {
-    mediaArray: mediaArray,
+    mediaArray,
     postMedia,
     putMedia,
     deleteMedia,
@@ -197,6 +233,7 @@ const useMedia = () => {
   };
 };
 
+// Hook for tags related functions
 const useTag = () => {
   const postTag = async (tagData, token) => {
     const options = {
@@ -217,12 +254,35 @@ const useTag = () => {
   return {postTag, getFilesByTag};
 };
 
+// Comments hook
 const useComment = () => {
-  const [commentArray, setCommentArray] = useState([]);
   const getCommentsByPost = async (fileId) => {
     return await baseFetch(`${baseUrl}comments/file/${fileId}`);
   };
-  return {getCommentsByPost};
+
+  const postComment = async (formData, fileId, token) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+      body: JSON.stringify({file_id: fileId, comment: formData.comment}),
+    };
+    return await baseFetch(`${baseUrl}comments`, options);
+  };
+  const deleteComment = async (commentId, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {'x-access-token': token},
+    };
+    try {
+      return await baseFetch(`${baseUrl}comments/${commentId}`, options);
+    } catch (error) {
+      console.error('deleteComment hook error', error);
+    }
+  };
+  return {getCommentsByPost, postComment, deleteComment};
 };
 
 export {useLogin, useUser, useMedia, useTag, useComment};

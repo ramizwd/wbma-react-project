@@ -3,6 +3,7 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import {PropTypes} from 'prop-types';
 import PlusIcon from '../assets/svg/plus.svg';
 
+// Custom button component for posting media
 const PostButton = ({onPress}) => {
   return (
     <TouchableOpacity
