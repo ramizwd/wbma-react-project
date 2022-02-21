@@ -13,13 +13,13 @@ import {MainContext} from '../contexts/MainContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useTag, useMedia} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
-import {Card, Text, List} from '@ui-kitten/components';
-import CardContent from '../components/CardContent';
+import {Card, Text, List, Layout} from '@ui-kitten/components';
+import UserPost from '../components/UserPost';
 
-const Profile = ({navigation}) => {
+const Profile = ({navigation, userPost = true}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
   console.log('user:', user);
-  const {mediaArray} = useMedia();
+  const {mediaArray} = useMedia(userPost);
 
   const {getFilesByTag} = useTag();
   console.log('user:', user);
@@ -60,14 +60,13 @@ const Profile = ({navigation}) => {
         // resizeMode="contain"
       />
       <Text style={styles.uName}>Welcome back {user.username}!</Text>
-      <View style={styles.cardInfo}>
+      <Layout style={styles.cardInfo}>
         <Card>
           <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
 
           <Text style={styles.userInfo}>User email: {user.email}</Text>
-          <Text style={styles.userInfo}>User id: {user.user_id}</Text>
         </Card>
-      </View>
+      </Layout>
 
       <Icon
         name="account-edit"
@@ -96,12 +95,22 @@ const Profile = ({navigation}) => {
           ]);
         }}
       />
+
+      <List
+        style={styles.postList}
+        data={mediaArray}
+        keyExtractor={(item) => item.file_id.toString()}
+        renderItem={({item}) => (
+          <UserPost post={item} navigation={navigation} userPost={userPost} />
+        )}
+      ></List>
     </View>
   );
 };
 
 Profile.propTypes = {
   navigation: PropTypes.object,
+  userPost: PropTypes.bool,
 };
 
 const styles = StyleSheet.create({
@@ -122,8 +131,9 @@ const styles = StyleSheet.create({
   pfImage: {
     position: 'absolute',
     width: '25%',
-    height: '15%',
-    borderRadius: 100,
+    height: undefined,
+    aspectRatio: 1,
+    borderRadius: 400,
     top: '15%',
   },
   uName: {
@@ -143,15 +153,17 @@ const styles = StyleSheet.create({
   },
   cardInfo: {
     position: 'absolute',
-    top: '30%',
+    width: '100%',
+    top: '31%',
   },
   cardPost: {
     position: 'absolute',
     top: '45%',
   },
   postList: {
-    position: 'absolute',
-    top: '45%',
+    // position: 'absolute',
+    top: '42%',
+    width: '100%',
   },
 });
 export default Profile;

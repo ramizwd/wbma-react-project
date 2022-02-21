@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {View, Alert} from 'react-native';
+import {View, Alert, StyleSheet} from 'react-native';
 import {PropTypes} from 'prop-types';
 import {Button, Input, Card} from '@ui-kitten/components';
 import {useForm, Controller} from 'react-hook-form';
@@ -57,7 +57,7 @@ const Search = ({navigation}) => {
   );
 
   return (
-    <View>
+    <View style={styles.container}>
       <Card>
         <Controller
           control={control}
@@ -92,6 +92,18 @@ const Search = ({navigation}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    height: '100%',
+    // width: '100%',
+    paddingTop: 0,
+  },
+});
 
 Search.propTypes = {
   navigation: PropTypes.object,
