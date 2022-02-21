@@ -29,7 +29,7 @@ const LoginForm = () => {
       setUser(userData.user);
       setLoggedIn(true);
     } catch (error) {
-      Alert.alert('Error', error.message, [{text: 'ok'}]);
+      Alert.alert('Error', error.message);
       console.log(error);
     }
   };

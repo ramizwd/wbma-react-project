@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {TouchableWithoutFeedback, StyleSheet} from 'react-native';
+import {TouchableWithoutFeedback, StyleSheet, Alert} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {Input, Button, Layout} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -32,6 +32,7 @@ const RegisterForm = () => {
       const userData = await postUser(data);
       console.log(userData);
     } catch (error) {
+      Alert.alert('Error', error.message);
       console.log(error);
     }
   };
@@ -68,6 +69,7 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
+            autoCapitalize="words"
             placeholder="Insert full name"
             label="Full name"
             status={errors.full_name ? 'warning' : 'basic'}
@@ -82,7 +84,7 @@ const RegisterForm = () => {
         rules={{
           required: {value: true, message: 'Username is required.'},
           minLength: {
-            minLength: 3,
+            value: 3,
             message: 'Username has to be at least 3 characters long.',
           },
           validate: async (value) => {
@@ -104,6 +106,7 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
+            autoCapitalize="none"
             placeholder="Insert username*"
             label="Username"
             status={errors.username ? 'warning' : 'basic'}
@@ -128,6 +131,7 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
+            autoCapitalize="none"
             placeholder="Insert email*"
             label="Email"
             status={errors.email ? 'warning' : 'basic'}
@@ -153,6 +157,7 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
+            autoCapitalize="none"
             accessoryRight={renderIcon}
             secureTextEntry={secureTextEntry}
             placeholder="Insert password*"
@@ -183,6 +188,7 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
+            autoCapitalize="none"
             accessoryRight={renderIcon}
             secureTextEntry={secureTextEntry}
             placeholder="Insert password again*"
