@@ -30,7 +30,8 @@ const Profile = ({navigation}) => {
       const avatar = avatarArray.pop();
       setAvatar(uploadsUrl + avatar.filename);
     } catch (error) {
-      console.error(error.message);
+      // console.error(error.message);
+      setAvatar('http://placekitten.com/640');
       Alert.alert('Notice', 'Set profile pic please');
     }
   };
@@ -93,16 +94,15 @@ const Profile = ({navigation}) => {
           }}
         />
       </View>
-      <ScrollView>
-        <List
-          data={mediaArray}
-          style={styles.postList}
-          keyExtractor={(item) => item.file_id.toString()}
-          renderItem={({item}) => (
-            <CardContent post={item} navigation={navigation} />
-          )}
-        ></List>
-      </ScrollView>
+
+      {/* <List
+        data={mediaArray}
+        style={styles.postList}
+        keyExtractor={(item) => item.file_id.toString()}
+        renderItem={({item}) => (
+          <CardContent post={item} navigation={navigation} />
+        )}
+      ></List> */}
     </>
   );
 };
