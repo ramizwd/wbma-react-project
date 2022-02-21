@@ -35,6 +35,7 @@ const Upload = ({navigation}) => {
       title: '',
       description: '',
     },
+    mode: 'onBlur',
   });
 
   // Pick image/video from devices library using Image Picker
@@ -111,17 +112,24 @@ const Upload = ({navigation}) => {
     <KeyboardAvoidingView style={styles.container}>
       <Controller
         control={control}
-        rules={{required: true}}
+        rules={{
+          required: {value: true, message: 'Please enter a descriptive title.'},
+          minLength: {
+            value: 5,
+            message: 'The title has to be at least 5 characters long.',
+          },
+        }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
-            placeholder="Enter the title"
-            errorMessage={errors.title && 'This is required.'}
+            placeholder="Enter a descriptive title"
             style={[styles.title, styles.input]}
             textStyle={[styles.inputText]}
+            status={errors.title ? 'warning' : 'basic'}
+            caption={errors.title && errors.title.message}
           />
         )}
         name="title"
@@ -130,7 +138,6 @@ const Upload = ({navigation}) => {
         control={control}
         rules={{
           maxLength: 100,
-          required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
@@ -140,7 +147,7 @@ const Upload = ({navigation}) => {
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
-            placeholder="Description"
+            placeholder="Description (optional)"
             errorMessage={errors.description && 'This is required.'}
             textStyle={[styles.description, styles.inputText]}
           />
