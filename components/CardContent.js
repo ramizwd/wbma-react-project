@@ -10,6 +10,7 @@ import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
 import {Spinner} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
 import Avatar from './Avatar';
+import moment from 'moment';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
@@ -69,7 +70,6 @@ const CardContent = ({navigation, post}) => {
           <Text category="h6">{post.title}</Text>
         </View>
       </Layout>
-
       {!loading ? (
         <Image
           source={{uri: uploadsUrl + post.filename}}
@@ -80,6 +80,7 @@ const CardContent = ({navigation, post}) => {
           <Spinner />
         </Layout>
       )}
+      <Text style={styles.time}>{`${moment(post.time_added).fromNow()}`}</Text>
 
       <View>
         <Text>{post.description}</Text>
@@ -121,6 +122,10 @@ const styles = StyleSheet.create({
   headerContent: {
     paddingLeft: 10,
     flexDirection: 'column',
+  },
+  time: {
+    textAlign: 'right',
+    flexDirection: 'row-reverse',
   },
   image: {
     height: 250,

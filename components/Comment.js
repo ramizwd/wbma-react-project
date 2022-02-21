@@ -6,6 +6,7 @@ import {useUser} from '../hooks/ApiHooks';
 import Avatar from './Avatar';
 import {Button} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
+import moment from 'moment';
 
 // Component for individual comment. Takes comment prop.
 // Renders comments owners username and avatar, comment text and time when comment was added
@@ -38,20 +39,6 @@ const Comment = ({comment}) => {
     }
   }; */
 
-  // Something to format the date for now
-  const formatDate = (date) => {
-    const d = new Date(date);
-    const month = d.getMonth() + 1;
-    const day = d.getDate();
-    const year = d.getFullYear();
-    const hour = d.getHours() + 2;
-    const minute = d.getMinutes();
-
-    const formattedDate = `${day}.${month}.${year} ${hour}:${minute}`;
-
-    return formattedDate;
-  };
-
   // Fetch comments owner
   useEffect(() => {
     getCommentOwner();
@@ -66,9 +53,9 @@ const Comment = ({comment}) => {
       </View>
       <View>
         <Text>{comment.comment}</Text>
-        <Text
-          style={{textAlign: 'right', marginRight: 5}}
-        >{`Posted: ${formatDate(comment.time_added)}`}</Text>
+        <Text style={{textAlign: 'right', marginRight: 5}}>{`Posted: ${moment(
+          comment.time_added
+        ).fromNow()}`}</Text>
 
         {comment.user_id === user.user_id && (
           <Button
