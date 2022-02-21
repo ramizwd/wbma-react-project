@@ -94,15 +94,6 @@ const Profile = ({navigation}) => {
           }}
         />
       </View>
-
-      {/* <List
-        data={mediaArray}
-        style={styles.postList}
-        keyExtractor={(item) => item.file_id.toString()}
-        renderItem={({item}) => (
-          <CardContent post={item} navigation={navigation} />
-        )}
-      ></List> */}
     </>
   );
 };
