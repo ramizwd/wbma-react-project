@@ -13,9 +13,11 @@ import Login from '../views/Login';
 import Register from '../views/Register';
 import {MainContext} from '../contexts/MainContext';
 import Upload from '../views/Upload';
-import {ApplicationProvider} from '@ui-kitten/components';
+import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
 import ModifyProfile from '../views/ModifyProfile';
 import Single from '../views/Single';
+// import {EvaIconsPack} from '@ui-kitten/eva-icons';
+import {EvilIconsPack} from '../evil-icons';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -83,11 +85,15 @@ const StackScreen = () => {
 
 const DrawerNavigator = () => {
   return (
-    <ApplicationProvider {...eva} theme={eva.light}>
-      <NavigationContainer>
-        <StackScreen />
-      </NavigationContainer>
-    </ApplicationProvider>
+    <>
+      <IconRegistry icons={EvilIconsPack} />
+
+      <ApplicationProvider {...eva} theme={eva.light}>
+        <NavigationContainer>
+          <StackScreen />
+        </NavigationContainer>
+      </ApplicationProvider>
+    </>
   );
 };
 
