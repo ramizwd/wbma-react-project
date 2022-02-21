@@ -35,6 +35,7 @@ const Upload = ({navigation}) => {
       title: '',
       description: '',
     },
+    mode: 'onBlur',
   });
 
   const pickImage = async () => {
@@ -112,17 +113,24 @@ const Upload = ({navigation}) => {
     <KeyboardAvoidingView style={styles.container}>
       <Controller
         control={control}
-        rules={{required: true}}
+        rules={{
+          required: {value: true, message: 'Please enter a descriptive title.'},
+          minLength: {
+            minLength: 5,
+            message: 'The title has to be at least 5 characters long.',
+          },
+        }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
-            placeholder="Enter the title"
-            errorMessage={errors.title && 'This is required.'}
+            placeholder="Enter a descriptive title"
             style={[styles.title, styles.input]}
             textStyle={[styles.inputText]}
+            status={errors.title ? 'warning' : 'basic'}
+            caption={errors.title && errors.title.message}
           />
         )}
         name="title"

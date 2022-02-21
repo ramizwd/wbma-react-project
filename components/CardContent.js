@@ -93,7 +93,7 @@ const CardContent = ({navigation, post}) => {
         />
         <AntDesignIcon
           name="dislike2"
-          style={styles.icon}
+          style={[styles.icon, styles.reverseIcon]}
           size={25}
           onPress={() => console.log('Dislike clicked')}
         />
@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 250,
   },
-
   feedback: {
     flexDirection: 'row',
     marginTop: 20,
@@ -143,6 +142,9 @@ const styles = StyleSheet.create({
   icon: {
     color: 'black',
     marginRight: 10,
+  },
+  reverseIcon: {
+    transform: [{rotateY: '180deg'}],
   },
 });
 
