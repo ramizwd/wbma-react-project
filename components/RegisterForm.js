@@ -84,7 +84,7 @@ const RegisterForm = () => {
         rules={{
           required: {value: true, message: 'Username is required.'},
           minLength: {
-            minLength: 3,
+            value: 3,
             message: 'Username has to be at least 3 characters long.',
           },
           validate: async (value) => {

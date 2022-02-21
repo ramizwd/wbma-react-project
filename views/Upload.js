@@ -116,7 +116,7 @@ const Upload = ({navigation}) => {
         rules={{
           required: {value: true, message: 'Please enter a descriptive title.'},
           minLength: {
-            minLength: 5,
+            value: 5,
             message: 'The title has to be at least 5 characters long.',
           },
         }}
@@ -139,7 +139,6 @@ const Upload = ({navigation}) => {
         control={control}
         rules={{
           maxLength: 100,
-          required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
@@ -149,7 +148,7 @@ const Upload = ({navigation}) => {
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
-            placeholder="Description"
+            placeholder="Description (optional)"
             errorMessage={errors.description && 'This is required.'}
             textStyle={[styles.description, styles.inputText]}
           />
