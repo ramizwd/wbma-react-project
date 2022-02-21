@@ -22,7 +22,7 @@ const IconProvider = (name) => ({
   toReactElement: (props) => EvilIcon({name, ...props}),
 });
 
-function EvilIcon({name, style}) {
+function EvilIcon({name, style, color}) {
   const {height, tintColor, ...iconStyle} = StyleSheet.flatten(style);
-  return <Icon name={name} size={height} color={tintColor} style={iconStyle} />;
+  return <Icon name={name} size={height} color={color} style={iconStyle} />;
 }

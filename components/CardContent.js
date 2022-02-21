@@ -4,11 +4,11 @@ import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
 import {Text, Card, Layout, Spinner, Icon} from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import {useComment, useLikes, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import Avatar from './Avatar';
 import moment from 'moment';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
@@ -135,24 +135,21 @@ const CardContent = ({navigation, post}) => {
         <Text>{post.description}</Text>
       </Layout>
       <Layout style={styles.feedback}>
-        <Layout style={styles.icon}>
-          <EvilIcons
-            size={30}
-            name="heart"
-            color={likeColor}
-            onPress={() => {
-              liked ? removeLike() : createLike();
-            }}
-          />
+        <TouchableWithoutFeedback
+          style={styles.iconWithInfo}
+          onPress={() => {
+            liked ? removeLike() : createLike();
+          }}
+        >
+          <Icon style={styles.icon} name="heart" color={likeColor} />
           <Text>
             {likes.length > 1
               ? likes.length + ' likes'
               : likes.length + ' like'}
           </Text>
-        </Layout>
-
-        <Layout style={styles.icon}>
-          <EvilIcons size={30} color="#000" name="comment" />
+        </TouchableWithoutFeedback>
+        <Layout style={styles.iconWithInfo}>
+          <Icon style={styles.icon} color="#000" name="comment" />
           <Text>
             {comments.length > 1
               ? comments.length + ' comments'
@@ -193,13 +190,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20,
   },
-  icon: {
+  iconWithInfo: {
     flexDirection: 'row',
-    color: '#000',
     marginRight: 10,
   },
-  reverseIcon: {
-    transform: [{rotateY: '180deg'}],
+  icon: {
+    height: 30,
+    width: 30,
   },
 });
 
