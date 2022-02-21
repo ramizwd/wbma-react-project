@@ -235,8 +235,32 @@ const useComment = () => {
   return {getCommentsByPost, postComment, deleteComment};
 };
 
-// const useLikes = () => {
+const useLikes = () => {
+  const postLike = async (fileId, token) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+      body: JSON.stringify({file_id: fileId}),
+    };
+    return await baseFetch(`${baseUrl}favourites`, options);
+  };
 
-// }
+  const getLikesByFileId = async (fileId) => {
+    return await baseFetch(`${baseUrl}favourites/file/${fileId}`);
+  };
 
-export {useLogin, useUser, useMedia, useTag, useComment};
+  const deleteLike = async (fileId, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {'x-access-token': token},
+    };
+    return await baseFetch(`${baseUrl}favourites/file/${fileId}`, options);
+  };
+
+  return {postLike, getLikesByFileId, deleteLike};
+};
+
+export {useLogin, useUser, useMedia, useTag, useComment, useLikes};
