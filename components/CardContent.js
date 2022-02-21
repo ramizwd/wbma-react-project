@@ -1,29 +1,29 @@
-import {View, Image, StyleSheet} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  Card,
-  Layout,
-  Spinner,
-  Icon as EvilIcon,
-} from '@ui-kitten/components';
+import {Text, Card, Layout, Spinner, Icon} from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
+import {useComment, useLikes, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import Avatar from './Avatar';
 import moment from 'moment';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
 const CardContent = ({navigation, post}) => {
+  const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
+  const [comments, setComments] = useState([]);
+  const [likes, setLikes] = useState([]);
+  const [liked, setLiked] = useState(false);
   const {getUserById} = useUser();
   const {loading} = useMedia();
   const {getCommentsByPost} = useComment();
-  const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
-  const [comments, setComments] = useState([]);
   const {update} = useContext(MainContext);
+  const {getLikesByFileId, postLike, deleteLike} = useLikes();
+  const {user} = useContext(MainContext);
+  const [likeColor, setLikeColor] = useState('black');
 
   // fetching post owner data by ID and setting it to the posterOwner state hook
   const fetchOwner = async () => {
@@ -47,6 +47,45 @@ const CardContent = ({navigation, post}) => {
     }
   };
 
+  // fetch likes by file ID, set the like array to the like hook, check if user liked
+  // then set Liked hook to true and so the color
+  const fetchLikes = async () => {
+    try {
+      const likes = await getLikesByFileId(post.file_id);
+      setLikes(likes);
+      likes.forEach((like) => {
+        like.user_id === user.user_id && setLiked(true);
+        setLikeColor('red');
+      });
+    } catch (error) {
+      console.error('fetching likes error: ', error);
+    }
+  };
+
+  // create a like, set color of like button to red
+  const createLike = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const res = await postLike(post.file_id, token);
+      res && setLiked(true);
+      res && setLikeColor('red');
+    } catch (error) {
+      console.error('create like error: ', error);
+    }
+  };
+
+  // remove the like
+  const removeLike = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const res = await deleteLike(post.file_id, token);
+      res && setLiked(false);
+      res && setLikeColor('#000');
+    } catch (error) {
+      console.error('removing like error', error);
+    }
+  };
+
   // fetch both owner and avatar on component render
   useEffect(() => {
     fetchOwner();
@@ -56,6 +95,11 @@ const CardContent = ({navigation, post}) => {
   useEffect(() => {
     fetchComments();
   }, [update]);
+
+  // fetch likes on render
+  useEffect(() => {
+    fetchLikes();
+  }, [liked]);
 
   return (
     <Card
@@ -68,10 +112,10 @@ const CardContent = ({navigation, post}) => {
     >
       <Layout style={styles.postHeader}>
         <Avatar userAvatar={post.user_id} />
-        <View style={styles.headerContent}>
+        <Layout style={styles.headerContent}>
           <Text category="h6">{postOwner.username}</Text>
           <Text category="h6">{post.title}</Text>
-        </View>
+        </Layout>
       </Layout>
       {!loading ? (
         <Image
@@ -87,28 +131,35 @@ const CardContent = ({navigation, post}) => {
         post.time_added
       ).fromNow()}`}</Text>
 
-      <View>
+      <Layout>
         <Text>{post.description}</Text>
-      </View>
-      <View style={styles.feedback}>
-        <EvilIcon
-          name="heart"
-          style={[styles.icon, styles.reverseIcon]}
-          size={25}
-          onPress={() => console.log('Dislike clicked')}
-        />
-        <EvilIcon
-          name="comment"
-          style={styles.icon}
-          size={25}
-          onPress={() => console.log('comments clicked')}
-        />
-        <Text>
-          {comments.length > 1
-            ? comments.length + ' comments'
-            : comments.length + ' comment'}
-        </Text>
-      </View>
+      </Layout>
+      <Layout style={styles.feedback}>
+        <Layout style={styles.icon}>
+          <EvilIcons
+            size={30}
+            name="heart"
+            color={likeColor}
+            onPress={() => {
+              liked ? removeLike() : createLike();
+            }}
+          />
+          <Text>
+            {likes.length > 1
+              ? likes.length + ' likes'
+              : likes.length + ' like'}
+          </Text>
+        </Layout>
+
+        <Layout style={styles.icon}>
+          <EvilIcons size={30} color="#000" name="comment" />
+          <Text>
+            {comments.length > 1
+              ? comments.length + ' comments'
+              : comments.length + ' comment'}
+          </Text>
+        </Layout>
+      </Layout>
     </Card>
   );
 };
@@ -143,10 +194,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   icon: {
-    color: 'black',
+    flexDirection: 'row',
+    color: '#000',
     marginRight: 10,
-    width: 32,
-    height: 32,
   },
   reverseIcon: {
     transform: [{rotateY: '180deg'}],
