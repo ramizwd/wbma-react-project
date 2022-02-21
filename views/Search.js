@@ -1,8 +1,7 @@
-import React, {useContext, useEffect, useState, useCallback} from 'react';
-import {View, Alert, ScrollView, StyleSheet} from 'react-native';
+import React, {useState, useCallback} from 'react';
+import {View, Alert} from 'react-native';
 import {PropTypes} from 'prop-types';
 import {Button, Input, Card} from '@ui-kitten/components';
-import {MainContext} from '../contexts/MainContext';
 import {useForm, Controller} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useMedia} from '../hooks/ApiHooks';

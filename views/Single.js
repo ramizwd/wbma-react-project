@@ -1,53 +1,37 @@
 import {View, Text, Image} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {Avatar, Card, List, ListItem} from '@ui-kitten/components';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {Button, Card, Input, List} from '@ui-kitten/components';
 import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import {useComment, useTag, useUser} from '../hooks/ApiHooks';
+import {useComment} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
-import CardContent from '../components/CardContent';
+import {Controller, useForm} from 'react-hook-form';
+import Comment from '../components/Comment';
+import {MainContext} from '../contexts/MainContext';
+import Avatar from '../components/Avatar';
 
+// View for single post
 const Single = ({route}) => {
-  const {file} = route.params;
-  const videoRef = useRef(null);
-  const {getUserById} = useUser();
-  const {getFilesByTag} = useTag();
-  const {getCommentsByPost} = useComment();
-
-  const [owner, setOwner] = useState({username: 'Fetching the user...'});
-  const [avatar, setAvatar] = useState('https://placekitten.com/200/300');
   const [comments, setComments] = useState([]);
+  const {file, owner} = route.params;
+  const {getCommentsByPost, postComment} = useComment();
+  const {setUpdate, update} = useContext(MainContext);
+  const videoRef = useRef(null);
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({
+    defaultValues: {
+      comment: '',
+    },
+  });
 
-  const getOwner = async () => {
-    try {
-      console.log('file', file);
-      const token = await AsyncStorage.getItem('token');
-      const userData = await getUserById(file.user_id, token);
-      setOwner(userData);
-
-      const d = await getCommentsByPost(file.file_id);
-      console.log('comments', d);
-    } catch (error) {
-      console.error('getOwner error', error);
-    }
-  };
-
-  const getAvatar = async () => {
-    try {
-      const avatars = await getFilesByTag(`avatar_${file.user_id}`);
-      if (avatars.length === 0) {
-        return;
-      }
-      const avatar = avatars.pop();
-      setAvatar(uploadsUrl + avatar.filename);
-    } catch (error) {
-      console.error('getAvatar error', error);
-    }
-  };
-
+  // Get comments for the post
   const getComments = async () => {
     try {
+      console.log('get comments');
       const comments = await getCommentsByPost(file.file_id);
       setComments(comments);
     } catch (error) {
@@ -55,16 +39,28 @@ const Single = ({route}) => {
     }
   };
 
+  // Add new comment to the post
+  const createComment = async (data) => {
+    const formData = new FormData();
+    formData.append('comment', data.comment);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      await postComment(data, file.file_id, token);
+      setUpdate(update + 1);
+    } catch (error) {
+      console.error('postComment error', error);
+    }
+  };
+
+  // Getting comments when new comment is added
   useEffect(() => {
-    getOwner();
-    getAvatar();
     getComments();
-  }, []);
+  }, [update]);
 
   return (
     <Card>
       <View style={{flexDirection: 'row'}}>
-        <Avatar source={{uri: avatar}} size={'large'} />
+        <Avatar userAvatar={file.user_id} />
         <Text>{`By: ${owner.username}`}</Text>
       </View>
       <View>
@@ -86,10 +82,36 @@ const Single = ({route}) => {
         )}
       </View>
       <View>
-        <Text>Comments</Text>
+        <Text>{`Comments (${comments.length})`}</Text>
+        <Controller
+          control={control}
+          rules={{
+            maxLength: 100,
+            required: true,
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              onBlur={onBlur}
+              multiline={true}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder="Write a comment"
+              errorMessage={errors.description && 'This is required.'}
+            />
+          )}
+          name="comment"
+        />
+        <Button onPress={handleSubmit(createComment)}>Send</Button>
+
         <List
-          data={comments}
-          renderItem={({item}) => <ListItem title={item.comment} />}
+          style={{maxHeight: '70%'}}
+          data={comments.reverse()}
+          renderItem={({item}) => (
+            <View>
+              <Comment comment={item} />
+            </View>
+          )}
         ></List>
       </View>
     </Card>

@@ -1,21 +1,27 @@
 import {View, Image, StyleSheet} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Text, Card, Avatar, Layout, Button} from '@ui-kitten/components';
-import LikeIcon from '../assets/svg/like.svg';
-import DislikeIcon from '../assets/svg/dislike.svg';
-import CommentIcon from '../assets/svg/comment.svg';
+import {Text, Card, Layout} from '@ui-kitten/components';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useTag, useUser} from '../hooks/ApiHooks';
-// import DefaultAvatar from '../assets/svg/userProfile.svg';
+import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
+import {Spinner} from '@ui-kitten/components';
+import {MainContext} from '../contexts/MainContext';
+import Avatar from './Avatar';
 
+// Media post content component that takes navigation and post props and renders poster's avatar,
+// username and the post information
 const CardContent = ({navigation, post}) => {
   const {getUserById} = useUser();
-  const {getFilesByTag} = useTag();
-  const [postOwner, setPostOwner] = useState({});
-  const [avatar, setAvatar] = useState();
+  const {loading} = useMedia();
+  const {getCommentsByPost} = useComment();
+  const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
+  const [comments, setComments] = useState([]);
+  const {update} = useContext(MainContext);
 
+  // fetching post owner data by ID and setting it to the posterOwner state hook
   const fetchOwner = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -27,44 +33,82 @@ const CardContent = ({navigation, post}) => {
     }
   };
 
-  const fetchAvatar = async () => {
+  // fetch comments for comment count
+  const fetchComments = async () => {
     try {
-      const avatarArray = await getFilesByTag(`avatar_${post.user_id}`);
-      if (avatarArray.length === 0) return;
-      const avatar = avatarArray.pop();
-      setAvatar(uploadsUrl + avatar.filename);
+      const comments = await getCommentsByPost(post.file_id);
+      setComments(comments);
     } catch (error) {
-      console.error('avatar fetch error', error);
+      console.error('fetching comments error', error);
     }
   };
 
+  // fetch both owner and avatar on component render
   useEffect(() => {
     fetchOwner();
-    fetchAvatar();
   }, []);
+
+  // update the comments count when a new comment is posted
+  useEffect(() => {
+    fetchComments();
+  }, [update]);
 
   return (
     <Card
       onPress={() => {
-        navigation.navigate('Single post', {file: post});
+        navigation.navigate('Single post', {
+          file: post,
+          owner: postOwner,
+        });
       }}
     >
       <Layout style={styles.postHeader}>
-        <Avatar source={{uri: avatar}} size="large" />
+        <Avatar userAvatar={post.user_id} />
         <View style={styles.headerContent}>
           <Text category="h6">{postOwner.username}</Text>
           <Text category="h6">{post.title}</Text>
         </View>
       </Layout>
 
-      <Image source={{uri: uploadsUrl + post.filename}} style={styles.image} />
+      {!loading ? (
+        <Image
+          source={{uri: uploadsUrl + post.filename}}
+          style={styles.image}
+        />
+      ) : (
+        <Layout style={styles.spinner}>
+          <Spinner />
+        </Layout>
+      )}
+
       <View>
         <Text>{post.description}</Text>
       </View>
       <View style={styles.feedback}>
-        <LikeIcon style={styles.icon} />
-        <DislikeIcon style={styles.icon} />
-        <CommentIcon style={styles.icon} />
+        <AntDesignIcon
+          name="like2"
+          style={styles.icon}
+          size={25}
+          onPress={() => console.log('Like clicked')}
+        />
+        <AntDesignIcon
+          name="dislike2"
+          style={styles.icon}
+          size={25}
+          onPress={() => console.log('Dislike clicked')}
+        />
+
+        <FontistoIcon
+          name="comment"
+          style={styles.icon}
+          size={20}
+          onPress={() => console.log('comments clicked')}
+        />
+        <Text>
+          {comments.length > 1
+            ? comments.length + ' comments'
+            : comments.length + ' comment'}
+        </Text>
       </View>
     </Card>
   );
@@ -85,13 +129,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 8,
   },
+  spinner: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    justifyContent: 'center',
+    height: 250,
+  },
+
   feedback: {
     flexDirection: 'row',
     marginTop: 20,
   },
   icon: {
-    height: 20,
-    width: 20,
     color: 'black',
     marginRight: 10,
   },
