@@ -80,22 +80,9 @@ const UserPost = ({navigation, post}) => {
       }}
     >
       <Layout style={styles.postHeader}>
-        {/* <Avatar userAvatar={post.user_id} /> */}
         <View style={styles.headerContent}>
-          {/* <Text category="h6">{postOwner.username}</Text> */}
           <Text category="h6">{post.title}</Text>
         </View>
-        {/* <FontistoIcon
-          name="comment"
-          style={styles.icon}
-          size={20}
-          onPress={() => console.log('comments clicked')}
-        /> */}
-        {/* <Text>
-          {comments.length > 1
-            ? comments.length + ' comments'
-            : comments.length + ' comment'}
-        </Text> */}
       </Layout>
 
       {!loading ? (
@@ -113,30 +100,6 @@ const UserPost = ({navigation, post}) => {
         <Text>{post.description}</Text>
       </View>
       <View style={styles.feedback}>
-        {/* <AntDesignIcon
-          name="like2"
-          style={styles.icon}
-          size={25}
-          onPress={() => console.log('Like clicked')}
-        />
-        <AntDesignIcon
-          name="dislike2"
-          style={styles.icon}
-          size={25}
-          onPress={() => console.log('Dislike clicked')}
-        />
-
-        <FontistoIcon
-          name="comment"
-          style={styles.icon}
-          size={20}
-          onPress={() => console.log('comments clicked')}
-        />
-        <Text>
-          {comments.length > 1
-            ? comments.length + ' comments'
-            : comments.length + ' comment'}
-        </Text> */}
         <Layout style={styles.postHeader}>
           <Button
             onPress={() => {
