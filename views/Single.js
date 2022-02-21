@@ -11,6 +11,7 @@ import Comment from '../components/Comment';
 import {MainContext} from '../contexts/MainContext';
 import Avatar from '../components/Avatar';
 
+// View for single post
 const Single = ({route}) => {
   const [comments, setComments] = useState([]);
   const {file, owner} = route.params;
@@ -27,8 +28,10 @@ const Single = ({route}) => {
     },
   });
 
+  // Get comments for the post
   const getComments = async () => {
     try {
+      console.log('get comments');
       const comments = await getCommentsByPost(file.file_id);
       setComments(comments);
     } catch (error) {
@@ -36,6 +39,7 @@ const Single = ({route}) => {
     }
   };
 
+  // Add new comment to the post
   const createComment = async (data) => {
     const formData = new FormData();
     formData.append('comment', data.comment);
@@ -48,6 +52,7 @@ const Single = ({route}) => {
     }
   };
 
+  // Getting comments when new comment is added
   useEffect(() => {
     getComments();
   }, [update]);
@@ -100,7 +105,8 @@ const Single = ({route}) => {
         <Button onPress={handleSubmit(createComment)}>Send</Button>
 
         <List
-          data={comments}
+          style={{maxHeight: '70%'}}
+          data={comments.reverse()}
           renderItem={({item}) => (
             <View>
               <Comment comment={item} />

@@ -1,16 +1,25 @@
 import React, {useContext, useEffect} from 'react';
-import {View, Image, StyleSheet, ImageBackground, Alert} from 'react-native';
+import {
+  View,
+  Image,
+  StyleSheet,
+  ImageBackground,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useTag} from '../hooks/ApiHooks';
+import {useTag, useMedia} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
-import {Card, Text} from '@ui-kitten/components';
+import {Card, Text, List} from '@ui-kitten/components';
+import CardContent from '../components/CardContent';
 
 const Profile = ({navigation}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
   console.log('user:', user);
+  const {mediaArray} = useMedia();
 
   const {getFilesByTag} = useTag();
   console.log('user:', user);
@@ -21,7 +30,8 @@ const Profile = ({navigation}) => {
       const avatar = avatarArray.pop();
       setAvatar(uploadsUrl + avatar.filename);
     } catch (error) {
-      console.error(error.message);
+      // console.error(error.message);
+      setAvatar('http://placekitten.com/640');
       Alert.alert('Notice', 'Set profile pic please');
     }
   };
@@ -136,6 +146,10 @@ const styles = StyleSheet.create({
     top: '30%',
   },
   cardPost: {
+    position: 'absolute',
+    top: '45%',
+  },
+  postList: {
     position: 'absolute',
     top: '45%',
   },
