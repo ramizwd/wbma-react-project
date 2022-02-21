@@ -2,12 +2,15 @@ import {View, Image, StyleSheet} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Text, Card, Layout} from '@ui-kitten/components';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import FontistoIcon from 'react-native-vector-icons/Fontisto';
+import {
+  Text,
+  Card,
+  Layout,
+  Spinner,
+  Icon as EvilIcon,
+} from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
-import {Spinner} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
 import Avatar from './Avatar';
 import moment from 'moment';
@@ -80,29 +83,24 @@ const CardContent = ({navigation, post}) => {
           <Spinner />
         </Layout>
       )}
-      <Text style={styles.time}>{`${moment(post.time_added).fromNow()}`}</Text>
+      <Text category="p2" style={styles.time}>{`${moment(
+        post.time_added
+      ).fromNow()}`}</Text>
 
       <View>
         <Text>{post.description}</Text>
       </View>
       <View style={styles.feedback}>
-        <AntDesignIcon
-          name="like2"
-          style={styles.icon}
-          size={25}
-          onPress={() => console.log('Like clicked')}
-        />
-        <AntDesignIcon
-          name="dislike2"
+        <EvilIcon
+          name="heart"
           style={[styles.icon, styles.reverseIcon]}
           size={25}
           onPress={() => console.log('Dislike clicked')}
         />
-
-        <FontistoIcon
+        <EvilIcon
           name="comment"
           style={styles.icon}
-          size={20}
+          size={25}
           onPress={() => console.log('comments clicked')}
         />
         <Text>
@@ -147,6 +145,8 @@ const styles = StyleSheet.create({
   icon: {
     color: 'black',
     marginRight: 10,
+    width: 32,
+    height: 32,
   },
   reverseIcon: {
     transform: [{rotateY: '180deg'}],

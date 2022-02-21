@@ -219,6 +219,7 @@ const useComment = () => {
     };
     return await baseFetch(`${baseUrl}comments`, options);
   };
+
   const deleteComment = async (commentId, token) => {
     const options = {
       method: 'DELETE',
@@ -230,7 +231,12 @@ const useComment = () => {
       console.error('deleteComment hook error', error);
     }
   };
+
   return {getCommentsByPost, postComment, deleteComment};
 };
+
+// const useLikes = () => {
+
+// }
 
 export {useLogin, useUser, useMedia, useTag, useComment};
