@@ -1,5 +1,11 @@
 import React, {useContext, useState} from 'react';
-import {Alert, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import {useForm, Controller} from 'react-hook-form';
@@ -7,11 +13,13 @@ import {Button, Input, Avatar, Card} from '@ui-kitten/components';
 import {PropTypes} from 'prop-types';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import * as ImagePicker from 'expo-image-picker';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ModifyProfile = ({navigation}) => {
+  const [type, setType] = useState('image');
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
   const {user, setUser, avatar, setAvatar} = useContext(MainContext);
   const {checkUsername, putUser} = useUser();
-  const [type, setType] = useState('image');
   const {postTag} = useTag();
   const {postMedia} = useMedia();
 
@@ -24,7 +32,7 @@ const ModifyProfile = ({navigation}) => {
     defaultValues: {
       username: user.username,
       password: '',
-      confirmPassword: '',
+      confirm_password: '',
       email: user.email,
       full_name: user.full_name,
     },
@@ -79,7 +87,7 @@ const ModifyProfile = ({navigation}) => {
     console.log('choosing formData:', formData);
 
     try {
-      delete data.confirmPassword;
+      delete data.confirm_password;
       if (data.password === '') {
         delete data.password;
       }
@@ -91,9 +99,25 @@ const ModifyProfile = ({navigation}) => {
         navigation.navigate('Profile');
       }
     } catch (error) {
+      Alert.alert('Error', error.message);
       console.error(error);
     }
   };
+  // toggle password visibility hook
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  // render the proper password icon
+  const renderIcon = (props) => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      <Icon
+        {...props}
+        name={secureTextEntry ? 'eye-off-outline' : 'eye-outline'}
+        style={{fontSize: 20}}
+      />
+    </TouchableWithoutFeedback>
+  );
 
   return (
     <ScrollView>
@@ -104,10 +128,10 @@ const ModifyProfile = ({navigation}) => {
         <Controller
           control={control}
           rules={{
-            required: {value: true, message: 'This is required.'},
+            required: {value: true, message: 'Username is required.'},
             minLength: {
-              value: 3,
-              message: 'Username has to be at least 3 characters.',
+              minLength: 3,
+              message: 'Username has to be at least 3 characters long.',
             },
             validate: async (value) => {
               try {
@@ -115,7 +139,7 @@ const ModifyProfile = ({navigation}) => {
                 if (available || user.username === value) {
                   return true;
                 } else {
-                  return 'Username is already taken.';
+                  return 'Username is taken.';
                 }
               } catch (error) {
                 throw new Error(error.message);
@@ -128,8 +152,9 @@ const ModifyProfile = ({navigation}) => {
               onChangeText={onChange}
               value={value}
               autoCapitalize="none"
-              placeholder="Username"
-              errorMessage={errors.username && errors.username.message}
+              placeholder="Insert username*"
+              status={errors.username ? 'warning' : 'basic'}
+              caption={errors.username && errors.username.message}
             />
           )}
           name="username"
@@ -138,9 +163,10 @@ const ModifyProfile = ({navigation}) => {
         <Controller
           control={control}
           rules={{
-            minLength: {
-              value: 5,
-              message: 'Password has to be at least 5 characters.',
+            pattern: {
+              value: /(?=.*[\p{Lu}])(?=.*[0-9]).{5,}/u,
+              message:
+                'Password must match at least the following criteria: 5 characters, uppercase, a number.',
             },
           }}
           render={({field: {onChange, onBlur, value}}) => (
@@ -149,9 +175,11 @@ const ModifyProfile = ({navigation}) => {
               onChangeText={onChange}
               value={value}
               autoCapitalize="none"
-              secureTextEntry={true}
+              accessoryRight={renderIcon}
+              secureTextEntry={secureTextEntry}
               placeholder="Password"
-              errorMessage={errors.password && errors.password.message}
+              status={errors.password ? 'warning' : 'basic'}
+              caption={errors.password && errors.password.message}
             />
           )}
           name="password"
@@ -175,23 +203,25 @@ const ModifyProfile = ({navigation}) => {
               onChangeText={onChange}
               value={value}
               autoCapitalize="none"
-              secureTextEntry={true}
-              placeholder="Confirm Password"
-              errorMessage={
-                errors.confirmPassword && errors.confirmPassword.message
+              accessoryRight={renderIcon}
+              secureTextEntry={secureTextEntry}
+              placeholder="Conform password again"
+              status={errors.confirm_password ? 'warning' : 'basic'}
+              caption={
+                errors.confirm_password && errors.confirm_password.message
               }
             />
           )}
-          name="confirmPassword"
+          name="confirm_password"
         />
 
         <Controller
           control={control}
           rules={{
-            required: {value: true, message: 'This is required.'},
+            required: {value: true, message: 'Email is required.'},
             pattern: {
               value: /\S+@\S+\.\S+$/,
-              message: 'Has to be valid email.',
+              message: 'Email has to be valid.',
             },
           }}
           render={({field: {onChange, onBlur, value}}) => (
@@ -200,8 +230,9 @@ const ModifyProfile = ({navigation}) => {
               onChangeText={onChange}
               value={value}
               autoCapitalize="none"
-              placeholder="Email"
-              errorMessage={errors.email && errors.email.message}
+              placeholder="Insert email*"
+              status={errors.email ? 'warning' : 'basic'}
+              caption={errors.email && errors.email.message}
             />
           )}
           name="email"
@@ -211,8 +242,8 @@ const ModifyProfile = ({navigation}) => {
           control={control}
           rules={{
             minLength: {
-              value: 3,
-              message: 'Full name has to be at least 3 characters.',
+              value: 2,
+              message: 'Full name has to be at least 2 characters long.',
             },
           }}
           render={({field: {onChange, onBlur, value}}) => (
@@ -222,13 +253,14 @@ const ModifyProfile = ({navigation}) => {
               value={value}
               autoCapitalize="words"
               placeholder="Full name"
-              errorMessage={errors.full_name && errors.full_name.message}
+              status={errors.full_name ? 'warning' : 'basic'}
+              caption={errors.full_name && errors.full_name.message}
             />
           )}
           name="full_name"
         />
 
-        <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+        <Button onPress={handleSubmit(onSubmit)}>Save</Button>
       </Card>
     </ScrollView>
   );
