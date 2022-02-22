@@ -5,11 +5,22 @@ import {Button, Input, Card} from '@ui-kitten/components';
 import {useTag, useMedia, useUser} from '../hooks/ApiHooks';
 import Avatar from '../components/Avatar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useForm, Controller} from 'react-hook-form';
 
 const UserProfile = ({navigation, route}) => {
   const {file} = route.params;
   const {getUserById} = useUser();
   const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
+
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({
+    defaultValues: {
+      message: '',
+    },
+  });
 
   const fetchOwner = async () => {
     try {
@@ -26,6 +37,8 @@ const UserProfile = ({navigation, route}) => {
     fetchOwner();
   }, []);
 
+  const onSubmit = async (data) => {};
+
   return (
     <Card style={styles.container}>
       <Avatar userAvatar={file.user_id} style={styles.pfImage} />
@@ -33,15 +46,24 @@ const UserProfile = ({navigation, route}) => {
       <Text>Username: {postOwner.username}</Text>
       <Text>Full name:{postOwner.full_name}</Text>
       <Text>Email: {postOwner.email}</Text>
-      <Input
-        style={styles.input}
-        multiline={true}
-        autoCapitalize="none"
-        placeholder="Message....."
-        textStyle={[styles.text]}
+      <Controller
+        control={control}
+        rules={{
+          required: {value: true, message: 'This is required.'},
+        }}
+        render={({field: {onChange, onBlur, value}}) => (
+          <Input
+            style={styles.input}
+            multiline={true}
+            autoCapitalize="none"
+            placeholder="Message....."
+            textStyle={[styles.text]}
+          />
+        )}
+        name="message"
       />
 
-      <Button>Send message</Button>
+      <Button onPress={handleSubmit(onSubmit)}>Send message</Button>
     </Card>
   );
 };
