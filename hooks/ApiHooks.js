@@ -1,6 +1,7 @@
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {appId, baseUrl} from '../utils/variables';
+import {baseUrl} from '../utils/variables';
+import Constants from 'expo-constants';
 
 // Generic function for fetching and handling error
 const baseFetch = async (url, options = {}) => {
@@ -97,7 +98,9 @@ const useMedia = () => {
   const getMedia = async () => {
     setLoading(true);
     try {
-      const json = await useTag().getFilesByTag(appId);
+      const json = await useTag().getFilesByTag(
+        Constants.manifest.extra.pvtAppId
+      );
       const media = await Promise.all(
         json.map(async (item) => {
           const response = await fetch(`${baseUrl}media/${item.file_id}`);
