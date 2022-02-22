@@ -2,7 +2,7 @@ import {View, Image, StyleSheet} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Text, Card, Layout} from '@ui-kitten/components';
+import {Text, Card, Layout, Button} from '@ui-kitten/components';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -65,7 +65,14 @@ const CardContent = ({navigation, post}) => {
       <Layout style={styles.postHeader}>
         <Avatar userAvatar={post.user_id} />
         <View style={styles.headerContent}>
-          <Text category="h6">{postOwner.username}</Text>
+          <Button
+            onPress={() => navigation.navigate('User profile', {file: post})}
+            appearance="ghost"
+            status="success"
+          >
+            <Text category="h6">{postOwner.username}</Text>
+          </Button>
+
           <Text category="h6">{post.title}</Text>
         </View>
       </Layout>
