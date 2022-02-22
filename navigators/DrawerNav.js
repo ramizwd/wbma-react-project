@@ -17,6 +17,7 @@ import {ApplicationProvider} from '@ui-kitten/components';
 import ModifyProfile from '../views/ModifyProfile';
 import Single from '../views/Single';
 import ModifyPost from '../views/ModifyPost';
+import UserProfile from '../views/UserProfile';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -68,6 +69,10 @@ const StackScreen = () => {
           <Stack.Screen
             name="Modify post"
             component={ModifyPost}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="User profile"
+            component={UserProfile}
           ></Stack.Screen>
         </>
       ) : (
