@@ -102,6 +102,7 @@ const UserPost = ({navigation, post}) => {
       <View style={styles.feedback}>
         <Layout style={styles.postHeader}>
           <Button
+            style={styles.icon}
             onPress={() => {
               navigation.navigate('Modify post', {file: post});
             }}
@@ -109,6 +110,7 @@ const UserPost = ({navigation, post}) => {
             Modify
           </Button>
           <Button
+            style={styles.icon}
             onPress={() => {
               doDelete();
             }}
@@ -150,7 +152,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: 'black',
-    marginRight: 5,
+    marginRight: 10,
   },
 });
 
