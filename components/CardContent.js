@@ -4,26 +4,21 @@ import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
 import {Text, Card, Layout, Spinner, Icon} from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
-import {useComment, useLikes, useMedia, useUser} from '../hooks/ApiHooks';
+import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import Avatar from './Avatar';
 import moment from 'moment';
+import Likes from './Likes';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
 const CardContent = ({navigation, post}) => {
   const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
   const [comments, setComments] = useState([]);
-  const [likes, setLikes] = useState([]);
-  const [liked, setLiked] = useState(false);
   const {getUserById} = useUser();
   const {loading} = useMedia();
   const {getCommentsByPost} = useComment();
   const {update} = useContext(MainContext);
-  const {getLikesByFileId, postLike, deleteLike} = useLikes();
-  const {user} = useContext(MainContext);
-  const [likeColor, setLikeColor] = useState('black');
 
   // fetching post owner data by ID and setting it to the posterOwner state hook
   const fetchOwner = async () => {
@@ -47,45 +42,6 @@ const CardContent = ({navigation, post}) => {
     }
   };
 
-  // fetch likes by file ID, set the like array to the like hook, check if user liked
-  // then set Liked hook to true and so the color
-  const fetchLikes = async () => {
-    try {
-      const likes = await getLikesByFileId(post.file_id);
-      setLikes(likes);
-      likes.forEach((like) => {
-        like.user_id === user.user_id && setLiked(true);
-        setLikeColor('red');
-      });
-    } catch (error) {
-      console.error('fetching likes error: ', error);
-    }
-  };
-
-  // create a like, set color of like button to red
-  const createLike = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const res = await postLike(post.file_id, token);
-      res && setLiked(true);
-      res && setLikeColor('red');
-    } catch (error) {
-      console.error('create like error: ', error);
-    }
-  };
-
-  // remove the like
-  const removeLike = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const res = await deleteLike(post.file_id, token);
-      res && setLiked(false);
-      res && setLikeColor('#000');
-    } catch (error) {
-      console.error('removing like error', error);
-    }
-  };
-
   // fetch both owner and avatar on component render
   useEffect(() => {
     fetchOwner();
@@ -95,11 +51,6 @@ const CardContent = ({navigation, post}) => {
   useEffect(() => {
     fetchComments();
   }, [update]);
-
-  // fetch likes on render
-  useEffect(() => {
-    fetchLikes();
-  }, [liked]);
 
   return (
     <Card
@@ -135,19 +86,7 @@ const CardContent = ({navigation, post}) => {
         <Text>{post.description}</Text>
       </Layout>
       <Layout style={styles.feedback}>
-        <TouchableWithoutFeedback
-          style={styles.iconWithInfo}
-          onPress={() => {
-            liked ? removeLike() : createLike();
-          }}
-        >
-          <Icon style={styles.icon} name="heart" color={likeColor} />
-          <Text>
-            {likes.length > 1
-              ? likes.length + ' likes'
-              : likes.length + ' like'}
-          </Text>
-        </TouchableWithoutFeedback>
+        <Likes file={post} />
         <Layout style={styles.iconWithInfo}>
           <Icon style={styles.icon} color="#000" name="comment" />
           <Text>

@@ -1,6 +1,6 @@
 import {View, Text, Image} from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Button, Card, Input, List} from '@ui-kitten/components';
+import {Button, Card, Input, Layout, List} from '@ui-kitten/components';
 import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
@@ -10,6 +10,7 @@ import {Controller, useForm} from 'react-hook-form';
 import Comment from '../components/Comment';
 import {MainContext} from '../contexts/MainContext';
 import Avatar from '../components/Avatar';
+import Likes from '../components/Likes';
 
 // View for single post
 const Single = ({route}) => {
@@ -33,7 +34,7 @@ const Single = ({route}) => {
     try {
       console.log('get comments');
       const comments = await getCommentsByPost(file.file_id);
-      setComments(comments);
+      setComments(comments.reverse());
     } catch (error) {
       console.error('getComments error', error);
     }
@@ -81,6 +82,9 @@ const Single = ({route}) => {
           ></Video>
         )}
       </View>
+      <Layout>
+        <Likes file={file} />
+      </Layout>
       <View>
         <Text>{`Comments (${comments.length})`}</Text>
         <Controller
@@ -106,7 +110,7 @@ const Single = ({route}) => {
 
         <List
           style={{maxHeight: '70%'}}
-          data={comments.reverse()}
+          data={comments}
           renderItem={({item}) => (
             <View>
               <Comment comment={item} />
