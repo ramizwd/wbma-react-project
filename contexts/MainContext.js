@@ -8,6 +8,7 @@ const MainProvider = ({children}) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({});
   const [update, setUpdate] = useState(0);
+  const [likeUpdate, setLikeUpdate] = useState(0);
   const [avatar, setAvatar] = useState('../assets/defaultAvatar.png');
 
   return (
@@ -21,6 +22,8 @@ const MainProvider = ({children}) => {
         setUpdate,
         avatar,
         setAvatar,
+        likeUpdate,
+        setLikeUpdate,
       }}
     >
       {children}
