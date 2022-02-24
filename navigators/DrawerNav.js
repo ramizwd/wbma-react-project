@@ -6,6 +6,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PropTypes from 'prop-types';
 import {
   ApplicationProvider,
   IconRegistry,
@@ -14,9 +15,10 @@ import {
   Text,
   Layout,
   IndexPath,
+  Icon,
 } from '@ui-kitten/components';
-// import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import {EvilIconsPack} from '../evil-icons';
+import {IonIconsPack} from '../ion-icons';
 
 import Single from '../views/Single';
 import Avatar from '../components/Avatar';
@@ -33,6 +35,30 @@ import Upload from '../views/Upload';
 
 const Stack = createNativeStackNavigator();
 const {Navigator, Screen} = createDrawerNavigator();
+
+const HomeIcon = (props) => (
+  <Icon name="home-outline" pack="ionIcons" style={styles.icons} />
+);
+
+const ProfileIcon = (props) => (
+  <Icon name="person-outline" pack="ionIcons" style={styles.icons} />
+);
+
+const ChatIcon = (props) => (
+  <Icon name="chatbubbles-outline" pack="ionIcons" style={styles.icons} />
+);
+
+const SearchIcon = (props) => (
+  <Icon name="search-outline" pack="ionIcons" style={styles.icons} />
+);
+
+const SettingsIcon = (props) => (
+  <Icon name="settings-outline" pack="ionIcons" style={styles.icons} />
+);
+
+const LogoutIcon = (props) => (
+  <Icon name="log-out-outline" pack="ionIcons" style={{height: 20}} />
+);
 
 const DrawerContent = ({navigation, state}) => {
   const {setLoggedIn, user} = useContext(MainContext);
@@ -70,24 +96,46 @@ const DrawerContent = ({navigation, state}) => {
         header={Header}
         selectedIndex={new IndexPath(state.index)}
         onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
+        appearance="noDivider"
       >
-        <DrawerItem title="Home" />
-        <DrawerItem title="Profile" />
-        <DrawerItem title="Messaging" />
-        <DrawerItem title="Notifications" />
-        <DrawerItem title="Explore" />
-        <DrawerItem title="Settings" />
+        <DrawerItem
+          title="Home"
+          style={styles.drawerItem}
+          accessoryLeft={HomeIcon}
+        />
+        <DrawerItem
+          title="Profile"
+          style={styles.drawerItem}
+          accessoryLeft={ProfileIcon}
+        />
+        <DrawerItem
+          title="Messaging"
+          style={styles.drawerItem}
+          accessoryLeft={ChatIcon}
+        />
+        <DrawerItem title="Notifications" style={styles.drawerItem} />
+        <DrawerItem
+          title="Explore"
+          style={styles.drawerItem}
+          accessoryLeft={SearchIcon}
+        />
+        <DrawerItem
+          title="Settings"
+          style={styles.drawerItem}
+          accessoryLeft={SettingsIcon}
+        />
       </Drawer>
       <DrawerItem
         title="Log out"
         style={{paddingBottom: 40}}
         onPress={onLogout}
+        accessoryLeft={LogoutIcon}
       />
     </>
   );
 };
 
-const DrawerScreen = () => (
+const DrawerScreen = (props) => (
   <Navigator
     initialRouteName="Home"
     screenOptions={{
@@ -149,7 +197,7 @@ const StackScreen = () => {
 const DrawerNavigator = () => {
   return (
     <>
-      <IconRegistry icons={EvilIconsPack} />
+      <IconRegistry icons={[EvilIconsPack, IonIconsPack]} />
 
       <ApplicationProvider {...eva} theme={eva.light}>
         <NavigationContainer>
@@ -163,20 +211,32 @@ const DrawerNavigator = () => {
 const styles = StyleSheet.create({
   header: {
     height: 200,
-    paddingHorizontal: 15,
     justifyContent: 'center',
   },
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 15,
   },
   profileName: {
     marginHorizontal: 10,
   },
   backgroundImg: {
-    width: 250,
-    height: 200,
+    width: 280,
+    height: 300,
+  },
+  drawerItem: {
+    paddingTop: 17,
+    paddingBottom: 17,
+  },
+  icons: {
+    height: 20,
   },
 });
+
+DrawerContent.propTypes = {
+  navigation: PropTypes.object,
+  state: PropTypes.object,
+};
 
 export default DrawerNavigator;

@@ -1,11 +1,10 @@
 import {StyleSheet} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {useLikes} from '../hooks/ApiHooks';
 import {PropTypes} from 'prop-types';
-import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Icon, Text} from '@ui-kitten/components';
+import {Button, Icon} from '@ui-kitten/components';
 
 const Likes = ({file}) => {
   const {user} = useContext(MainContext);
@@ -14,6 +13,7 @@ const Likes = ({file}) => {
   const [likes, setLikes] = useState([]);
   const [likeColor, setLikeColor] = useState('black');
   const {setLikeUpdate, likeUpdate} = useContext(MainContext);
+  const pulseIconRef = useRef();
 
   // fetch likes by file ID, set the like array to the like hook, check if user liked
   // then set Liked hook to true and so the color
@@ -60,34 +60,38 @@ const Likes = ({file}) => {
     }
   };
 
+  const renderPulseIcon = (props) => (
+    <Icon
+      ref={pulseIconRef}
+      color={likeColor}
+      animation="pulse"
+      name="heart"
+      style={styles.icon}
+    />
+  );
+
   // fetch likes on render
   useEffect(() => {
     fetchLikes();
   }, [likeUpdate]);
 
   return (
-    <TouchableWithoutFeedback
-      style={styles.iconWithInfo}
+    <Button
       onPress={() => {
         liked ? removeLike() : createLike();
+        pulseIconRef.current.startAnimation();
       }}
+      appearance="ghost"
+      style={styles.button}
+      accessoryLeft={renderPulseIcon}
+      status="basic"
     >
-      <Icon style={styles.icon} name="heart" color={likeColor} />
-      <Text>
-        {likes.length > 1 ? likes.length + ' likes' : likes.length + ' like'}
-      </Text>
-    </TouchableWithoutFeedback>
+      {likes.length > 1 ? likes.length + ' likes' : likes.length + ' like'}
+    </Button>
   );
 };
+
 const styles = StyleSheet.create({
-  feedback: {
-    flexDirection: 'row',
-    marginTop: 20,
-  },
-  iconWithInfo: {
-    flexDirection: 'row',
-    marginRight: 10,
-  },
   icon: {
     height: 30,
     width: 30,
@@ -97,4 +101,5 @@ const styles = StyleSheet.create({
 Likes.propTypes = {
   file: PropTypes.object,
 };
+
 export default Likes;
