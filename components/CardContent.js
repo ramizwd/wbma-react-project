@@ -2,7 +2,7 @@ import {Image, StyleSheet} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Text, Card, Layout, Spinner, Icon} from '@ui-kitten/components';
+import {Text, Card, Layout, Spinner, Icon, Button} from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -52,6 +52,10 @@ const CardContent = ({navigation, post}) => {
     fetchComments();
   }, [update]);
 
+  const renderCommentIcon = (props) => (
+    <Icon style={styles.icon} color="#000" name="comment" />
+  );
+
   return (
     <Card
       onPress={() => {
@@ -87,14 +91,21 @@ const CardContent = ({navigation, post}) => {
       </Layout>
       <Layout style={styles.feedback}>
         <Likes file={post} />
-        <Layout style={styles.iconWithInfo}>
-          <Icon style={styles.icon} color="#000" name="comment" />
-          <Text>
-            {comments.length > 1
-              ? comments.length + ' comments'
-              : comments.length + ' comment'}
-          </Text>
-        </Layout>
+        <Button
+          onPress={() => {
+            navigation.navigate('Single post', {
+              file: post,
+              owner: postOwner,
+            });
+          }}
+          appearance="ghost"
+          status="basic"
+          accessoryLeft={renderCommentIcon}
+        >
+          {comments.length > 1
+            ? comments.length + ' comments'
+            : comments.length + ' comment'}
+        </Button>
       </Layout>
     </Card>
   );
@@ -128,10 +139,6 @@ const styles = StyleSheet.create({
   feedback: {
     flexDirection: 'row',
     marginTop: 20,
-  },
-  iconWithInfo: {
-    flexDirection: 'row',
-    marginRight: 10,
   },
   icon: {
     height: 30,
