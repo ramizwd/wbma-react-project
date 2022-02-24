@@ -1,11 +1,11 @@
-import {Text, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {useLikes} from '../hooks/ApiHooks';
 import {PropTypes} from 'prop-types';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Icon} from '@ui-kitten/components';
+import {Icon, Text} from '@ui-kitten/components';
 
 const Likes = ({file}) => {
   const {user} = useContext(MainContext);
