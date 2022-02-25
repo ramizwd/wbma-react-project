@@ -26,12 +26,13 @@ import ModifyProfile from '../views/ModifyProfile';
 import Home from '../views/Home';
 import Profile from '../views/Profile';
 import Messaging from '../views/Messaging';
-import Notifications from '../views/Notifications';
 import Search from '../views/Search';
 import Settings from '../views/Search';
 import Login from '../views/Login';
 import Register from '../views/Register';
 import Upload from '../views/Upload';
+import ModifyPost from '../views/ModifyPost';
+import UserProfile from '../views/UserProfile';
 
 const Stack = createNativeStackNavigator();
 const {Navigator, Screen} = createDrawerNavigator();
@@ -113,7 +114,6 @@ const DrawerContent = ({navigation, state}) => {
           style={styles.drawerItem}
           accessoryLeft={ChatIcon}
         />
-        <DrawerItem title="Notifications" style={styles.drawerItem} />
         <DrawerItem
           title="Explore"
           style={styles.drawerItem}
@@ -153,7 +153,6 @@ const DrawerScreen = (props) => (
     <Screen name="Home" component={Home} />
     <Screen name="Profile" component={Profile} />
     <Screen name="Messaging" component={Messaging} />
-    <Screen name="Notifications" component={Notifications} />
     <Screen name="Explore" component={Search} />
     <Screen name="Settings" component={Settings} />
   </Navigator>
@@ -177,6 +176,14 @@ const StackScreen = () => {
             component={ModifyProfile}
           ></Stack.Screen>
           <Stack.Screen name="Single post" component={Single}></Stack.Screen>
+          <Stack.Screen
+            name="Modify post"
+            component={ModifyPost}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="User profile"
+            component={UserProfile}
+          ></Stack.Screen>
         </>
       ) : (
         <Stack.Screen

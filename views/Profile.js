@@ -1,36 +1,26 @@
 import React, {useContext, useEffect} from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  ImageBackground,
-  Alert,
-  ScrollView,
-} from 'react-native';
+import {View, Image, StyleSheet, ImageBackground, Alert} from 'react-native';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useTag, useMedia} from '../hooks/ApiHooks';
+import {useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
-import {Card, Text, List} from '@ui-kitten/components';
-import CardContent from '../components/CardContent';
+import {Card as Cards, Text, Layout} from '@ui-kitten/components';
+import Card from '../components/Card';
 
+// Profile view that takes navigation props can display user's general information including avatar, user full name ,user's email, and user's post history, besides user can also modify his/her profile from this view
 const Profile = ({navigation}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
-  console.log('user:', user);
-  const {mediaArray} = useMedia();
-
   const {getFilesByTag} = useTag();
-  console.log('user:', user);
 
+  // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
   const fetchAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
       const avatar = avatarArray.pop();
       setAvatar(uploadsUrl + avatar.filename);
     } catch (error) {
-      // console.error(error.message);
       setAvatar('http://placekitten.com/640');
       Alert.alert('Notice', 'Set profile pic please');
     }
@@ -39,17 +29,16 @@ const Profile = ({navigation}) => {
   useEffect(() => {
     fetchAvatar();
   }, []);
+
   return (
     <View style={styles.container}>
-      {/* <TouchableOpacity> */}
       <ImageBackground
         source={{
           uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGUJD0DgCxdTDAbvk6u3gVm25AqOS6Ksnt9Q&usqp=CAU',
         }}
         style={styles.bgImage}
-        // resizeMode="contain"
       />
-      {/* </TouchableOpacity> */}
+
       <Image
         source={
           avatar === undefined
@@ -57,17 +46,17 @@ const Profile = ({navigation}) => {
             : {uri: avatar}
         }
         style={styles.pfImage}
-        // resizeMode="contain"
       />
-      <Text style={styles.uName}>Welcome back {user.username}!</Text>
-      <View style={styles.cardInfo}>
-        <Card>
+      <Text style={styles.uName}>
+        Welcome back {user.full_name ? user.full_name : user.username}!
+      </Text>
+      <Layout style={styles.cardInfo}>
+        <Cards>
           <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
 
           <Text style={styles.userInfo}>User email: {user.email}</Text>
-          <Text style={styles.userInfo}>User id: {user.user_id}</Text>
-        </Card>
-      </View>
+        </Cards>
+      </Layout>
 
       <Icon
         name="account-edit"
@@ -96,12 +85,12 @@ const Profile = ({navigation}) => {
           ]);
         }}
       />
+      <Text style={styles.text}>My post history:</Text>
+      <Layout style={styles.postList}>
+        <Card navigation={navigation} userPost={true} />
+      </Layout>
     </View>
   );
-};
-
-Profile.propTypes = {
-  navigation: PropTypes.object,
 };
 
 const styles = StyleSheet.create({
@@ -122,8 +111,9 @@ const styles = StyleSheet.create({
   pfImage: {
     position: 'absolute',
     width: '25%',
-    height: '15%',
-    borderRadius: 100,
+    height: undefined,
+    aspectRatio: 1,
+    borderRadius: 400,
     top: '15%',
   },
   uName: {
@@ -143,15 +133,26 @@ const styles = StyleSheet.create({
   },
   cardInfo: {
     position: 'absolute',
-    top: '30%',
+    width: '100%',
+    alignItems: 'center',
+    top: '31%',
   },
-  cardPost: {
+  text: {
     position: 'absolute',
-    top: '45%',
+    left: '5%',
+    fontSize: 20,
+    top: '43%',
   },
   postList: {
     position: 'absolute',
-    top: '45%',
+    top: '48%',
+    height: '52%',
+    width: '100%',
   },
 });
+
+Profile.propTypes = {
+  navigation: PropTypes.object,
+};
+
 export default Profile;

@@ -4,7 +4,7 @@ import {MainContext} from '../contexts/MainContext';
 import {useLikes} from '../hooks/ApiHooks';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Button, Icon} from '@ui-kitten/components';
+import {Button, Icon, Text} from '@ui-kitten/components';
 
 const Likes = ({file}) => {
   const {user} = useContext(MainContext);
@@ -86,7 +86,11 @@ const Likes = ({file}) => {
       accessoryLeft={renderPulseIcon}
       status="basic"
     >
-      {likes.length > 1 ? likes.length + ' likes' : likes.length + ' like'}
+      {(props) => (
+        <Text {...props} style={{color: 'black'}}>
+          {likes.length > 1 ? likes.length + ' likes' : likes.length + ' like'}
+        </Text>
+      )}
     </Button>
   );
 };

@@ -15,6 +15,7 @@ import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// ModifyProfile view that takes navigation props can modify user's profile including username, password, email, full name and avatar.
 const ModifyProfile = ({navigation}) => {
   const [type, setType] = useState('image');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -38,7 +39,7 @@ const ModifyProfile = ({navigation}) => {
     },
     mode: 'onBlur',
   });
-
+  // choosing image form device
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -52,6 +53,7 @@ const ModifyProfile = ({navigation}) => {
     }
   };
 
+  // submit form date by using postMedia and postTag from ApiHooks
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
     console.log('on Submit data:', data);
@@ -83,8 +85,6 @@ const ModifyProfile = ({navigation}) => {
     } catch (error) {
       console.error(error.message);
     }
-
-    console.log('choosing formData:', formData);
 
     try {
       delete data.confirm_password;
