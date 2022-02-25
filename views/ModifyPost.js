@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia} from '../hooks/ApiHooks';
 
+// ModifyPost view that takes navigation and route props can modify title and description of one of user's selected post
 const ModifyPost = ({navigation, route}) => {
   const {file} = route.params;
   const {update, setUpdate} = useContext(MainContext);
@@ -22,13 +23,12 @@ const ModifyPost = ({navigation, route}) => {
       description: file.description,
     },
   });
-
+  // submit form date by using putMedia from ApiHooks
   const onSubmit = async (data) => {
     console.log('data', data);
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await putMedia(data, token, file.file_id);
-      console.log('upload response', response);
       response &&
         Alert.alert(' ', 'Your post has been successfully modified!', [
           {

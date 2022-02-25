@@ -6,15 +6,15 @@ import PropTypes from 'prop-types';
 
 // Card component that renders the CardContent component inside a List component with the post data
 // fetching from useMedia hook
-const Card = ({navigation}) => {
-  const {mediaArray} = useMedia();
+const Card = ({navigation, userPost = false}) => {
+  const {mediaArray} = useMedia(userPost);
 
   return (
     <List
       data={mediaArray}
       keyExtractor={(item) => item.file_id.toString()}
       renderItem={({item}) => (
-        <CardContent post={item} navigation={navigation} />
+        <CardContent post={item} navigation={navigation} userPost={userPost} />
       )}
     ></List>
   );
@@ -22,6 +22,7 @@ const Card = ({navigation}) => {
 
 Card.propTypes = {
   navigation: PropTypes.object,
+  userPost: PropTypes.bool,
 };
 
 export default Card;
