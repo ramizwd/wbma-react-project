@@ -51,11 +51,7 @@ const Login = ({navigation}) => {
             appearance="ghost"
             status="success"
           >
-            {(evaProps) => (
-              <Text {...evaProps} style={styles.singUpBtn}>
-                Sign Up
-              </Text>
-            )}
+            <Text style={styles.singUpBtn}>Sign Up</Text>
           </Button>
         </Layout>
       </Layout>

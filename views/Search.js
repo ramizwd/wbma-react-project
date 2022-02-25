@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {View, Alert} from 'react-native';
+import {View, Alert, StyleSheet} from 'react-native';
 import {PropTypes} from 'prop-types';
 import {Button, Input, Card} from '@ui-kitten/components';
 import {useForm, Controller} from 'react-hook-form';
@@ -9,6 +9,7 @@ import CardContent from '../components/CardContent';
 import {List} from '@ui-kitten/components';
 import {useFocusEffect} from '@react-navigation/native';
 
+// Search view that takes navigation props can search posts by title or category
 const Search = ({navigation}) => {
   const {searchMedia} = useMedia();
   const [searchResult, setSearchResult] = useState([]);
@@ -25,6 +26,7 @@ const Search = ({navigation}) => {
   });
   const {mediaArray} = useMedia();
 
+  // submit search keyword by using searchMedia from ApiHooks
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
 
@@ -44,12 +46,12 @@ const Search = ({navigation}) => {
       console.error(error.message);
     }
   };
-
+  // reset search result and text input field
   const reset = () => {
     setSearchResult([]);
     setValue('title', '');
   };
-
+  // when user switch away from this view, call reset function
   useFocusEffect(
     useCallback(() => {
       return () => reset();
@@ -57,7 +59,7 @@ const Search = ({navigation}) => {
   );
 
   return (
-    <View>
+    <View style={styles.container}>
       <Card>
         <Controller
           control={control}
@@ -92,6 +94,15 @@ const Search = ({navigation}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    height: '100%',
+    paddingTop: 0,
+  },
+});
 
 Search.propTypes = {
   navigation: PropTypes.object,
