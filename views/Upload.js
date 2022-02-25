@@ -137,7 +137,10 @@ const Upload = ({navigation}) => {
       <Controller
         control={control}
         rules={{
-          maxLength: 100,
+          maxLength: {
+            value: 300,
+            message: 'Description maximum length is 300 characters.',
+          },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
@@ -148,7 +151,8 @@ const Upload = ({navigation}) => {
             value={value}
             autoCapitalize="none"
             placeholder="Description (optional)"
-            errorMessage={errors.description && 'This is required.'}
+            status={errors.description ? 'warning' : 'basic'}
+            caption={errors.description && errors.description.message}
             textStyle={[styles.description, styles.inputText]}
           />
         )}
@@ -184,9 +188,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   inputText: {fontSize: 18},
-  /* title: {
-    fontSize: 30,
-  }, */
+
   description: {
     minHeight: '30%',
     textAlignVertical: 'top',
