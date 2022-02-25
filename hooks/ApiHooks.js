@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {appId, baseUrl} from '../utils/variables';
+import {appId, baseUrl, tagDivider} from '../utils/variables';
 
 // Generic function for fetching and handling error
 const baseFetch = async (url, options = {}) => {
@@ -199,7 +199,11 @@ const useTag = () => {
     return await baseFetch(`${baseUrl}tags/${tag}`);
   };
 
-  return {postTag, getFilesByTag};
+  const getTagsByFileId = async (fileId) => {
+    return await baseFetch(`${baseUrl}tags/file/${fileId}`);
+  };
+
+  return {postTag, getFilesByTag, getTagsByFileId};
 };
 
 // Comments hook

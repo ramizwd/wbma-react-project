@@ -10,6 +10,7 @@ const MainProvider = ({children}) => {
   const [update, setUpdate] = useState(0);
   const [likeUpdate, setLikeUpdate] = useState(0);
   const [avatar, setAvatar] = useState('../assets/defaultAvatar.png');
+  const [tags, setTags] = useState([]);
 
   return (
     <MainContext.Provider
@@ -24,6 +25,8 @@ const MainProvider = ({children}) => {
         setAvatar,
         likeUpdate,
         setLikeUpdate,
+        tags,
+        setTags,
       }}
     >
       {children}

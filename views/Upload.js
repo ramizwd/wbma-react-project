@@ -11,10 +11,11 @@ import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import {appId} from '../utils/variables';
+import {appId, tagDivider} from '../utils/variables';
 import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag} from '../hooks/ApiHooks';
+import SelectTags from '../components/SelectTags';
 
 // This view is for uploading a new post
 const Upload = ({navigation}) => {
@@ -24,7 +25,7 @@ const Upload = ({navigation}) => {
   const [type, setType] = useState('');
   const {postMedia} = useMedia();
   const {postTag} = useTag();
-  const {update, setUpdate} = useContext(MainContext);
+  const {update, setUpdate, tags} = useContext(MainContext);
   const {
     control,
     handleSubmit,
@@ -40,6 +41,11 @@ const Upload = ({navigation}) => {
 
   // Pick image/video from devices library using Image Picker
   const pickFile = async () => {
+    const a = appId + '+javascript';
+    const b = a.split(appId);
+    console.log(b[1]);
+    console.log('a', a);
+    console.log('tag');
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -68,6 +74,7 @@ const Upload = ({navigation}) => {
 
   // When formdata is submitted
   const onSubmit = async (data) => {
+    console.log('onSubmit tag', tags);
     // File must be selected to submit the post
     if (!imageSelected) {
       Alert.alert('Please, select a file');
@@ -76,6 +83,7 @@ const Upload = ({navigation}) => {
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('description', data.description);
+    // formData.append('tag', data.tag);
     const filename = image.split('/').pop();
     let fileExtension = filename.split('.').pop();
     fileExtension = fileExtension === 'jpg' ? 'jpeg' : fileExtension;
@@ -87,6 +95,22 @@ const Upload = ({navigation}) => {
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await postMedia(formData, token);
+
+      // Go through selected tags array and post tags individually using postTag hook
+      for (let i = 0; i < tags.length; i++) {
+        if (!(tags[i] === 'None')) {
+          // Tagname which will be posted to server. AppId identifies this apps tags.
+          // Tag divider is used to split the tag from full tag
+          const fullTag = appId + tagDivider + tags[i];
+          await postTag(
+            {
+              file_id: response.file_id,
+              tag: fullTag,
+            },
+            token
+          );
+        }
+      }
 
       const tagResponse = await postTag(
         {file_id: response.file_id, tag: appId},
@@ -134,6 +158,9 @@ const Upload = ({navigation}) => {
         )}
         name="title"
       />
+
+      <SelectTags />
+
       <Controller
         control={control}
         rules={{
