@@ -1,4 +1,4 @@
-import {View, Image, StyleSheet} from 'react-native';
+import {View, Image, StyleSheet, Alert} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
@@ -13,13 +13,13 @@ import Avatar from './Avatar';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
-const CardContent = ({navigation, post}) => {
+const CardContent = ({navigation, post, userPost}) => {
   const {getUserById} = useUser();
-  const {loading} = useMedia();
+  const {loading, deleteMedia} = useMedia();
   const {getCommentsByPost} = useComment();
   const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
   const [comments, setComments] = useState([]);
-  const {update} = useContext(MainContext);
+  const {update, setUpdate} = useContext(MainContext);
 
   // fetching post owner data by ID and setting it to the posterOwner state hook
   const fetchOwner = async () => {
@@ -42,6 +42,25 @@ const CardContent = ({navigation, post}) => {
       console.error('fetching comments error', error);
     }
   };
+  // delete the selected post
+  const doDelete = () => {
+    Alert.alert('Delete', 'This file will be deleted!', [
+      {text: 'Cancel'},
+      {
+        text: 'OK',
+        onPress: async () => {
+          try {
+            const token = await AsyncStorage.getItem('token');
+            const response = await deleteMedia(post.file_id, token);
+            console.log('delete', response);
+            response && setUpdate(update + 1);
+          } catch (error) {
+            console.error(error);
+          }
+        },
+      },
+    ]);
+  };
 
   // fetch both owner and avatar on component render
   useEffect(() => {
@@ -63,15 +82,18 @@ const CardContent = ({navigation, post}) => {
       }}
     >
       <Layout style={styles.postHeader}>
-        <Avatar userAvatar={post.user_id} />
+        {!userPost && <Avatar userAvatar={post.user_id} />}
+
         <View style={styles.headerContent}>
-          <Button
-            onPress={() => navigation.navigate('User profile', {file: post})}
-            appearance="ghost"
-            status="success"
-          >
-            <Text category="h6">{postOwner.username}</Text>
-          </Button>
+          {!userPost && (
+            <Button
+              onPress={() => navigation.navigate('User profile', {file: post})}
+              appearance="ghost"
+              status="success"
+            >
+              <Text category="h6">{postOwner.username}</Text>
+            </Button>
+          )}
 
           <Text category="h6">{post.title}</Text>
         </View>
@@ -117,6 +139,26 @@ const CardContent = ({navigation, post}) => {
             : comments.length + ' comment'}
         </Text>
       </View>
+      {userPost && (
+        <Layout style={styles.button}>
+          <Button
+            style={styles.icon}
+            onPress={() => {
+              navigation.navigate('Modify post', {file: post});
+            }}
+          >
+            Modify
+          </Button>
+          <Button
+            style={styles.icon}
+            onPress={() => {
+              doDelete();
+            }}
+          >
+            Delete
+          </Button>
+        </Layout>
+      )}
     </Card>
   );
 };
@@ -151,11 +193,16 @@ const styles = StyleSheet.create({
     color: 'black',
     marginRight: 10,
   },
+  button: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
 });
 
 CardContent.propTypes = {
   post: PropTypes.object.isRequired,
   navigation: PropTypes.object,
+  userPost: PropTypes.bool,
 };
 
 export default CardContent;

@@ -1,12 +1,13 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Text, View, StyleSheet, Image, Alert} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Text, StyleSheet} from 'react-native';
 import {PropTypes} from 'prop-types';
 import {Button, Input, Card} from '@ui-kitten/components';
-import {useTag, useMedia, useUser} from '../hooks/ApiHooks';
+import {useUser} from '../hooks/ApiHooks';
 import Avatar from '../components/Avatar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useForm, Controller} from 'react-hook-form';
 
+// UserProfile view that takes navigation and route props and renders poster's info including ID, username, full name and email
 const UserProfile = ({navigation, route}) => {
   const {file} = route.params;
   const {getUserById} = useUser();
@@ -21,12 +22,11 @@ const UserProfile = ({navigation, route}) => {
       message: '',
     },
   });
-
+  // fetching post owner data by ID
   const fetchOwner = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
       const user = await getUserById(file.user_id, token);
-      console.log('user', user);
       setPostOwner(user);
     } catch (error) {
       console.error('fetching owner error', error);
