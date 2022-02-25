@@ -10,6 +10,7 @@ import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
 import {Spinner} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
 import Avatar from './Avatar';
+import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
@@ -82,17 +83,18 @@ const CardContent = ({navigation, post, userPost}) => {
       }}
     >
       <Layout style={styles.postHeader}>
-        {!userPost && <Avatar userAvatar={post.user_id} />}
-
+        <TouchableWithoutFeedback
+          onPress={() => navigation.navigate('User profile', {file: post})}
+        >
+          {!userPost && <Avatar userAvatar={post.user_id} />}
+        </TouchableWithoutFeedback>
         <View style={styles.headerContent}>
           {!userPost && (
-            <Button
+            <Text
               onPress={() => navigation.navigate('User profile', {file: post})}
-              appearance="ghost"
-              status="success"
             >
               <Text category="h6">{postOwner.username}</Text>
-            </Button>
+            </Text>
           )}
 
           <Text category="h6">{post.title}</Text>
