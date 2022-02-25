@@ -132,7 +132,7 @@ const CardContent = ({navigation, post, userPost}) => {
           accessoryLeft={renderCommentIcon}
         >
           {(props) => (
-            <Text {...props} style={{color: 'black'}}>
+            <Text {...props} style={{color: 'black', marginLeft: 10}}>
               {comments.length > 1
                 ? comments.length + ' comments'
                 : comments.length + ' comment'}

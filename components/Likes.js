@@ -87,7 +87,7 @@ const Likes = ({file}) => {
       status="basic"
     >
       {(props) => (
-        <Text {...props} style={{color: 'black'}}>
+        <Text {...props} style={{color: 'black', marginLeft: 10}}>
           {likes.length > 1 ? likes.length + ' likes' : likes.length + ' like'}
         </Text>
       )}

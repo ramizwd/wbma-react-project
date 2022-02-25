@@ -23,14 +23,14 @@ const ModifyPost = ({navigation, route}) => {
       description: file.description,
     },
   });
+
   // submit form date by using putMedia from ApiHooks
   const onSubmit = async (data) => {
-    console.log('data', data);
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await putMedia(data, token, file.file_id);
       response &&
-        Alert.alert(' ', 'Your post has been successfully modified!', [
+        Alert.alert('Success', 'Your post has been successfully modified!', [
           {
             text: 'Ok',
             onPress: () => {
@@ -43,11 +43,18 @@ const ModifyPost = ({navigation, route}) => {
       console.error(error);
     }
   };
+
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Controller
         control={control}
-        rules={{required: true}}
+        rules={{
+          required: {value: true, message: 'Please enter a descriptive title.'},
+          minLength: {
+            value: 5,
+            message: 'The title has to be at least 5 characters long.',
+          },
+        }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             onBlur={onBlur}
@@ -55,7 +62,8 @@ const ModifyPost = ({navigation, route}) => {
             value={value}
             autoCapitalize="none"
             placeholder="Enter the title"
-            errorMessage={errors.title && 'This is required.'}
+            status={errors.title ? 'warning' : 'basic'}
+            caption={errors.title && errors.title.message}
             style={[styles.title, styles.input]}
             textStyle={[styles.inputText]}
           />
@@ -65,8 +73,11 @@ const ModifyPost = ({navigation, route}) => {
       <Controller
         control={control}
         rules={{
-          maxLength: 300,
-          required: true,
+          required: {value: true, message: 'Please enter a description.'},
+          maxLength: {
+            value: 300,
+            message: 'Description maximum length is 300 characters.',
+          },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
@@ -77,17 +88,19 @@ const ModifyPost = ({navigation, route}) => {
             value={value}
             autoCapitalize="none"
             placeholder="Description"
-            errorMessage={errors.description && 'This is required.'}
+            status={errors.description ? 'warning' : 'basic'}
+            caption={errors.description && errors.description.message}
             textStyle={[styles.description, styles.inputText]}
           />
         )}
         name="description"
       />
+
       <Button
         onPress={handleSubmit(onSubmit)}
         style={[styles.button, {backgroundColor: '#26A96C', marginTop: 20}]}
       >
-        Submit
+        Save Changes
       </Button>
     </KeyboardAvoidingView>
   );
@@ -103,6 +116,12 @@ const styles = StyleSheet.create({
     width: '60%',
     borderRadius: 20,
     marginVertical: 10,
+  },
+  image: {
+    width: undefined,
+    height: '20%',
+    aspectRatio: 1,
+    resizeMode: 'contain',
   },
   inputText: {fontSize: 18},
   description: {
