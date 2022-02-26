@@ -3,16 +3,19 @@ import {SafeAreaView} from 'react-native';
 import Card from '../components/Card';
 import PostButton from '../components/PostButton';
 import {PropTypes} from 'prop-types';
+import {Layout} from '@ui-kitten/components';
 
 const Home = ({navigation}) => {
   return (
     <SafeAreaView>
-      <Card navigation={navigation} />
-      <PostButton
-        onPress={() => {
-          navigation.navigate('Upload post');
-        }}
-      />
+      <Layout style={{height: '100%'}}>
+        <Card navigation={navigation} />
+        <PostButton
+          onPress={() => {
+            navigation.navigate('Upload post');
+          }}
+        />
+      </Layout>
     </SafeAreaView>
   );
 };
