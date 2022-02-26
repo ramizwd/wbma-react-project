@@ -72,7 +72,7 @@ const RegisterForm = () => {
             autoCapitalize="words"
             placeholder="Insert full name"
             label="Full name"
-            status={errors.full_name ? 'warning' : 'basic'}
+            status={errors.full_name ? 'danger' : 'basic'}
             caption={errors.full_name && errors.full_name.message}
           />
         )}
@@ -109,7 +109,7 @@ const RegisterForm = () => {
             autoCapitalize="none"
             placeholder="Insert username*"
             label="Username"
-            status={errors.username ? 'warning' : 'basic'}
+            status={errors.username ? 'danger' : 'basic'}
             caption={errors.username && errors.username.message}
           />
         )}
@@ -134,7 +134,7 @@ const RegisterForm = () => {
             autoCapitalize="none"
             placeholder="Insert email*"
             label="Email"
-            status={errors.email ? 'warning' : 'basic'}
+            status={errors.email ? 'danger' : 'basic'}
             caption={errors.email && errors.email.message}
           />
         )}
@@ -162,7 +162,7 @@ const RegisterForm = () => {
             secureTextEntry={secureTextEntry}
             placeholder="Insert password*"
             label="Password"
-            status={errors.password ? 'warning' : 'basic'}
+            status={errors.password ? 'danger' : 'basic'}
             caption={errors.password && errors.password.message}
           />
         )}
@@ -193,7 +193,7 @@ const RegisterForm = () => {
             secureTextEntry={secureTextEntry}
             placeholder="Insert password again*"
             label="Confirm Password"
-            status={errors.confirm_password ? 'warning' : 'basic'}
+            status={errors.confirm_password ? 'danger' : 'basic'}
             caption={errors.confirm_password && errors.confirm_password.message}
           />
         )}

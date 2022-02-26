@@ -37,34 +37,34 @@ import UserProfile from '../views/UserProfile';
 const Stack = createNativeStackNavigator();
 const {Navigator, Screen} = createDrawerNavigator();
 
-const HomeIcon = (props) => (
+const HomeIcon = () => (
   <Icon name="home-outline" pack="ionIcons" style={styles.icons} />
 );
 
-const ProfileIcon = (props) => (
+const ProfileIcon = () => (
   <Icon name="person-outline" pack="ionIcons" style={styles.icons} />
 );
 
-const ChatIcon = (props) => (
+const ChatIcon = () => (
   <Icon name="chatbubbles-outline" pack="ionIcons" style={styles.icons} />
 );
 
-const SearchIcon = (props) => (
+const SearchIcon = () => (
   <Icon name="search-outline" pack="ionIcons" style={styles.icons} />
 );
 
-const SettingsIcon = (props) => (
+const SettingsIcon = () => (
   <Icon name="settings-outline" pack="ionIcons" style={styles.icons} />
 );
 
-const LogoutIcon = (props) => (
+const LogoutIcon = () => (
   <Icon name="log-out-outline" pack="ionIcons" style={{height: 20}} />
 );
 
 const DrawerContent = ({navigation, state}) => {
   const {setLoggedIn, user} = useContext(MainContext);
 
-  const Header = (props) => (
+  const Header = () => (
     <Layout style={styles.header}>
       <ImageBackground
         style={[styles.backgroundImg, styles.profileContainer]}
@@ -135,7 +135,7 @@ const DrawerContent = ({navigation, state}) => {
   );
 };
 
-const DrawerScreen = (props) => (
+const DrawerScreen = () => (
   <Navigator
     initialRouteName="Home"
     screenOptions={{

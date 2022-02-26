@@ -1,8 +1,8 @@
-import {Image, StyleSheet, Alert} from 'react-native';
+import {Image, StyleSheet, Alert, TouchableOpacity} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Text, Card, Layout, Spinner, Icon, Button} from '@ui-kitten/components';
+import {Text, Layout, Spinner, Icon, Button} from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -77,7 +77,8 @@ const CardContent = ({navigation, post, userPost}) => {
   );
 
   return (
-    <TouchableWithoutFeedback
+    <TouchableOpacity
+      activeOpacity={0.9}
       onPress={() => {
         navigation.navigate('Single post', {
           file: post,
@@ -85,7 +86,7 @@ const CardContent = ({navigation, post, userPost}) => {
         });
       }}
     >
-      <Layout style={{marginBottom: 10}}>
+      <Layout style={{marginBottom: 8}}>
         <Layout style={styles.postHeader}>
           <TouchableWithoutFeedback
             onPress={() => navigation.navigate('User profile', {file: post})}
@@ -112,11 +113,12 @@ const CardContent = ({navigation, post, userPost}) => {
             <Text category="h6">{post.title}</Text>
           </Layout>
         </Layout>
-        <Image
-          source={{uri: uploadsUrl + post.filename}}
-          style={styles.image}
-        />
-        {/* {!loading ? (
+        <Layout style={styles.postContent}>
+          <Image
+            source={{uri: uploadsUrl + post.filename}}
+            style={styles.image}
+          />
+          {/* {!loading ? (
         <Image
           source={{uri: uploadsUrl + post.filename}}
           style={styles.image}
@@ -126,12 +128,13 @@ const CardContent = ({navigation, post, userPost}) => {
           <Spinner />
         </Layout>
       )} */}
-        <Text category="p2" appearance="hint" style={styles.time}>
-          {moment(post.time_added).fromNow()}
-        </Text>
+          <Text category="p2" appearance="hint" style={styles.time}>
+            {moment(post.time_added).fromNow()}
+          </Text>
 
-        <Layout style={styles.desc}>
-          <Text numberOfLines={2}>{post.description}</Text>
+          <Layout style={styles.desc}>
+            <Text numberOfLines={2}>{post.description}</Text>
+          </Layout>
         </Layout>
         <Layout style={styles.feedback}>
           <Likes file={post} />
@@ -154,6 +157,7 @@ const CardContent = ({navigation, post, userPost}) => {
             )}
           </Button>
         </Layout>
+
         {userPost && (
           <Layout style={styles.buttonGroup}>
             <Button
@@ -175,7 +179,7 @@ const CardContent = ({navigation, post, userPost}) => {
           </Layout>
         )}
       </Layout>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 
@@ -189,32 +193,30 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     maxWidth: 300,
   },
-  time: {
-    textAlign: 'right',
+  postContent: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
     width: '95%',
   },
   image: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
     height: 250,
     maxWidth: 600,
-    width: '95%',
     marginBottom: 10,
     marginTop: 5,
     borderRadius: 8,
   },
+  time: {
+    textAlign: 'right',
+  },
   desc: {
     padding: 10,
-    width: '95%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
   },
-  spinner: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    justifyContent: 'center',
-    height: 250,
-  },
+  // spinner: {
+  //   marginLeft: 'auto',
+  //   marginRight: 'auto',
+  //   justifyContent: 'center',
+  //   height: 250,
+  // },
   feedback: {
     flexDirection: 'row',
     padding: 10,
