@@ -28,7 +28,7 @@ const Register = ({navigation}) => {
             >
               {(evaProps) => (
                 <Text {...evaProps} style={styles.singInBtn}>
-                  Sign in
+                  Sign In
                 </Text>
               )}
             </Button>

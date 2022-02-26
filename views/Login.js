@@ -46,12 +46,16 @@ const Login = ({navigation}) => {
         <Layout style={styles.singUp}>
           <Text style={styles.singUpText}>{"Don't have an account?"}</Text>
           <Button
-            style={styles.singUpBtn}
+            style={styles.singInBtn}
             onPress={() => navigation.navigate('Register')}
             appearance="ghost"
             status="success"
           >
-            <Text style={styles.singUpBtn}>Sign Up</Text>
+            {(evaProps) => (
+              <Text {...evaProps} style={styles.singUpBtn}>
+                Sign Up
+              </Text>
+            )}
           </Button>
         </Layout>
       </Layout>

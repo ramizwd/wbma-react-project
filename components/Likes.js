@@ -39,18 +39,16 @@ const Likes = ({file}) => {
     try {
       const token = await AsyncStorage.getItem('token');
       const res = await postLike(file.file_id, token);
-      res && setLiked(true);
-      res && setLikeColor('red');
-      res && setLikeUpdate(likeUpdate + 1);
+      if (res) {
+        setLiked(true);
+        setLikeColor('red');
+        setLikeUpdate(likeUpdate + 1);
+      }
     } catch (error) {
       Alert.alert(
         'Likes Error',
         'Error liking, please check network connectivity.',
-        [
-          {
-            text: 'OK',
-          },
-        ]
+        {text: 'OK'}
       );
       console.error('create like error: ', error);
     }
@@ -61,18 +59,16 @@ const Likes = ({file}) => {
     try {
       const token = await AsyncStorage.getItem('token');
       const res = await deleteLike(file.file_id, token);
-      res && setLiked(false);
-      res && setLikeColor('#000');
-      res && setLikeUpdate(likeUpdate + 1);
+      if (res) {
+        setLiked(false);
+        setLikeColor('#000');
+        setLikeUpdate(likeUpdate + 1);
+      }
     } catch (error) {
       Alert.alert(
         'Likes Error',
         'Error removing like, please check network connectivity.',
-        [
-          {
-            text: 'OK',
-          },
-        ]
+        {text: 'OK'}
       );
       console.error('removing like error', error);
     }

@@ -65,7 +65,7 @@ const LoginForm = () => {
             value={value}
             placeholder="Insert username"
             label="Username"
-            status={errors.username ? 'warning' : 'basic'}
+            status={errors.username ? 'danger' : 'basic'}
             caption={errors.username ? 'Please enter you username' : ''}
           />
         )}
@@ -87,7 +87,7 @@ const LoginForm = () => {
             secureTextEntry={secureTextEntry}
             placeholder="Insert password"
             label="Password"
-            status={errors.password ? 'warning' : 'basic'}
+            status={errors.password ? 'danger' : 'basic'}
             caption={errors.password ? 'Please enter your password' : ''}
           />
         )}
