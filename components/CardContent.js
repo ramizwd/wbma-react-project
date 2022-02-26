@@ -77,7 +77,7 @@ const CardContent = ({navigation, post, userPost}) => {
   );
 
   return (
-    <Card
+    <TouchableWithoutFeedback
       onPress={() => {
         navigation.navigate('Single post', {
           file: post,
@@ -85,32 +85,38 @@ const CardContent = ({navigation, post, userPost}) => {
         });
       }}
     >
-      <Layout style={styles.postHeader}>
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate('User profile', {file: post})}
-        >
-          {!userPost && <Avatar userAvatar={post.user_id} />}
-        </TouchableWithoutFeedback>
-        <Layout style={styles.headerContent}>
-          {!userPost && (
-            <TouchableWithoutFeedback
-              onPress={() => navigation.navigate('User profile', {file: post})}
-            >
-              {postOwner.full_name ? (
-                <Text category="p1">
-                  {postOwner.full_name}
-                  <Text appearance="hint"> @{postOwner.username}</Text>
-                </Text>
-              ) : (
-                <Text appearance="hint">@{postOwner.username}</Text>
-              )}
-            </TouchableWithoutFeedback>
-          )}
-          <Text category="h6">{post.title}</Text>
+      <Layout style={{marginBottom: 10}}>
+        <Layout style={styles.postHeader}>
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate('User profile', {file: post})}
+          >
+            {!userPost && <Avatar userAvatar={post.user_id} />}
+          </TouchableWithoutFeedback>
+          <Layout style={styles.headerContent}>
+            {!userPost && (
+              <TouchableWithoutFeedback
+                onPress={() =>
+                  navigation.navigate('User profile', {file: post})
+                }
+              >
+                {postOwner.full_name ? (
+                  <Text category="p1">
+                    {postOwner.full_name}
+                    <Text appearance="hint"> @{postOwner.username}</Text>
+                  </Text>
+                ) : (
+                  <Text appearance="hint">@{postOwner.username}</Text>
+                )}
+              </TouchableWithoutFeedback>
+            )}
+            <Text category="h6">{post.title}</Text>
+          </Layout>
         </Layout>
-      </Layout>
-      <Image source={{uri: uploadsUrl + post.filename}} style={styles.image} />
-      {/* {!loading ? (
+        <Image
+          source={{uri: uploadsUrl + post.filename}}
+          style={styles.image}
+        />
+        {/* {!loading ? (
         <Image
           source={{uri: uploadsUrl + post.filename}}
           style={styles.image}
@@ -120,61 +126,63 @@ const CardContent = ({navigation, post, userPost}) => {
           <Spinner />
         </Layout>
       )} */}
-      <Text category="p2" appearance="hint" style={styles.time}>
-        {moment(post.time_added).fromNow()}
-      </Text>
+        <Text category="p2" appearance="hint" style={styles.time}>
+          {moment(post.time_added).fromNow()}
+        </Text>
 
-      <Layout style={styles.desc}>
-        <Text numberOfLines={2}>{post.description}</Text>
-      </Layout>
-      <Layout style={styles.feedback}>
-        <Likes file={post} />
-        <Button
-          onPress={() => {
-            navigation.navigate('Single post', {
-              file: post,
-              owner: postOwner,
-            });
-          }}
-          appearance="ghost"
-          accessoryLeft={renderCommentIcon}
-        >
-          {(props) => (
-            <Text {...props} style={{color: 'black', marginLeft: 10}}>
-              {comments.length > 1
-                ? comments.length + ' comments'
-                : comments.length + ' comment'}
-            </Text>
-          )}
-        </Button>
-      </Layout>
-      {userPost && (
-        <Layout style={styles.buttonGroup}>
+        <Layout style={styles.desc}>
+          <Text numberOfLines={2}>{post.description}</Text>
+        </Layout>
+        <Layout style={styles.feedback}>
+          <Likes file={post} />
           <Button
-            style={styles.button}
             onPress={() => {
-              navigation.navigate('Modify post', {file: post});
+              navigation.navigate('Single post', {
+                file: post,
+                owner: postOwner,
+              });
             }}
+            appearance="ghost"
+            accessoryLeft={renderCommentIcon}
           >
-            Modify
-          </Button>
-          <Button
-            style={styles.button}
-            onPress={() => {
-              doDelete();
-            }}
-          >
-            Delete
+            {(props) => (
+              <Text {...props} style={{marginLeft: 10}}>
+                {comments.length > 1
+                  ? comments.length + ' comments'
+                  : comments.length + ' comment'}
+              </Text>
+            )}
           </Button>
         </Layout>
-      )}
-    </Card>
+        {userPost && (
+          <Layout style={styles.buttonGroup}>
+            <Button
+              style={styles.button}
+              onPress={() => {
+                navigation.navigate('Modify post', {file: post});
+              }}
+            >
+              Modify
+            </Button>
+            <Button
+              style={styles.button}
+              onPress={() => {
+                doDelete();
+              }}
+            >
+              Delete
+            </Button>
+          </Layout>
+        )}
+      </Layout>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   postHeader: {
     flexDirection: 'row',
+    padding: 10,
   },
   headerContent: {
     paddingLeft: 10,
@@ -183,17 +191,23 @@ const styles = StyleSheet.create({
   },
   time: {
     textAlign: 'right',
-    flexDirection: 'row-reverse',
+    width: '95%',
   },
   image: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
     height: 250,
-    width: undefined,
+    maxWidth: 600,
+    width: '95%',
     marginBottom: 10,
-    marginTop: 10,
+    marginTop: 5,
     borderRadius: 8,
   },
   desc: {
-    marginTop: 10,
+    padding: 10,
+    width: '95%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   spinner: {
     marginLeft: 'auto',
@@ -203,7 +217,7 @@ const styles = StyleSheet.create({
   },
   feedback: {
     flexDirection: 'row',
-    marginTop: 20,
+    padding: 10,
   },
   icon: {
     height: 30,
