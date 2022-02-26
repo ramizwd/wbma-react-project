@@ -65,7 +65,7 @@ const ModifyPost = ({navigation, route}) => {
             status={errors.title ? 'warning' : 'basic'}
             caption={errors.title && errors.title.message}
             style={[styles.title, styles.input]}
-            textStyle={[styles.inputText]}
+            textStyle={styles.inputText}
           />
         )}
         name="title"
@@ -75,8 +75,8 @@ const ModifyPost = ({navigation, route}) => {
         rules={{
           required: {value: true, message: 'Please enter a description.'},
           maxLength: {
-            value: 300,
-            message: 'Description maximum length is 300 characters.',
+            value: 1000,
+            message: 'Description maximum length is 1000 characters.',
           },
         }}
         render={({field: {onChange, onBlur, value}}) => (

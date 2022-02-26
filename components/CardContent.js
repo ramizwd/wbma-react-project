@@ -93,16 +93,24 @@ const CardContent = ({navigation, post, userPost}) => {
         </TouchableWithoutFeedback>
         <Layout style={styles.headerContent}>
           {!userPost && (
-            <Text
+            <TouchableWithoutFeedback
               onPress={() => navigation.navigate('User profile', {file: post})}
             >
-              <Text category="h6">{postOwner.username}</Text>
-            </Text>
+              {postOwner.full_name ? (
+                <Text category="p1">
+                  {postOwner.full_name}
+                  <Text appearance="hint"> @{postOwner.username}</Text>
+                </Text>
+              ) : (
+                <Text appearance="hint">@{postOwner.username}</Text>
+              )}
+            </TouchableWithoutFeedback>
           )}
           <Text category="h6">{post.title}</Text>
         </Layout>
       </Layout>
-      {!loading ? (
+      <Image source={{uri: uploadsUrl + post.filename}} style={styles.image} />
+      {/* {!loading ? (
         <Image
           source={{uri: uploadsUrl + post.filename}}
           style={styles.image}
@@ -111,13 +119,13 @@ const CardContent = ({navigation, post, userPost}) => {
         <Layout style={styles.spinner}>
           <Spinner />
         </Layout>
-      )}
-      <Text category="p2" style={styles.time}>
+      )} */}
+      <Text category="p2" appearance="hint" style={styles.time}>
         {moment(post.time_added).fromNow()}
       </Text>
 
-      <Layout>
-        <Text>{post.description}</Text>
+      <Layout style={styles.desc}>
+        <Text numberOfLines={2}>{post.description}</Text>
       </Layout>
       <Layout style={styles.feedback}>
         <Likes file={post} />
@@ -171,6 +179,7 @@ const styles = StyleSheet.create({
   headerContent: {
     paddingLeft: 10,
     flexDirection: 'column',
+    maxWidth: 300,
   },
   time: {
     textAlign: 'right',
@@ -182,6 +191,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
     borderRadius: 8,
+  },
+  desc: {
+    marginTop: 10,
   },
   spinner: {
     marginLeft: 'auto',
