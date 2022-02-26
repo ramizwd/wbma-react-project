@@ -141,9 +141,9 @@ const CardContent = ({navigation, post, userPost}) => {
         </Button>
       </Layout>
       {userPost && (
-        <Layout style={styles.button}>
+        <Layout style={styles.buttonGroup}>
           <Button
-            style={styles.icon}
+            style={styles.button}
             onPress={() => {
               navigation.navigate('Modify post', {file: post});
             }}
@@ -151,7 +151,7 @@ const CardContent = ({navigation, post, userPost}) => {
             Modify
           </Button>
           <Button
-            style={styles.icon}
+            style={styles.button}
             onPress={() => {
               doDelete();
             }}
@@ -198,6 +198,10 @@ const styles = StyleSheet.create({
     width: 30,
   },
   button: {
+    color: 'black',
+    marginRight: 10,
+  },
+  buttonGroup: {
     flexDirection: 'row',
     marginTop: 20,
   },
