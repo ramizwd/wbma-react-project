@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useForm, Controller} from 'react-hook-form';
 
 // UserProfile view that takes navigation and route props and renders poster's info including ID, username, full name and email
-const UserProfile = ({navigation, route}) => {
+const UserProfile = ({route}) => {
   const {file} = route.params;
   const {getUserById} = useUser();
   const [postOwner, setPostOwner] = useState({username: 'Loading username...'});

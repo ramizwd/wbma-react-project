@@ -5,16 +5,17 @@ import {
   Alert,
   KeyboardAvoidingView,
 } from 'react-native';
-import {Input, Button} from '@ui-kitten/components';
+import {Input, Button, Layout} from '@ui-kitten/components';
 import React, {useCallback, useContext, useState} from 'react';
 import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import {appId} from '../utils/variables';
+import Constants from 'expo-constants';
 import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag} from '../hooks/ApiHooks';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // This view is for uploading a new post
 const Upload = ({navigation}) => {
@@ -89,7 +90,7 @@ const Upload = ({navigation}) => {
       const response = await postMedia(formData, token);
 
       const tagResponse = await postTag(
-        {file_id: response.file_id, tag: appId},
+        {file_id: response.file_id, tag: Constants.manifest.extra.pvtAppId},
         token
       );
       tagResponse &&
@@ -109,70 +110,85 @@ const Upload = ({navigation}) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
-      <Controller
-        control={control}
-        rules={{
-          required: {value: true, message: 'Please enter a descriptive title.'},
-          minLength: {
-            value: 5,
-            message: 'The title has to be at least 5 characters long.',
-          },
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-            placeholder="Enter a descriptive title"
-            style={[styles.title, styles.input]}
-            textStyle={[styles.inputText]}
-            status={errors.title ? 'warning' : 'basic'}
-            caption={errors.title && errors.title.message}
-          />
-        )}
-        name="title"
-      />
-      <Controller
-        control={control}
-        rules={{
-          maxLength: {
-            value: 300,
-            message: 'Description maximum length is 300 characters.',
-          },
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            style={styles.input}
-            onBlur={onBlur}
-            multiline={true}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-            placeholder="Description (optional)"
-            status={errors.description ? 'warning' : 'basic'}
-            caption={errors.description && errors.description.message}
-            textStyle={[styles.description, styles.inputText]}
-          />
-        )}
-        name="description"
-      />
-      {imageSelected ? (
-        <Image source={{uri: image}} style={styles.image} onPress={pickFile} />
-      ) : (
-        <Text>No file selected</Text>
-      )}
-      <Button onPress={pickFile} style={styles.button}>
-        Choose file
-      </Button>
-      <Button
-        onPress={handleSubmit(onSubmit)}
-        style={[styles.button, {backgroundColor: '#26A96C', marginTop: 20}]}
-      >
-        Submit
-      </Button>
-    </KeyboardAvoidingView>
+    <KeyboardAwareScrollView>
+      <Layout style={styles.container}>
+        <Controller
+          control={control}
+          rules={{
+            required: {
+              value: true,
+              message: 'Please enter a descriptive title.',
+            },
+            minLength: {
+              value: 3,
+              message: 'The title has to be at least 5 characters long.',
+            },
+            maxLength: {
+              value: 55,
+              message: "The title's maximum length is 50 characters long.",
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder="Enter a descriptive title"
+              style={[styles.title, styles.input]}
+              textStyle={styles.inputText}
+              status={errors.title ? 'warning' : 'basic'}
+              caption={errors.title && errors.title.message}
+            />
+          )}
+          name="title"
+        />
+        <Controller
+          control={control}
+          rules={{
+            maxLength: {
+              value: 1000,
+              message: 'Description maximum length is 1000 characters.',
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              style={styles.input}
+              onBlur={onBlur}
+              multiline={true}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder="Description (optional)"
+              status={errors.description ? 'warning' : 'basic'}
+              caption={errors.description && errors.description.message}
+              textStyle={[styles.description, styles.inputText]}
+            />
+          )}
+          name="description"
+        />
+        {/* <Layout>
+          {imageSelected ? (
+            <Image
+              source={{uri: image}}
+              style={styles.image}
+              onPress={pickFile}
+            />
+          ) : (
+            <Text>No file selected</Text>
+          )}
+        </Layout> */}
+        <Button onPress={pickFile} style={styles.button}>
+          Choose file
+        </Button>
+        <Button
+          onPress={handleSubmit(onSubmit)}
+          style={[styles.button, {backgroundColor: '#26A96C', marginTop: 20}]}
+        >
+          Submit
+        </Button>
+      </Layout>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -180,7 +196,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: '80%',
   },
   input: {
     width: '60%',
