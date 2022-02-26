@@ -15,6 +15,7 @@ import {appId} from '../utils/variables';
 import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag} from '../hooks/ApiHooks';
+import Constants from 'expo-constants';
 
 // This view is for uploading a new post
 const Upload = ({navigation}) => {
@@ -89,7 +90,7 @@ const Upload = ({navigation}) => {
       const response = await postMedia(formData, token);
 
       const tagResponse = await postTag(
-        {file_id: response.file_id, tag: appId},
+        {file_id: response.file_id, tag: Constants.manifest.extra.pvtAppId},
         token
       );
       tagResponse &&
