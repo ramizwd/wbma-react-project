@@ -11,7 +11,7 @@ const Likes = ({file}) => {
   const {getLikesByFileId, postLike, deleteLike} = useLikes();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState([]);
-  const [likeColor, setLikeColor] = useState('black');
+  const [likeColor, setLikeColor] = useState();
   const {setLikeUpdate, likeUpdate} = useContext(MainContext);
   const pulseIconRef = useRef();
 
@@ -31,6 +31,8 @@ const Likes = ({file}) => {
       });
     } catch (error) {
       console.error('fetching likes error: ', error);
+    } finally {
+      pulseIconRef.current.startAnimation();
     }
   };
 
@@ -41,7 +43,7 @@ const Likes = ({file}) => {
       const res = await postLike(file.file_id, token);
       if (res) {
         setLiked(true);
-        setLikeColor('red');
+
         setLikeUpdate(likeUpdate + 1);
       }
     } catch (error) {
@@ -61,7 +63,7 @@ const Likes = ({file}) => {
       const res = await deleteLike(file.file_id, token);
       if (res) {
         setLiked(false);
-        setLikeColor('#000');
+
         setLikeUpdate(likeUpdate + 1);
       }
     } catch (error) {
@@ -93,7 +95,6 @@ const Likes = ({file}) => {
     <Button
       onPress={() => {
         liked ? removeLike() : createLike();
-        pulseIconRef.current.startAnimation();
       }}
       appearance="ghost"
       style={styles.button}
