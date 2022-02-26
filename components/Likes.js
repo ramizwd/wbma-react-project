@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Alert, StyleSheet} from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {useLikes} from '../hooks/ApiHooks';
@@ -43,6 +43,15 @@ const Likes = ({file}) => {
       res && setLikeColor('red');
       res && setLikeUpdate(likeUpdate + 1);
     } catch (error) {
+      Alert.alert(
+        'Likes Error',
+        'Error liking, please check network connectivity.',
+        [
+          {
+            text: 'OK',
+          },
+        ]
+      );
       console.error('create like error: ', error);
     }
   };
@@ -56,6 +65,15 @@ const Likes = ({file}) => {
       res && setLikeColor('#000');
       res && setLikeUpdate(likeUpdate + 1);
     } catch (error) {
+      Alert.alert(
+        'Likes Error',
+        'Error removing like, please check network connectivity.',
+        [
+          {
+            text: 'OK',
+          },
+        ]
+      );
       console.error('removing like error', error);
     }
   };
