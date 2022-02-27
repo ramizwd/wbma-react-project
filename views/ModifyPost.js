@@ -49,7 +49,7 @@ const ModifyPost = ({navigation, route}) => {
       <Controller
         control={control}
         rules={{
-          required: {value: true, message: 'Please enter a descriptive title.'},
+          required: {value: true, message: 'Please enter a title.'},
           minLength: {
             value: 5,
             message: 'The title has to be at least 5 characters long.',

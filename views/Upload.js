@@ -1,11 +1,12 @@
 import {
-  Text,
-  Image,
   StyleSheet,
   Alert,
-  KeyboardAvoidingView,
+  ScrollView,
+  View,
+  Image,
+  TouchableOpacity,
 } from 'react-native';
-import {Input, Button, Layout} from '@ui-kitten/components';
+import {Input, Button, Layout, Icon} from '@ui-kitten/components';
 import React, {useCallback, useContext, useState} from 'react';
 import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
@@ -15,11 +16,11 @@ import Constants from 'expo-constants';
 import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag} from '../hooks/ApiHooks';
+import {SwipeablePanel} from 'rn-swipeable-panel';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // This view is for uploading a new post
 const Upload = ({navigation}) => {
-  const imageUri = 'https://place-hold.it/300x200&text=Choose';
   const [image, setImage] = useState();
   const [imageSelected, setImageSelected] = useState(false);
   const [type, setType] = useState('');
@@ -38,6 +39,16 @@ const Upload = ({navigation}) => {
     },
     mode: 'onBlur',
   });
+  const [panelProps, setPanelProps] = useState({
+    fullWidth: true,
+    openLarge: false,
+    showCloseButton: false,
+    noBackgroundOpacity: true,
+    closeOnTouchOutside: false,
+    onClose: () => closePanel(),
+    onPressCloseButton: () => closePanel(),
+  });
+  const [isPanelActive, setIsPanelActive] = useState(true);
 
   // Pick image/video from devices library using Image Picker
   const pickFile = async () => {
@@ -55,7 +66,6 @@ const Upload = ({navigation}) => {
   };
 
   const reset = () => {
-    setImage(imageUri);
     setImageSelected(false);
     setValue('title', '');
     setValue('description', '');
@@ -109,113 +119,155 @@ const Upload = ({navigation}) => {
     }
   };
 
+  const openPanel = () => {
+    setIsPanelActive(true);
+  };
+
+  const closePanel = () => {
+    setIsPanelActive(false);
+  };
+
+  const optionsIcon = () => {
+    return <Icon name="options-outline" pack="ionIcons" style={{height: 25}} />;
+  };
+
   return (
-    <KeyboardAwareScrollView>
-      <Layout style={styles.container}>
-        <Controller
-          control={control}
-          rules={{
-            required: {
-              value: true,
-              message: 'Please enter a descriptive title.',
-            },
-            minLength: {
-              value: 3,
-              message: 'The title has to be at least 5 characters long.',
-            },
-            maxLength: {
-              value: 55,
-              message: "The title's maximum length is 50 characters long.",
-            },
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              autoCapitalize="none"
-              placeholder="Enter a descriptive title"
-              style={[styles.title, styles.input]}
-              textStyle={styles.inputText}
-              status={errors.title ? 'warning' : 'basic'}
-              caption={errors.title && errors.title.message}
-            />
-          )}
-          name="title"
-        />
-        <Controller
-          control={control}
-          rules={{
-            maxLength: {
-              value: 1000,
-              message: 'Description maximum length is 1000 characters.',
-            },
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              style={styles.input}
-              onBlur={onBlur}
-              multiline={true}
-              onChangeText={onChange}
-              value={value}
-              autoCapitalize="none"
-              placeholder="Description (optional)"
-              status={errors.description ? 'warning' : 'basic'}
-              caption={errors.description && errors.description.message}
-              textStyle={[styles.description, styles.inputText]}
-            />
-          )}
-          name="description"
-        />
-        {/* <Layout>
-          {imageSelected ? (
-            <Image
-              source={{uri: image}}
-              style={styles.image}
-              onPress={pickFile}
-            />
-          ) : (
-            <Text>No file selected</Text>
-          )}
-        </Layout> */}
-        <Button onPress={pickFile} style={styles.button}>
-          Choose file
-        </Button>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          style={[styles.button, {backgroundColor: '#26A96C', marginTop: 20}]}
-        >
-          Submit
-        </Button>
+    <Layout style={{flex: 1, backgroundColor: '#ECECEC'}}>
+      <Layout
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#ECECEC',
+        }}
+      >
+        <TouchableOpacity onPress={pickFile} activeOpacity={0.7}>
+          <Image
+            source={
+              image === undefined
+                ? require('../assets/drawerBg.png')
+                : {uri: image}
+            }
+            style={styles.image}
+          />
+        </TouchableOpacity>
       </Layout>
-    </KeyboardAwareScrollView>
+
+      <Button
+        appearance="ghost"
+        accessoryLeft={optionsIcon}
+        style={{marginLeft: 'auto', bottom: 4}}
+        onPress={() => {
+          openPanel();
+        }}
+      ></Button>
+
+      <SwipeablePanel
+        {...panelProps}
+        isActive={isPanelActive}
+        style={{height: '90%'}}
+      >
+        <ScrollView style={{width: '100%'}}>
+          <Layout style={styles.modalContent}>
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Please enter a title.',
+                },
+                minLength: {
+                  value: 3,
+                  message: 'The title has to be at least 5 characters long.',
+                },
+                maxLength: {
+                  value: 55,
+                  message: "The title's maximum length is 50 characters long.",
+                },
+              }}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  autoCapitalize="none"
+                  placeholder="Enter a title*"
+                  style={[styles.title, styles.input]}
+                  textStyle={styles.inputText}
+                  status={errors.title ? 'warning' : 'basic'}
+                  caption={errors.title && errors.title.message}
+                />
+              )}
+              name="title"
+            />
+
+            <Controller
+              control={control}
+              rules={{
+                maxLength: {
+                  value: 1000,
+                  message: 'Description maximum length is 1000 characters.',
+                },
+              }}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input
+                  style={styles.input}
+                  onBlur={onBlur}
+                  multiline={true}
+                  onChangeText={onChange}
+                  value={value}
+                  autoCapitalize="none"
+                  placeholder="Description"
+                  status={errors.description ? 'warning' : 'basic'}
+                  caption={errors.description && errors.description.message}
+                  textStyle={[styles.description, styles.inputText]}
+                />
+              )}
+              name="description"
+            />
+            <Button onPress={pickFile} style={styles.button}>
+              Choose a file
+            </Button>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              style={[
+                styles.button,
+                {backgroundColor: '#26A96C', marginTop: 10},
+              ]}
+            >
+              Post
+            </Button>
+          </Layout>
+        </ScrollView>
+      </SwipeablePanel>
+    </Layout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  modalContent: {
     alignItems: 'center',
-    justifyContent: 'center',
   },
   input: {
-    width: '60%',
+    width: '90%',
     borderRadius: 20,
     marginVertical: 10,
   },
-  inputText: {fontSize: 18},
+  inputText: {fontSize: 16},
 
   description: {
-    minHeight: '30%',
+    height: 100,
     textAlignVertical: 'top',
   },
   image: {
     width: undefined,
-    height: '20%',
-    aspectRatio: 1,
+    height: 330,
+    aspectRatio: 3 / 2,
     resizeMode: 'contain',
   },
   button: {
-    borderRadius: 20,
+    marginTop: 7,
+    borderRadius: 10,
+    width: '90%',
   },
 });
 
