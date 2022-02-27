@@ -4,8 +4,8 @@ import {Button, Card, Input, Layout, List} from '@ui-kitten/components';
 import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import {useComment} from '../hooks/ApiHooks';
-import {uploadsUrl} from '../utils/variables';
+import {useComment, useTag} from '../hooks/ApiHooks';
+import {tagDivider, uploadsUrl} from '../utils/variables';
 import {Controller, useForm} from 'react-hook-form';
 import Comment from '../components/Comment';
 import {MainContext} from '../contexts/MainContext';
@@ -15,8 +15,10 @@ import Likes from '../components/Likes';
 // View for single post
 const Single = ({route}) => {
   const [comments, setComments] = useState([]);
+  const [tags, setTags] = useState([]);
   const {file, owner} = route.params;
   const {getCommentsByPost, postComment} = useComment();
+  const {getTagsByFileId} = useTag();
   const {setUpdate, update} = useContext(MainContext);
   const videoRef = useRef(null);
   const {
@@ -53,10 +55,24 @@ const Single = ({route}) => {
     }
   };
 
+  // Get tags for the post
+  const getTags = async () => {
+    try {
+      const tags = await getTagsByFileId(file.file_id);
+      setTags(tags);
+    } catch (error) {
+      console.error('getTags error', error);
+    }
+  };
+
   // Getting comments when new comment is added
   useEffect(() => {
     getComments();
   }, [update]);
+
+  useEffect(() => {
+    getTags();
+  }, []);
 
   return (
     <Card>
@@ -64,6 +80,13 @@ const Single = ({route}) => {
         <Avatar userAvatar={file.user_id} />
         <Text>{`By: ${owner.username}`}</Text>
       </View>
+      <Layout>
+        <Text>Tags:</Text>
+        <List
+          data={tags}
+          renderItem={({item}) => <Text>{item.tag.split(tagDivider)[1]}</Text>}
+        />
+      </Layout>
       <View>
         <Text>{file.title}</Text>
         <Text>{file.description}</Text>

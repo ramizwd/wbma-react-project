@@ -205,7 +205,11 @@ const useTag = () => {
     return await baseFetch(`${baseUrl}tags/${tag}`);
   };
 
-  return {postTag, getFilesByTag};
+  const getTagsByFileId = async (fileId) => {
+    return await baseFetch(`${baseUrl}tags/file/${fileId}`);
+  };
+
+  return {postTag, getFilesByTag, getTagsByFileId};
 };
 
 // Comments hook
