@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
-  View,
   Image,
   TouchableOpacity,
 } from 'react-native';
@@ -17,7 +16,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {SwipeablePanel} from 'rn-swipeable-panel';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // This view is for uploading a new post
 const Upload = ({navigation}) => {
@@ -39,12 +37,12 @@ const Upload = ({navigation}) => {
     },
     mode: 'onBlur',
   });
-  const [panelProps, setPanelProps] = useState({
+  const [panelProps] = useState({
     fullWidth: true,
     openLarge: false,
     showCloseButton: false,
-    noBackgroundOpacity: true,
-    closeOnTouchOutside: false,
+    noBackgroundOpacity: false,
+    closeOnTouchOutside: true,
     onClose: () => closePanel(),
     onPressCloseButton: () => closePanel(),
   });
@@ -144,7 +142,7 @@ const Upload = ({navigation}) => {
           <Image
             source={
               image === undefined
-                ? require('../assets/drawerBg.png')
+                ? require('../assets/uploadDefaultImg.png')
                 : {uri: image}
             }
             style={styles.image}
@@ -261,7 +259,7 @@ const styles = StyleSheet.create({
   image: {
     width: undefined,
     height: 330,
-    aspectRatio: 3 / 2,
+    aspectRatio: 1,
     resizeMode: 'contain',
   },
   button: {
