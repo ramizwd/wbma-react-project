@@ -266,7 +266,31 @@ const useLikes = () => {
     return await baseFetch(`${baseUrl}favourites/file/${fileId}`, options);
   };
 
-  return {postLike, getLikesByFileId, deleteLike};
+  const getLikeByToken = async (token) => {
+    const options = {
+      headers: {'x-access-token': token},
+    };
+    return await baseFetch(`${baseUrl}favourites`, options);
+  };
+
+  const getPostsByLikes = async (token) => {
+    const json = await getLikeByToken(token);
+
+    const media = await Promise.all(
+      json.map(async (item) => {
+        const response = await fetch(`${baseUrl}media/${item.file_id}`);
+        return await response.json();
+      })
+    );
+    return media;
+  };
+
+  return {
+    postLike,
+    getLikesByFileId,
+    deleteLike,
+    getPostsByLikes,
+  };
 };
 
 export {useLogin, useUser, useMedia, useTag, useComment, useLikes};
