@@ -76,7 +76,7 @@ const Likes = ({file}) => {
     }
   };
 
-  const renderPulseIcon = (props) => (
+  const renderPulseIcon = () => (
     <Icon
       ref={pulseIconRef}
       color={likeColor}

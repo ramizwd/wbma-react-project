@@ -8,7 +8,7 @@ import {Layout} from '@ui-kitten/components';
 const Home = ({navigation}) => {
   return (
     <SafeAreaView>
-      <Layout style={{height: '100%'}}>
+      <Layout style={{height: '102%', marginTop: -10}}>
         <Card navigation={navigation} />
         <PostButton
           onPress={() => {
