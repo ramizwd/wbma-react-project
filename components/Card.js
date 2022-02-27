@@ -11,6 +11,7 @@ const Card = ({navigation, userPost = false}) => {
 
   return (
     <List
+      style={{marginTop: 8}}
       data={mediaArray}
       keyExtractor={(item) => item.file_id.toString()}
       renderItem={({item}) => (

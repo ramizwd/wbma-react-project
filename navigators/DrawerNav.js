@@ -1,6 +1,11 @@
 import React, {useContext} from 'react';
 import * as eva from '@eva-design/eva';
-import {Alert, ImageBackground, StyleSheet} from 'react-native';
+import {
+  Alert,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -27,12 +32,13 @@ import Home from '../views/Home';
 import Profile from '../views/Profile';
 import Messaging from '../views/Messaging';
 import Search from '../views/Search';
-import Settings from '../views/Search';
+import Settings from '../views/Settings';
 import Login from '../views/Login';
 import Register from '../views/Register';
 import Upload from '../views/Upload';
 import ModifyPost from '../views/ModifyPost';
 import UserProfile from '../views/UserProfile';
+import {ThemeContext} from '../contexts/ThemeContext';
 
 const Stack = createNativeStackNavigator();
 const {Navigator, Screen} = createDrawerNavigator();
@@ -63,6 +69,7 @@ const LogoutIcon = () => (
 
 const DrawerContent = ({navigation, state}) => {
   const {setLoggedIn, user} = useContext(MainContext);
+  const themeContext = useContext(ThemeContext);
 
   const Header = () => (
     <Layout style={styles.header}>
@@ -74,6 +81,13 @@ const DrawerContent = ({navigation, state}) => {
         <Text style={styles.profileName} category="h6">
           {user.full_name ? user.full_name : user.username}
         </Text>
+        <TouchableOpacity onPress={themeContext.toggleTheme}>
+          <Icon
+            name={themeContext.theme == 'light' ? 'moon-outline' : 'moon'}
+            pack="ionIcons"
+            style={{height: 20}}
+          />
+        </TouchableOpacity>
       </ImageBackground>
     </Layout>
   );
@@ -202,15 +216,23 @@ const StackScreen = () => {
 };
 
 const DrawerNavigator = () => {
+  const [theme, setTheme] = React.useState('light');
+
+  const toggleTheme = () => {
+    const changeTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(changeTheme);
+  };
+
   return (
     <>
       <IconRegistry icons={[EvilIconsPack, IonIconsPack]} />
-
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <NavigationContainer>
-          <StackScreen />
-        </NavigationContainer>
-      </ApplicationProvider>
+      <ThemeContext.Provider value={{theme, toggleTheme}}>
+        <ApplicationProvider {...eva} theme={eva[theme]}>
+          <NavigationContainer>
+            <StackScreen />
+          </NavigationContainer>
+        </ApplicationProvider>
+      </ThemeContext.Provider>
     </>
   );
 };
