@@ -17,6 +17,7 @@ const Card = ({navigation, userPost = false}) => {
       renderItem={({item}) => (
         <CardContent post={item} navigation={navigation} userPost={userPost} />
       )}
+      initialNumToRender={5}
     ></List>
   );
 };

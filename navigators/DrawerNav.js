@@ -24,7 +24,6 @@ import {
 } from '@ui-kitten/components';
 import {EvilIconsPack} from '../evil-icons';
 import {IonIconsPack} from '../ion-icons';
-
 import Single from '../views/Single';
 import Avatar from '../components/Avatar';
 import ModifyProfile from '../views/ModifyProfile';
