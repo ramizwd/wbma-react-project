@@ -4,10 +4,12 @@ import {PropTypes} from 'prop-types';
 import {Button, Input, Card} from '@ui-kitten/components';
 import {useForm, Controller} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useMedia} from '../hooks/ApiHooks';
+import {useMedia, useTag} from '../hooks/ApiHooks';
 import CardContent from '../components/CardContent';
 import {List} from '@ui-kitten/components';
 import {useFocusEffect} from '@react-navigation/native';
+import Constants from 'expo-constants';
+import {tagDivider} from '../utils/variables';
 
 // Search view that takes navigation props can search posts by title or category
 const Search = ({navigation}) => {
@@ -25,13 +27,18 @@ const Search = ({navigation}) => {
     mode: 'onBlur',
   });
   const {mediaArray} = useMedia();
+  const [toggleSearch, setToggleSearch] = useState(false);
+  const {getFilesByTag} = useTag();
 
   // submit search keyword by using searchMedia from ApiHooks
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
-
     try {
-      const response = await searchMedia(data, token);
+      const response = toggleSearch
+        ? await getFilesByTag(
+            Constants.manifest.extra.pvtAppId + tagDivider + data.title
+          )
+        : await searchMedia(data, token);
       const result = response.filter((x) => {
         return mediaArray.some((y) => {
           return x.file_id == y.file_id;
@@ -43,14 +50,17 @@ const Search = ({navigation}) => {
       setSearchResult(result);
       setValue('title', '');
     } catch (error) {
+      Alert.alert('Search error');
       console.error(error.message);
     }
   };
+
   // reset search result and text input field
   const reset = () => {
     setSearchResult([]);
     setValue('title', '');
   };
+
   // when user switch away from this view, call reset function
   useFocusEffect(
     useCallback(() => {
@@ -79,8 +89,13 @@ const Search = ({navigation}) => {
           name="title"
         />
 
-        <Button title="Search" onPress={handleSubmit(onSubmit)}>
-          Search
+        <Button onPress={handleSubmit(onSubmit)}>Search</Button>
+        <Button
+          onPress={() => {
+            toggleSearch ? setToggleSearch(false) : setToggleSearch(true);
+          }}
+        >
+          search by tag: {toggleSearch.toString()}
         </Button>
       </Card>
 

@@ -88,7 +88,10 @@ const Single = ({route}) => {
         />
       </Layout>
       <View>
-        <Text>{file.title}</Text>
+        <Text>
+          {file.title}
+          {file.file_id}
+        </Text>
         <Text>{file.description}</Text>
         {file.media_type === 'image' ? (
           <Image

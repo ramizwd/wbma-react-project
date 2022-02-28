@@ -99,6 +99,7 @@ const Upload = ({navigation}) => {
           // Tag divider is used to split the tag from full tag
           const fullTag =
             Constants.manifest.extra.pvtAppId + tagDivider + tags[i];
+          console.log(fullTag);
           await postTag(
             {
               file_id: response.file_id,
