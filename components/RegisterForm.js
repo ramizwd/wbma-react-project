@@ -8,7 +8,6 @@ import {useUser} from '../hooks/ApiHooks';
 const RegisterForm = () => {
   const {postUser, checkUsername} = useUser();
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-
   const {
     control,
     handleSubmit,
@@ -30,7 +29,9 @@ const RegisterForm = () => {
     try {
       delete data.confirm_password;
       const userData = await postUser(data);
-      console.log(userData);
+      if (userData) {
+        Alert.alert('Success', 'Account created successfully.');
+      }
     } catch (error) {
       Alert.alert('Error', error.message);
       console.log(error);
@@ -54,7 +55,9 @@ const RegisterForm = () => {
   );
 
   return (
-    <Layout>
+    <Layout
+      style={{justifyContent: 'center', alignItems: 'center', marginTop: 10}}
+    >
       <Controller
         control={control}
         rules={{
@@ -214,6 +217,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   registerBtn: {
+    width: '90%',
     height: 56,
     marginTop: 20,
   },
