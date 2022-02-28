@@ -17,7 +17,7 @@ const SelectTags = () => {
   const selectedTheme = themeTags[themeIndex.row];
 
   // Render items in select menu
-  const renderOption = (title) => <SelectItem title={title} />;
+  const renderOption = (title) => <SelectItem key={title} title={title} />;
 
   // Change tags when new index is selected from select menu
   useEffect(() => {
