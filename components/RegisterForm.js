@@ -54,7 +54,9 @@ const RegisterForm = () => {
   );
 
   return (
-    <Layout>
+    <Layout
+      style={{justifyContent: 'center', alignItems: 'center', marginTop: 10}}
+    >
       <Controller
         control={control}
         rules={{
@@ -214,6 +216,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   registerBtn: {
+    width: '90%',
     height: 56,
     marginTop: 20,
   },
