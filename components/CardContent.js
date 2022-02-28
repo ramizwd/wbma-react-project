@@ -2,7 +2,15 @@ import {Image, StyleSheet, Alert, TouchableOpacity} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Text, Layout, Spinner, Icon, Button} from '@ui-kitten/components';
+import {
+  Text,
+  Layout,
+  Spinner,
+  Icon,
+  Button,
+  OverflowMenu,
+  MenuItem,
+} from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -20,6 +28,8 @@ const CardContent = ({navigation, post, userPost}) => {
   const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
   const [comments, setComments] = useState([]);
   const {update, setUpdate} = useContext(MainContext);
+  const [visible, setVisible] = useState(false);
+  const {user} = useContext(MainContext);
 
   // fetching post owner data by ID and setting it to the posterOwner state hook
   const fetchOwner = async () => {
@@ -43,7 +53,7 @@ const CardContent = ({navigation, post, userPost}) => {
     }
   };
   // delete the selected post
-  const doDelete = () => {
+  const deletePost = () => {
     Alert.alert('Delete', 'This file will be deleted!', [
       {text: 'Cancel'},
       {
@@ -72,8 +82,25 @@ const CardContent = ({navigation, post, userPost}) => {
     fetchComments();
   }, [update]);
 
-  const renderCommentIcon = (props) => (
-    <Icon style={styles.icon} color="#000" name="comment" />
+  const renderCommentIcon = () => <Icon style={styles.icon} name="comment" />;
+
+  const renderOptionsIcon = () => (
+    <Icon
+      style={styles.iconOpt}
+      name="ellipsis-vertical-outline"
+      pack="ionIcons"
+    />
+  );
+
+  const optionsBtn = () => (
+    <Button
+      onPress={() => {
+        setVisible(true);
+      }}
+      style={styles.optionsBtn}
+      accessoryLeft={renderOptionsIcon}
+      appearance="ghost"
+    />
   );
 
   return (
@@ -87,32 +114,57 @@ const CardContent = ({navigation, post, userPost}) => {
       }}
     >
       <Layout style={{marginBottom: 8}}>
-        <Layout style={styles.postHeader}>
-          <TouchableWithoutFeedback
-            onPress={() => navigation.navigate('User profile', {file: post})}
-          >
-            {!userPost && <Avatar userAvatar={post.user_id} />}
-          </TouchableWithoutFeedback>
-          <Layout style={styles.headerContent}>
-            {!userPost && (
-              <TouchableWithoutFeedback
-                onPress={() =>
-                  navigation.navigate('User profile', {file: post})
-                }
-              >
-                {postOwner.full_name ? (
-                  <Text category="p1">
-                    {postOwner.full_name}
-                    <Text appearance="hint"> @{postOwner.username}</Text>
-                  </Text>
-                ) : (
-                  <Text appearance="hint">@{postOwner.username}</Text>
-                )}
-              </TouchableWithoutFeedback>
-            )}
-            <Text category="h6">{post.title}</Text>
+        <Layout style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Layout style={styles.postHeader}>
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate('User profile', {file: post})}
+            >
+              {!userPost && <Avatar userAvatar={post.user_id} />}
+            </TouchableWithoutFeedback>
+            <Layout style={styles.headerContent}>
+              {!userPost && (
+                <TouchableWithoutFeedback
+                  onPress={() =>
+                    navigation.navigate('User profile', {file: post})
+                  }
+                >
+                  {postOwner.full_name ? (
+                    <Text category="p1">
+                      {postOwner.full_name}
+                      <Text appearance="hint"> @{postOwner.username}</Text>
+                    </Text>
+                  ) : (
+                    <Text appearance="hint">@{postOwner.username}</Text>
+                  )}
+                </TouchableWithoutFeedback>
+              )}
+              <Text category="h6">{post.title}</Text>
+            </Layout>
           </Layout>
+          {post.user_id === user.user_id && (
+            <OverflowMenu
+              visible={visible}
+              anchor={optionsBtn}
+              onBackdropPress={() => setVisible(false)}
+            >
+              <MenuItem
+                title="Modify Post"
+                onPress={() => {
+                  navigation.navigate('Modify post', {file: post});
+                  setVisible(false);
+                }}
+              />
+              <MenuItem
+                title="Delete"
+                onPress={() => {
+                  deletePost();
+                  setVisible(false);
+                }}
+              />
+            </OverflowMenu>
+          )}
         </Layout>
+
         <Layout style={styles.postContent}>
           <Image
             source={{uri: uploadsUrl + post.filename}}
@@ -136,6 +188,7 @@ const CardContent = ({navigation, post, userPost}) => {
             <Text numberOfLines={2}>{post.description}</Text>
           </Layout>
         </Layout>
+
         <Layout style={styles.feedback}>
           <Likes file={post} />
           <Button
@@ -157,27 +210,6 @@ const CardContent = ({navigation, post, userPost}) => {
             )}
           </Button>
         </Layout>
-
-        {userPost && (
-          <Layout style={styles.buttonGroup}>
-            <Button
-              style={styles.button}
-              onPress={() => {
-                navigation.navigate('Modify post', {file: post});
-              }}
-            >
-              Modify
-            </Button>
-            <Button
-              style={styles.button}
-              onPress={() => {
-                doDelete();
-              }}
-            >
-              Delete
-            </Button>
-          </Layout>
-        )}
       </Layout>
     </TouchableOpacity>
   );
@@ -187,11 +219,12 @@ const styles = StyleSheet.create({
   postHeader: {
     flexDirection: 'row',
     padding: 10,
+    marginRight: 25,
   },
   headerContent: {
     paddingLeft: 10,
     flexDirection: 'column',
-    maxWidth: 300,
+    maxWidth: 290,
   },
   postContent: {
     marginLeft: 'auto',
@@ -207,6 +240,14 @@ const styles = StyleSheet.create({
   },
   time: {
     textAlign: 'right',
+  },
+  optionsBtn: {
+    width: 30,
+    height: 45,
+  },
+  iconOpt: {
+    height: 20,
+    width: 20,
   },
   desc: {
     padding: 10,
