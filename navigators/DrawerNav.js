@@ -24,8 +24,6 @@ import {
 } from '@ui-kitten/components';
 import {EvilIconsPack} from '../evil-icons';
 import {IonIconsPack} from '../ion-icons';
-import {EvaIconsPack} from '@ui-kitten/eva-icons';
-
 import Single from '../views/Single';
 import Avatar from '../components/Avatar';
 import ModifyProfile from '../views/ModifyProfile';
@@ -226,7 +224,7 @@ const DrawerNavigator = () => {
 
   return (
     <>
-      <IconRegistry icons={[EvilIconsPack, IonIconsPack, EvaIconsPack]} />
+      <IconRegistry icons={[EvilIconsPack, IonIconsPack]} />
       <ThemeContext.Provider value={{theme, toggleTheme}}>
         <ApplicationProvider {...eva} theme={eva[theme]}>
           <NavigationContainer>

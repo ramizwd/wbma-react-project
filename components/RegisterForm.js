@@ -8,7 +8,6 @@ import {useUser} from '../hooks/ApiHooks';
 const RegisterForm = () => {
   const {postUser, checkUsername} = useUser();
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-
   const {
     control,
     handleSubmit,
@@ -30,7 +29,9 @@ const RegisterForm = () => {
     try {
       delete data.confirm_password;
       const userData = await postUser(data);
-      console.log(userData);
+      if (userData) {
+        Alert.alert('Success', 'Account created successfully.');
+      }
     } catch (error) {
       Alert.alert('Error', error.message);
       console.log(error);
