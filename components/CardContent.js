@@ -10,6 +10,7 @@ import Avatar from './Avatar';
 import moment from 'moment';
 import Likes from './Likes';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
+import SavePost from './SavePost';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
@@ -138,6 +139,7 @@ const CardContent = ({navigation, post, userPost}) => {
         </Layout>
         <Layout style={styles.feedback}>
           <Likes file={post} />
+          <SavePost file={post} />
           <Button
             onPress={() => {
               navigation.navigate('Single post', {
