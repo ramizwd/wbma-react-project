@@ -41,6 +41,7 @@ const Search = ({navigation}) => {
         Alert.alert('No match');
       }
       setSearchResult(result);
+      console.log('kkkkkkkkkkkkkkkkkk', result);
       setValue('title', '');
     } catch (error) {
       console.error(error.message);
