@@ -37,6 +37,11 @@ const Single = ({route, navigation}) => {
   const {setUpdate, update} = useContext(MainContext);
   const [visible, setVisible] = useState(false);
   const windowHeight = Dimensions.get('window').height;
+  const [maxDescHeight, setMaxDescHeigh] = useState(windowHeight * 0.25);
+  const [showingMore, setShowingMore] = useState(false);
+  const [descriptionButton, letDescriptionButton] = useState(false);
+  const [desctBtnText, setDescBtnText] = useState('Show more');
+
   const videoRef = useRef(null);
   const {
     control,
@@ -80,9 +85,11 @@ const Single = ({route, navigation}) => {
   return (
     <KeyboardAwareScrollView style={{padding: 10}}>
       <Layout
-        style={{
-          maxHeight: windowHeight * 0.8,
-        }}
+        style={
+          !showingMore && {
+            maxHeight: windowHeight * 0.85,
+          }
+        }
       >
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate('User profile', {file: file})}
@@ -91,7 +98,7 @@ const Single = ({route, navigation}) => {
           <Avatar userAvatar={file.user_id} />
           <Text style={{marginLeft: 10}}>{owner.username}</Text>
         </TouchableWithoutFeedback>
-        <Layout style={styles.row}>
+        <Layout style={(styles.row, {marginVertical: 5})}>
           <Text>Tags: </Text>
           <Layout style={styles.row}>
             {tags.map((tag) => (
@@ -105,27 +112,68 @@ const Single = ({route, navigation}) => {
           </Layout>
         </Layout>
         <Layout>
-          <Text category="h6">{file.title}</Text>
+          <Text style={{marginVertical: 5}} category="h6">
+            {file.title}
+          </Text>
+          <Layout
+            onLayout={(evt) => {
+              const {height} = evt.nativeEvent.layout;
+              console.log('height', height);
+              if (height >= maxDescHeight) {
+                console.log('height reached');
+                letDescriptionButton(true);
+              }
+            }}
+            maxHeight={maxDescHeight + 5}
+          >
+            <Layout style={descriptionButton && {maxHeight: '90%'}}>
+              <Text>{file.description}</Text>
+            </Layout>
 
-          <Text>{file.description}</Text>
+            {descriptionButton && (
+              <Button
+                onPress={() => {
+                  if (!showingMore) {
+                    setShowingMore(true);
+                    setMaxDescHeigh(1000);
+                    setDescBtnText('Show less');
+                    console.log('showing more', showingMore);
+                  } else {
+                    setMaxDescHeigh(windowHeight * 0.25);
+                    setDescBtnText('Show more');
+                    setShowingMore(false);
+                  }
+                }}
+                style={{alignSelf: 'flex-end'}}
+                size="tiny"
+              >
+                {desctBtnText}
+              </Button>
+            )}
+          </Layout>
 
           {file.media_type === 'image' ? (
             <Popover
               style={{
-                flexDirection: 'row',
                 alignSelf: 'center',
-                marginBottom: 200,
+                marginTop: -200,
               }}
+              placement="top"
               backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
               visible={visible}
+              onBackdropPress={() => setVisible(false)}
               anchor={() => (
-                <TouchableWithoutFeedback onPress={() => setVisible(true)}>
+                <TouchableWithoutFeedback
+                  style={{height: 250, marginTop: 10}}
+                  onPress={() => setVisible(true)}
+                >
                   <Image
                     source={{uri: uploadsUrl + file.filename}}
                     style={{
                       width: undefined,
-                      height: 200,
+                      height: '95%',
                       borderRadius: 10,
+                      resizeMode: 'contain',
                       marginTop: 10,
                     }}
                   />
@@ -134,11 +182,13 @@ const Single = ({route, navigation}) => {
             >
               <Image
                 source={{uri: uploadsUrl + file.filename}}
+                resizeMode="contain"
                 style={{
                   width: 400,
                   height: 400,
-                  borderRadius: 10,
+
                   alignSelf: 'center',
+                  resizeMode: 'contain',
                 }}
               />
             </Popover>
