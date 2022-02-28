@@ -32,10 +32,8 @@ import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 // View for single post
 const Single = ({route, navigation}) => {
   const [comments, setComments] = useState([]);
-  const [tags, setTags] = useState([]);
-  const {file, owner} = route.params;
+  const {file, owner, tags} = route.params;
   const {getCommentsByPost, postComment} = useComment();
-  const {getTagsByFileId} = useTag();
   const {setUpdate, update} = useContext(MainContext);
   const [visible, setVisible] = useState(false);
   const windowHeight = Dimensions.get('window').height;
@@ -74,26 +72,10 @@ const Single = ({route, navigation}) => {
     }
   };
 
-  // Get tags for the post
-  const getTags = async () => {
-    console.log('tags', tags.length);
-    try {
-      const tags = await getTagsByFileId(file.file_id);
-      setTags(tags);
-      console.log('tags', tags);
-    } catch (error) {
-      console.error('getTags error', error);
-    }
-  };
-
   // Getting comments when new comment is added
   useEffect(() => {
     getComments();
   }, [update]);
-
-  useEffect(() => {
-    getTags();
-  }, []);
 
   return (
     <KeyboardAwareScrollView style={{padding: 10}}>
@@ -115,7 +97,7 @@ const Single = ({route, navigation}) => {
             {tags.map((tag) => (
               <Text
                 style={{borderWidth: 1, marginHorizontal: 2, padding: 4}}
-                key={tag.tag}
+                key={tag.tag_id}
               >
                 {tag.tag.split(tagDivider)[1]}
               </Text>
