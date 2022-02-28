@@ -5,13 +5,13 @@ import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants';
 import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {appId, tagDivider} from '../utils/variables';
+import {tagDivider} from '../utils/variables';
 import SelectTags from '../components/SelectTags';
+import Constants from 'expo-constants';
 
 // This view is for uploading a new post
 const Upload = ({navigation}) => {
@@ -37,8 +37,8 @@ const Upload = ({navigation}) => {
 
   // Pick image/video from devices library using Image Picker
   const pickFile = async () => {
-    const a = appId + '+javascript';
-    const b = a.split(appId);
+    const a = Constants.manifest.extra.pvtAppId + '+javascript';
+    const b = a.split(Constants.manifest.extra.pvtAppId);
     console.log(b[1]);
     console.log('a', a);
     console.log('tag');
@@ -97,7 +97,8 @@ const Upload = ({navigation}) => {
         if (!(tags[i] === 'None')) {
           // Tagname which will be posted to server. AppId identifies this apps tags.
           // Tag divider is used to split the tag from full tag
-          const fullTag = appId + tagDivider + tags[i];
+          const fullTag =
+            Constants.manifest.extra.pvtAppId + tagDivider + tags[i];
           await postTag(
             {
               file_id: response.file_id,
