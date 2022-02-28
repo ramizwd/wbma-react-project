@@ -1,18 +1,31 @@
-import React, {useContext, useEffect} from 'react';
-import {View, Image, StyleSheet, ImageBackground, Alert} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {
+  View,
+  Image,
+  StyleSheet,
+  ImageBackground,
+  Alert,
+  Picker,
+} from 'react-native';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useTag} from '../hooks/ApiHooks';
+import {useLikes, useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
-import {Card as Cards, Text, Layout} from '@ui-kitten/components';
+import {Card as Cards, Text, Layout, List} from '@ui-kitten/components';
 import Card from '../components/Card';
+// import Picker from 'react-native-picker';
+import CardContent from '../components/CardContent';
 
 // Profile view that takes navigation props can display user's general information including avatar, user full name ,user's email, and user's post history, besides user can also modify his/her profile from this view
 const Profile = ({navigation}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
   const {getFilesByTag} = useTag();
+  const [selectedValue, setSelectedValue] = useState('post');
+  const [likeList, setLikeList] = useState([]);
+  const {getPostsByLikes} = useLikes();
+  const {likeUpdate} = useContext(MainContext);
 
   // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
   const fetchAvatar = async () => {
@@ -25,10 +38,29 @@ const Profile = ({navigation}) => {
       Alert.alert('Notice', 'Set profile pic please');
     }
   };
+  // fetching user's liked posts list by using getPostsByLikes from ApiHooks
+  const fetchLikes = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const response = await getPostsByLikes(token);
+      setLikeList(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     fetchAvatar();
   }, []);
+
+  useEffect(() => {
+    fetchLikes();
+  }, [likeUpdate]);
+
+  // if (selectedValue === 'like') {
+  //   console.log('like chosen!!!!!!!!!');
+  //   fetchLikes();
+  // }
 
   return (
     <View style={styles.container}>
@@ -85,10 +117,36 @@ const Profile = ({navigation}) => {
           ]);
         }}
       />
-      <Text style={styles.text}>My post history:</Text>
-      <Layout style={styles.postList}>
-        <Card navigation={navigation} userPost={true} />
+      {/* <Text style={styles.text}>My post history:</Text> */}
+      <Layout style={styles.picker}>
+        <Picker
+          selectedValue={selectedValue}
+          style={{height: 50, width: 150}}
+          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+        >
+          <Picker.Item label="Post history" value="post" />
+          <Picker.Item label="Like history" value="like" />
+        </Picker>
       </Layout>
+      {selectedValue === 'post' && (
+        <Layout style={styles.postList}>
+          <Card navigation={navigation} userPost={true} />
+        </Layout>
+      )}
+      {selectedValue === 'like' && (
+        <Layout style={styles.postList}>
+          <List
+            data={likeList}
+            keyExtractor={(item) => item.file_id.toString()}
+            renderItem={({item}) => (
+              <CardContent post={item} navigation={navigation} />
+            )}
+          ></List>
+        </Layout>
+      )}
+      {/* <Layout style={styles.postList}>
+        <Card navigation={navigation} userPost={true} />
+      </Layout> */}
     </View>
   );
 };
@@ -137,16 +195,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: '31%',
   },
-  text: {
+  picker: {
     position: 'absolute',
     left: '5%',
-    fontSize: 20,
-    top: '43%',
+    top: '42%',
   },
   postList: {
     position: 'absolute',
-    top: '48%',
-    height: '52%',
+    top: '49%',
+    height: '51%',
     width: '100%',
   },
 });
