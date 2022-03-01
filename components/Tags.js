@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 export default function Tags({post}) {
   const [tags, setTags] = useState([]);
   const {getTagsByFileId} = useTag();
-  const [color, setColor] = useState({backgroundColor: '#E6E8E6'});
+  const [color, setColor] = useState({backgroundColor: '#0496FF'});
 
   // Get tags for the post
   const getTags = async () => {
@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     padding: 7,
     borderRadius: 100,
     fontSize: 13,
+    color: 'white',
   },
 });
 

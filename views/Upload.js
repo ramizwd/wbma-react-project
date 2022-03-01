@@ -11,6 +11,7 @@ import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag} from '../hooks/ApiHooks';
@@ -23,7 +24,7 @@ import Constants from 'expo-constants';
 // This view is for uploading a new post
 const Upload = ({navigation}) => {
   const [image, setImage] = useState();
-  const [imageSelected, setImageSelected] = useState(false);
+  const [fileSelected, setFileSelected] = useState(false);
   const [type, setType] = useState('');
   const {postMedia} = useMedia();
   const {postTag} = useTag();
@@ -51,23 +52,51 @@ const Upload = ({navigation}) => {
   });
   const [isPanelActive, setIsPanelActive] = useState(true);
 
+  const lessThanLimit = (fileSize, smallerThanSizeMB) => {
+    return fileSize / 1024 / 1024 < smallerThanSizeMB;
+  };
+
   // Pick image/video from devices library using Image Picker
   const pickFile = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      quality: 0.5,
-    });
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 0.5,
+        base64: true,
+      });
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-      setImageSelected(true);
-      setType(result.type);
+      if (!result.cancelled) {
+        const {type} = result;
+        const fileInfo = await FileSystem.getInfoAsync(result.uri);
+
+        if (!fileInfo?.size) {
+          Alert.alert(
+            'Failed to Select',
+            'file size is unknown, please select another file.'
+          );
+          return;
+        }
+
+        if (type === 'image' || type === 'video') {
+          const isNotLimit = lessThanLimit(fileInfo.size, 50);
+          if (!isNotLimit) {
+            alert(`File size must be smaller than 50MB!`);
+            return;
+          }
+        }
+
+        setImage(result.uri);
+        setFileSelected(true);
+        setType(result.type);
+      }
+    } catch (error) {
+      console.info(error);
     }
   };
 
   const reset = () => {
-    setImageSelected(false);
+    setFileSelected(false);
     setValue('title', '');
     setValue('description', '');
   };
@@ -82,7 +111,7 @@ const Upload = ({navigation}) => {
   const onSubmit = async (data) => {
     console.log('onSubmit tag', tags);
     // File must be selected to submit the post
-    if (!imageSelected) {
+    if (!fileSelected) {
       Alert.alert('Please, select a file');
       return;
     }
@@ -279,6 +308,7 @@ const styles = StyleSheet.create({
     height: 250,
     aspectRatio: 3 / 2,
     resizeMode: 'contain',
+    marginBottom: 20,
   },
   button: {
     marginTop: 7,
