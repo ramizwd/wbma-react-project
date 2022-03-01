@@ -37,11 +37,6 @@ const Upload = ({navigation}) => {
 
   // Pick image/video from devices library using Image Picker
   const pickFile = async () => {
-    const a = Constants.manifest.extra.pvtAppId + '+javascript';
-    const b = a.split(Constants.manifest.extra.pvtAppId);
-    console.log(b[1]);
-    console.log('a', a);
-    console.log('tag');
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
