@@ -209,14 +209,6 @@ const useTag = () => {
     return await baseFetch(`${baseUrl}tags/file/${fileId}`);
   };
 
-  // const deleteTagByTagId = async (tagId, token) => {
-  //   const options = {
-  //     method: 'DELETE',
-  //     headers: {'x-access-token': token},
-  //   };
-  //   return await baseFetch(`${baseUrl}tags/${tagId}`, options);
-  // };
-
   return {postTag, getFilesByTag, getTagsByFileId};
 };
 

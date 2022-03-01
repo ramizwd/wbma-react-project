@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Alert, TouchableOpacity} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
 import {
@@ -12,7 +12,7 @@ import {
   MenuItem,
 } from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useComment, useMedia, useTag, useUser} from '../hooks/ApiHooks';
+import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import Avatar from './Avatar';
 import moment from 'moment';
@@ -20,18 +20,20 @@ import Likes from './Likes';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import SavePost from './SavePost';
 import Tags from './Tags';
+import {Video} from 'expo-av';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
 const CardContent = ({navigation, post, userPost}) => {
   const {getUserById} = useUser();
-  const {loading, deleteMedia} = useMedia();
+  const {deleteMedia} = useMedia();
   const {getCommentsByPost} = useComment();
   const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
   const [comments, setComments] = useState([]);
   const {update, setUpdate} = useContext(MainContext);
   const [visible, setVisible] = useState(false);
   const {user} = useContext(MainContext);
+  const videoRef = useRef(null);
 
   // fetching post owner data by ID and setting it to the posterOwner state hook
   const fetchOwner = async () => {
@@ -175,18 +177,31 @@ const CardContent = ({navigation, post, userPost}) => {
         </Layout>
 
         <Layout style={styles.postContent}>
-          <Image
-            source={{uri: uploadsUrl + post.filename}}
-            style={styles.image}
-          />
-
-          {/* {!loading ? (
-
-      ) : (
-        <Layout style={styles.spinner}>
-          <Spinner />
-        </Layout>
-      )} */}
+          {post.media_type === 'image' ? (
+            <Image
+              source={{uri: uploadsUrl + post.filename}}
+              containerStyle={styles.image}
+              style={styles.image}
+              PlaceholderContent={<Spinner />}
+            />
+          ) : (
+            <Video
+              ref={videoRef}
+              style={styles.image}
+              source={{
+                uri: uploadsUrl + post.filename,
+              }}
+              usePoster={{
+                uri: uploadsUrl + post.screenshot,
+              }}
+              useNativeControls
+              isLooping
+              resizeMode="contain"
+              onError={(error) => {
+                console.log('<Video> error', error);
+              }}
+            ></Video>
+          )}
           <Text category="p2" appearance="hint" style={styles.time}>
             {moment(post.time_added).fromNow()}
           </Text>
@@ -256,6 +271,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 5,
     borderRadius: 8,
+    resizeMode: 'contain',
   },
   time: {
     textAlign: 'right',
@@ -285,12 +301,6 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMonoReg',
     fontSize: 14,
   },
-  // spinner: {
-  //   marginLeft: 'auto',
-  //   marginRight: 'auto',
-  //   justifyContent: 'center',
-  //   height: 250,
-  // },
   icon: {
     height: 30,
     width: 30,
