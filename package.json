@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
+    "@ui-kitten/metro-config": "^5.1.1",
     "eslint": "^8.7.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.3.0",
