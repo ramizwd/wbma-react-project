@@ -1,10 +1,10 @@
-import {View, Text, Alert, StyleSheet} from 'react-native';
+import {Alert, StyleSheet} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PropTypes} from 'prop-types';
 import {useComment, useUser} from '../hooks/ApiHooks';
 import Avatar from './Avatar';
-import {Button, Icon, Layout} from '@ui-kitten/components';
+import {Button, Divider, Icon, Layout, Text} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
 import moment from 'moment';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
@@ -52,7 +52,7 @@ const Comment = ({comment, navigation}) => {
   };
 
   const renderDeleteIcon = () => (
-    <Icon name="trash" style={{width: 25, height: 25}} />
+    <Icon name="trash" resizeMode="contain" style={{width: 30, height: 30}} />
   );
 
   // Fetch comments owner
@@ -61,50 +61,56 @@ const Comment = ({comment, navigation}) => {
   }, [update]);
 
   return (
-    <View style={{borderWidth: 1}}>
-      <Layout
-        style={{
-          flexDirection: 'row',
-        }}
-      >
-        <TouchableWithoutFeedback
-          style={{flexDirection: 'row'}}
-          onPress={() => navigation.navigate('User profile', {file: comment})}
+    <Layout style={{}}>
+      <Layout style={{padding: 10}}>
+        <Layout
+          style={[
+            styles.row,
+            {
+              justifyContent: 'space-between',
+            },
+          ]}
         >
-          <Avatar userAvatar={comment.user_id} />
-          <Text style={{marginLeft: 5}}>{commentOwner.username}</Text>
-        </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            style={styles.row}
+            onPress={() => navigation.navigate('User profile', {file: comment})}
+          >
+            <Avatar userAvatar={comment.user_id} />
+            <Text style={{marginLeft: 5}}>{commentOwner.username}</Text>
+          </TouchableWithoutFeedback>
 
-        {comment.user_id === user.user_id && (
-          <Button
-            style={{
-              height: 30,
-              width: 30,
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
-              textAlign: 'right',
-            }}
-            onPress={() => {
-              removeComment();
-            }}
-            appearance="ghost"
-            accessoryRight={renderDeleteIcon}
-          ></Button>
-        )}
+          {comment.user_id === user.user_id && (
+            <Button
+              style={styles.deleteButton}
+              onPress={() => {
+                removeComment();
+              }}
+              appearance="ghost"
+              accessoryRight={renderDeleteIcon}
+            ></Button>
+          )}
+        </Layout>
+        <Layout>
+          <Text style={{marginVertical: 10}}>{comment.comment}</Text>
+          <Text style={{textAlign: 'right', marginRight: 5}}>{`Posted: ${moment(
+            comment.time_added
+          ).fromNow()}`}</Text>
+        </Layout>
       </Layout>
-      <View>
-        <Text>{comment.comment}</Text>
-        <Text style={{textAlign: 'right', marginRight: 5}}>{`Posted: ${moment(
-          comment.time_added
-        ).fromNow()}`}</Text>
-      </View>
-    </View>
+      <Divider />
+    </Layout>
   );
 };
 
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
+  },
+  deleteButton: {
+    height: '100%',
+    width: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
