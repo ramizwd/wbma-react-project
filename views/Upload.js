@@ -52,10 +52,6 @@ const Upload = ({navigation}) => {
   });
   const [isPanelActive, setIsPanelActive] = useState(true);
 
-  const lessThanLimit = (fileSize, smallerThanSizeMB) => {
-    return fileSize / 1024 / 1024 < smallerThanSizeMB;
-  };
-
   // Pick image/video from devices library using Image Picker
   const pickFile = async () => {
     try {
@@ -69,7 +65,6 @@ const Upload = ({navigation}) => {
       if (!result.cancelled) {
         const {type} = result;
         const fileInfo = await FileSystem.getInfoAsync(result.uri);
-
         if (!fileInfo?.size) {
           Alert.alert(
             'Failed to Select',
@@ -78,11 +73,19 @@ const Upload = ({navigation}) => {
           return;
         }
 
-        if (type === 'image' || type === 'video') {
-          const isNotLimit = lessThanLimit(fileInfo.size, 50);
-          if (!isNotLimit) {
-            alert(`File size must be smaller than 50MB!`);
-            return;
+        const fileSize = fileInfo.size / 1024 / 1024;
+        if (type === 'image' || type === 'audio') {
+          fileSize > 5 &&
+            alert(
+              `Image/Audio size must be smaller than 5MB, please choose another file`
+            );
+        }
+        if (type === 'video') {
+          setImage(null);
+          if (fileSize > 50) {
+            alert(
+              `Video size must be smaller than 50MB, please choose another file`
+            );
           }
         }
 

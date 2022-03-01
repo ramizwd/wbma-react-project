@@ -185,22 +185,24 @@ const CardContent = ({navigation, post, userPost}) => {
               PlaceholderContent={<Spinner />}
             />
           ) : (
-            <Video
-              ref={videoRef}
-              style={styles.image}
-              source={{
-                uri: uploadsUrl + post.filename,
-              }}
-              usePoster={{
-                uri: uploadsUrl + post.screenshot,
-              }}
-              useNativeControls
-              isLooping
-              resizeMode="contain"
-              onError={(error) => {
-                console.log('<Video> error', error);
-              }}
-            ></Video>
+            <TouchableWithoutFeedback>
+              <Video
+                ref={videoRef}
+                style={styles.image}
+                source={{
+                  uri: uploadsUrl + post.filename,
+                }}
+                usePoster={{
+                  uri: uploadsUrl + post.screenshot,
+                }}
+                useNativeControls
+                isLooping
+                resizeMode="contain"
+                onError={(error) => {
+                  console.log('<Video> error', error);
+                }}
+              ></Video>
+            </TouchableWithoutFeedback>
           )}
           <Text category="p2" appearance="hint" style={styles.time}>
             {moment(post.time_added).fromNow()}
