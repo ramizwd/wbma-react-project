@@ -1,6 +1,19 @@
-import {Image, StyleSheet, Dimensions} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Button, Input, Layout, Popover, Text} from '@ui-kitten/components';
+import {
+  Button,
+  Icon,
+  Input,
+  Layout,
+  Popover,
+  Text,
+} from '@ui-kitten/components';
 import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
@@ -52,16 +65,37 @@ const Single = ({route, navigation}) => {
 
   // Add new comment to the post
   const createComment = async (data) => {
-    const formData = new FormData();
-    formData.append('comment', data.comment);
-    try {
-      const token = await AsyncStorage.getItem('token');
-      await postComment(data, file.file_id, token);
-      setUpdate(update + 1);
-    } catch (error) {
-      console.error('postComment error', error);
-    }
+    Alert.alert('Submit', 'This comment will be submitted!', [
+      {text: 'Cancel'},
+      {
+        text: 'OK',
+        onPress: async () => {
+          const formData = new FormData();
+          formData.append('comment', data.comment);
+          try {
+            const token = await AsyncStorage.getItem('token');
+            const response = await postComment(data, file.file_id, token);
+            if (response) {
+              setUpdate(update + 1);
+              Alert.alert('Comment', 'Comment has been submitted.');
+            }
+          } catch (error) {
+            console.error('postComment error', error);
+          }
+        },
+      },
+    ]);
   };
+
+  const sendIcon = () => (
+    <TouchableOpacity onPress={handleSubmit(createComment)}>
+      <Icon
+        name="send-outline"
+        pack="ionIcons"
+        style={{width: 30, height: 30}}
+      />
+    </TouchableOpacity>
+  );
 
   // Getting comments when new comment is added
   useEffect(() => {
@@ -205,25 +239,20 @@ const Single = ({route, navigation}) => {
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <Input
-                style={{width: '80%'}}
+                style={{width: '95%'}}
                 onBlur={onBlur}
                 multiline={true}
+                accessoryRight={sendIcon}
                 onChangeText={onChange}
                 value={value}
                 autoCapitalize="none"
                 placeholder="Write a comment"
                 status={errors.comment ? 'warning' : 'basic'}
-                errorMessage={errors.comment && errors.comment.message}
+                caption={errors.comment && errors.comment.message}
               />
             )}
             name="comment"
           />
-          <Button
-            style={{alignSelf: 'flex-end'}}
-            onPress={handleSubmit(createComment)}
-          >
-            Send
-          </Button>
         </Layout>
 
         <Layout>
