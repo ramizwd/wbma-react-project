@@ -5,7 +5,7 @@ import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 import {useComment} from '../hooks/ApiHooks';
-import {tagDivider, uploadsUrl} from '../utils/variables';
+import {uploadsUrl} from '../utils/variables';
 import {Controller, useForm} from 'react-hook-form';
 import Comment from '../components/Comment';
 import {MainContext} from '../contexts/MainContext';
@@ -13,11 +13,12 @@ import Avatar from '../components/Avatar';
 import Likes from '../components/Likes';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
+import Tags from '../components/Tags';
 
 // View for single post
 const Single = ({route, navigation}) => {
   const [comments, setComments] = useState([]);
-  const {file, owner, tags} = route.params;
+  const {file, owner} = route.params;
   const {getCommentsByPost, postComment} = useComment();
   const {setUpdate, update} = useContext(MainContext);
   const [visible, setVisible] = useState(false);
@@ -84,17 +85,7 @@ const Single = ({route, navigation}) => {
           <Text style={{marginLeft: 10}}>{owner.username}</Text>
         </TouchableWithoutFeedback>
         <Layout style={(styles.row, {marginVertical: 5})}>
-          <Text>Tags: </Text>
-          <Layout style={styles.row}>
-            {tags.map((tag) => (
-              <Text
-                style={{borderWidth: 1, marginHorizontal: 2, padding: 4}}
-                key={tag.tag_id}
-              >
-                {tag.tag.split(tagDivider)[1]}
-              </Text>
-            ))}
-          </Layout>
+          <Tags post={file} />
         </Layout>
         <Layout>
           <Text style={{marginVertical: 5}} category="h6">
