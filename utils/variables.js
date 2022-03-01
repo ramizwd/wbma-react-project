@@ -1,4 +1,5 @@
 const uploadsUrl = 'https://media.mw.metropolia.fi/wbma/uploads/';
 const baseUrl = 'https://media.mw.metropolia.fi/wbma/';
+const tagDivider = 'uuu';
 
-export {baseUrl, uploadsUrl};
+export {baseUrl, uploadsUrl, tagDivider};
