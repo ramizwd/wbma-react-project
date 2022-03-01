@@ -131,8 +131,13 @@ const Single = ({route, navigation}) => {
           {file.media_type === 'image' ? (
             <Popover
               style={{
-                alignSelf: 'center',
-                marginTop: -200,
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
               placement="top"
               backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
@@ -162,9 +167,6 @@ const Single = ({route, navigation}) => {
                 style={{
                   width: 400,
                   height: 400,
-
-                  alignSelf: 'center',
-                  resizeMode: 'contain',
                 }}
               />
             </Popover>
