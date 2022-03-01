@@ -1,6 +1,6 @@
 import {Image, StyleSheet, Alert, TouchableOpacity} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
-import {tagDivider, uploadsUrl} from '../utils/variables';
+import {uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
 import {
   Text,
@@ -19,6 +19,7 @@ import moment from 'moment';
 import Likes from './Likes';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import SavePost from './SavePost';
+import Tags from './Tags';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
@@ -31,9 +32,6 @@ const CardContent = ({navigation, post, userPost}) => {
   const {update, setUpdate} = useContext(MainContext);
   const [visible, setVisible] = useState(false);
   const {user} = useContext(MainContext);
-  const [tags, setTags] = useState([]);
-  const {getTagsByFileId} = useTag();
-  const [color, setColor] = useState({backgroundColor: 'skyblue'});
 
   // fetching post owner data by ID and setting it to the posterOwner state hook
   const fetchOwner = async () => {
@@ -77,22 +75,9 @@ const CardContent = ({navigation, post, userPost}) => {
     ]);
   };
 
-  // Get tags for the post
-  const getTags = async () => {
-    console.log('tags', tags.length);
-    try {
-      const tags = await getTagsByFileId(post.file_id);
-      setTags(tags);
-      console.log('tags', tags);
-    } catch (error) {
-      console.error('getTags error', error);
-    }
-  };
-
   // fetch both owner and avatar on component render
   useEffect(() => {
     fetchOwner();
-    getTags();
   }, []);
 
   // update the comments count when a new comment is posted
@@ -128,7 +113,6 @@ const CardContent = ({navigation, post, userPost}) => {
         navigation.navigate('Single post', {
           file: post,
           owner: postOwner,
-          tags: tags,
         });
       }}
     >
@@ -167,7 +151,7 @@ const CardContent = ({navigation, post, userPost}) => {
               onBackdropPress={() => setVisible(false)}
             >
               <MenuItem
-                title="Modify Post"
+                title="Modify"
                 onPress={() => {
                   navigation.navigate('Modify post', {file: post});
                   setVisible(false);
@@ -203,34 +187,7 @@ const CardContent = ({navigation, post, userPost}) => {
 
           <Layout style={styles.desc}>
             <Text numberOfLines={2}>{post.description}</Text>
-            <Layout
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
-              <Text>Tags: </Text>
-
-              {tags.map(
-                (tag) =>
-                  tag.tag.split(tagDivider)[1] != undefined && (
-                    <TouchableOpacity
-                      style={{
-                        borderRadius: 100,
-                        backgroundColor: color.backgroundColor,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginRight: 5,
-                      }}
-                      key={tag.tag_id}
-                    >
-                      <Text style={{padding: 10}} category="p2">
-                        {tag.tag.split(tagDivider)[1]}
-                      </Text>
-                    </TouchableOpacity>
-                  )
-              )}
-            </Layout>
+            <Tags post={post} />
           </Layout>
         </Layout>
 
