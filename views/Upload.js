@@ -153,12 +153,11 @@ const Upload = ({navigation}) => {
   };
 
   return (
-    <Layout style={{flex: 1, backgroundColor: '#ECECEC'}}>
+    <KeyboardAwareScrollView>
       <Layout
         style={{
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#ECECEC',
         }}
       >
         <TouchableOpacity onPress={pickFile} activeOpacity={0.7}>
@@ -173,94 +172,90 @@ const Upload = ({navigation}) => {
         </TouchableOpacity>
       </Layout>
 
-      <Button
+      {/* <Button
         appearance="ghost"
         accessoryLeft={optionsIcon}
         style={{marginLeft: 'auto', bottom: 4}}
         onPress={() => {
           openPanel();
         }}
-      ></Button>
+      ></Button> */}
 
-      <SwipeablePanel
+      {/* <SwipeablePanel
         {...panelProps}
         isActive={isPanelActive}
-        style={{height: '90%'}}
-      >
-        <ScrollView style={{width: '100%'}}>
-          <Layout style={styles.modalContent}>
-            <Controller
-              control={control}
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Please enter a title.',
-                },
-                minLength: {
-                  value: 3,
-                  message: 'The title has to be at least 5 characters long.',
-                },
-                maxLength: {
-                  value: 55,
-                  message: "The title's maximum length is 50 characters long.",
-                },
-              }}
-              render={({field: {onChange, onBlur, value}}) => (
-                <Input
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  autoCapitalize="none"
-                  placeholder="Enter a title*"
-                  style={[styles.title, styles.input]}
-                  textStyle={styles.inputText}
-                  status={errors.title ? 'warning' : 'basic'}
-                  caption={errors.title && errors.title.message}
-                />
-              )}
-              name="title"
+        style={{height: '100%'}}
+      > */}
+      <Layout style={styles.modalContent}>
+        <SelectTags />
+        <Controller
+          control={control}
+          rules={{
+            required: {
+              value: true,
+              message: 'Please enter a title.',
+            },
+            minLength: {
+              value: 3,
+              message: 'The title has to be at least 5 characters long.',
+            },
+            maxLength: {
+              value: 55,
+              message: "The title's maximum length is 50 characters long.",
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder="Enter a title*"
+              style={[styles.title, styles.input]}
+              textStyle={styles.inputText}
+              status={errors.title ? 'warning' : 'basic'}
+              caption={errors.title && errors.title.message}
             />
+          )}
+          name="title"
+        />
 
-            <Controller
-              control={control}
-              rules={{
-                maxLength: {
-                  value: 1000,
-                  message: 'Description maximum length is 1000 characters.',
-                },
-              }}
-              render={({field: {onChange, onBlur, value}}) => (
-                <Input
-                  style={styles.input}
-                  onBlur={onBlur}
-                  multiline={true}
-                  onChangeText={onChange}
-                  value={value}
-                  autoCapitalize="none"
-                  placeholder="Description"
-                  status={errors.description ? 'warning' : 'basic'}
-                  caption={errors.description && errors.description.message}
-                  textStyle={[styles.description, styles.inputText]}
-                />
-              )}
-              name="description"
+        <Controller
+          control={control}
+          rules={{
+            maxLength: {
+              value: 1000,
+              message: 'Description maximum length is 1000 characters.',
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              style={styles.input}
+              onBlur={onBlur}
+              multiline={true}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder="Description"
+              status={errors.description ? 'warning' : 'basic'}
+              caption={errors.description && errors.description.message}
+              textStyle={[styles.description, styles.inputText]}
             />
-            <Button onPress={pickFile} style={styles.button}>
-              Choose a file
-            </Button>
-            <Button
-              onPress={handleSubmit(onSubmit)}
-              style={[
-                styles.button,
-                {backgroundColor: '#26A96C', marginTop: 10},
-              ]}
-            >
-              Post
-            </Button>
-          </Layout>
-        </ScrollView>
-      </SwipeablePanel>
-    </Layout>
+          )}
+          name="description"
+        />
+        <Button onPress={pickFile} style={styles.button}>
+          Choose a file
+        </Button>
+        <Button
+          onPress={handleSubmit(onSubmit)}
+          style={[styles.button, {backgroundColor: '#26A96C', marginTop: 10}]}
+        >
+          Post
+        </Button>
+      </Layout>
+      {/* </SwipeablePanel> */}
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -281,8 +276,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: undefined,
-    height: 330,
-    aspectRatio: 1,
+    height: 250,
+    aspectRatio: 3 / 2,
     resizeMode: 'contain',
   },
   button: {

@@ -21,6 +21,7 @@ import {
   Layout,
   IndexPath,
   Icon,
+  Button,
 } from '@ui-kitten/components';
 import {EvilIconsPack} from '../evil-icons';
 import {IonIconsPack} from '../ion-icons';
@@ -64,6 +65,10 @@ const SettingsIcon = () => (
 
 const LogoutIcon = () => (
   <Icon name="log-out-outline" pack="ionIcons" style={{height: 20}} />
+);
+
+const SearchIconBold = (props) => (
+  <Icon {...props} name="search" pack="ionIcons" />
 );
 
 const DrawerContent = ({navigation, state}) => {
@@ -148,7 +153,7 @@ const DrawerContent = ({navigation, state}) => {
   );
 };
 
-const DrawerScreen = () => (
+const DrawerScreen = ({navigation}) => (
   <Navigator
     initialRouteName="Home"
     screenOptions={{
@@ -160,6 +165,15 @@ const DrawerScreen = () => (
         borderBottomRightRadius: 10,
         backgroundColor: '#0496FF',
       },
+
+      headerRight: () => (
+        <Button
+          onPress={() => navigation.navigate('Explore')}
+          appearance="ghost"
+          accessoryRight={SearchIconBold}
+          style={{marginRight: 10, width: 30}}
+        />
+      ),
     }}
     drawerContent={(props) => <DrawerContent {...props} />}
   >
@@ -181,7 +195,9 @@ const StackScreen = () => {
           <Stack.Screen
             name="Drawer"
             component={DrawerScreen}
-            options={{headerShown: false}}
+            options={{
+              headerShown: false,
+            }}
           />
           <Stack.Screen name="Upload post" component={Upload}></Stack.Screen>
           <Stack.Screen
@@ -266,5 +282,7 @@ DrawerContent.propTypes = {
   navigation: PropTypes.object,
   state: PropTypes.object,
 };
-
+DrawerScreen.propTypes = {
+  navigation: PropTypes.object,
+};
 export default DrawerNavigator;
