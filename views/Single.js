@@ -188,31 +188,49 @@ const Single = ({route, navigation}) => {
           <Controller
             control={control}
             rules={{
-              maxLength: 100,
-              required: true,
+              required: {
+                value: true,
+                message: 'Enter a comment.',
+              },
+              maxLength: {
+                value: 100,
+                message: "The comment's maximum length is 100 characters.",
+              },
+              minLength: {
+                value: 1,
+                message: 'The comment cannot be empty',
+              },
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <Input
-                style={{with: '90%'}}
+                style={{width: '80%'}}
                 onBlur={onBlur}
                 multiline={true}
                 onChangeText={onChange}
                 value={value}
                 autoCapitalize="none"
                 placeholder="Write a comment"
-                errorMessage={errors.description && 'This is required.'}
+                status={errors.comment ? 'warning' : 'basic'}
+                errorMessage={errors.comment && errors.comment.message}
               />
             )}
             name="comment"
           />
-          <Button style={{}} onPress={handleSubmit(createComment)}>
+          <Button
+            style={{alignSelf: 'flex-end'}}
+            onPress={handleSubmit(createComment)}
+          >
             Send
           </Button>
         </Layout>
 
         <Layout>
           {comments.map((comment) => (
-            <Comment key={comment.time_added} comment={comment} />
+            <Comment
+              key={comment.comment_id}
+              comment={comment}
+              navigation={navigation}
+            />
           ))}
         </Layout>
       </Layout>
