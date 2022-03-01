@@ -111,7 +111,7 @@ const useMedia = (userPost) => {
         })
       );
       // state hook for storing the fetched media
-      setMediaArray(media);
+      setMediaArray(media.reverse());
     } catch (error) {
       console.error(error);
     } finally {
