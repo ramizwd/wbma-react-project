@@ -70,6 +70,7 @@ const SavePost = ({file}) => {
       style={styles.icon}
     />
   );
+
   return (
     <Button
       onPress={() => {
@@ -81,7 +82,7 @@ const SavePost = ({file}) => {
       status="basic"
     >
       {(props) => (
-        <Text {...props} style={{marginLeft: 10}}>
+        <Text {...props} style={styles.saveTxt}>
           {savedStatus ? 'saved' : 'save'}
         </Text>
       )}
@@ -93,6 +94,11 @@ const styles = StyleSheet.create({
   icon: {
     height: 30,
     width: 30,
+  },
+  saveTxt: {
+    marginLeft: 5,
+    fontFamily: 'JetBrainsMonoReg',
+    fontSize: 14,
   },
 });
 

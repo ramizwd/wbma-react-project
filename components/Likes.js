@@ -13,7 +13,7 @@ const Likes = ({file}) => {
   const [likes, setLikes] = useState([]);
   const [likeColor, setLikeColor] = useState();
   const {setLikeUpdate, likeUpdate} = useContext(MainContext);
-  const pulseIconRef = useRef();
+  const zoomIconRef = useRef();
 
   // fetch likes by file ID, set the like array to the like hook, check if user liked
   // then set Liked hook to true and so the color
@@ -32,7 +32,7 @@ const Likes = ({file}) => {
     } catch (error) {
       console.error('fetching likes error: ', error);
     } finally {
-      pulseIconRef.current.startAnimation();
+      zoomIconRef.current.startAnimation();
     }
   };
 
@@ -78,9 +78,9 @@ const Likes = ({file}) => {
 
   const renderPulseIcon = () => (
     <Icon
-      ref={pulseIconRef}
+      ref={zoomIconRef}
       color={likeColor}
-      animation="pulse"
+      animation="zoom"
       name="heart"
       style={styles.icon}
     />
@@ -102,7 +102,7 @@ const Likes = ({file}) => {
       status="basic"
     >
       {(props) => (
-        <Text {...props} style={{marginLeft: 10}}>
+        <Text {...props} style={styles.likeTxt}>
           {likes.length > 1 ? likes.length + ' likes' : likes.length + ' like'}
         </Text>
       )}
@@ -114,6 +114,11 @@ const styles = StyleSheet.create({
   icon: {
     height: 30,
     width: 30,
+  },
+  likeTxt: {
+    marginLeft: 5,
+    fontFamily: 'JetBrainsMonoReg',
+    fontSize: 14,
   },
 });
 

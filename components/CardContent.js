@@ -134,14 +134,20 @@ const CardContent = ({navigation, post, userPost}) => {
                   {postOwner.full_name ? (
                     <Text category="p1">
                       {postOwner.full_name}
-                      <Text appearance="hint"> @{postOwner.username}</Text>
+                      <Text appearance="hint" style={styles.username}>
+                        &nbsp;@{postOwner.username}
+                      </Text>
                     </Text>
                   ) : (
-                    <Text appearance="hint">@{postOwner.username}</Text>
+                    <Text appearance="hint" style={styles.username}>
+                      @{postOwner.username}
+                    </Text>
                   )}
                 </TouchableWithoutFeedback>
               )}
-              <Text category="h6">{post.title}</Text>
+              <Text category="h6" style={styles.title}>
+                {post.title}
+              </Text>
             </Layout>
           </Layout>
           {post.user_id === user.user_id && (
@@ -185,8 +191,10 @@ const CardContent = ({navigation, post, userPost}) => {
             {moment(post.time_added).fromNow()}
           </Text>
 
-          <Layout style={styles.desc}>
-            <Text numberOfLines={2}>{post.description}</Text>
+          <Layout style={styles.bottomContent}>
+            <Text numberOfLines={2} style={styles.description}>
+              {post.description}
+            </Text>
             <Tags post={post} />
           </Layout>
         </Layout>
@@ -205,7 +213,7 @@ const CardContent = ({navigation, post, userPost}) => {
             accessoryLeft={renderCommentIcon}
           >
             {(props) => (
-              <Text {...props} style={{marginLeft: 10}}>
+              <Text {...props} style={styles.commentTxt}>
                 {comments.length > 1
                   ? comments.length + ' comments'
                   : comments.length + ' comment'}
@@ -229,6 +237,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     maxWidth: 290,
   },
+  username: {
+    fontFamily: 'IBMPlexMonoMed',
+    fontSize: 14,
+  },
+  title: {
+    fontFamily: 'JetBrainsMonoReg',
+    fontSize: 16,
+  },
   postContent: {
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -243,6 +259,7 @@ const styles = StyleSheet.create({
   },
   time: {
     textAlign: 'right',
+    marginRight: 5,
   },
   optionsBtn: {
     width: 30,
@@ -252,8 +269,21 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
   },
-  desc: {
+  bottomContent: {
     padding: 10,
+  },
+  description: {
+    fontFamily: 'JetBrainsMonoReg',
+    fontSize: 14,
+  },
+  feedback: {
+    flexDirection: 'row',
+    padding: 10,
+  },
+  commentTxt: {
+    marginLeft: 5,
+    fontFamily: 'JetBrainsMonoReg',
+    fontSize: 14,
   },
   // spinner: {
   //   marginLeft: 'auto',
@@ -261,10 +291,6 @@ const styles = StyleSheet.create({
   //   justifyContent: 'center',
   //   height: 250,
   // },
-  feedback: {
-    flexDirection: 'row',
-    padding: 10,
-  },
   icon: {
     height: 30,
     width: 30,

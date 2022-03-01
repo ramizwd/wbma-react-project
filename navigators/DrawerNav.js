@@ -123,7 +123,7 @@ const DrawerContent = ({navigation, state}) => {
           accessoryLeft={ProfileIcon}
         />
         <DrawerItem
-          title="Messaging"
+          title="Messages"
           style={styles.drawerItem}
           accessoryLeft={ChatIcon}
         />
