@@ -205,7 +205,19 @@ const useTag = () => {
     return await baseFetch(`${baseUrl}tags/${tag}`);
   };
 
-  return {postTag, getFilesByTag};
+  const getTagsByFileId = async (fileId) => {
+    return await baseFetch(`${baseUrl}tags/file/${fileId}`);
+  };
+
+  // const deleteTagByTagId = async (tagId, token) => {
+  //   const options = {
+  //     method: 'DELETE',
+  //     headers: {'x-access-token': token},
+  //   };
+  //   return await baseFetch(`${baseUrl}tags/${tagId}`, options);
+  // };
+
+  return {postTag, getFilesByTag, getTagsByFileId};
 };
 
 // Comments hook
@@ -227,15 +239,13 @@ const useComment = () => {
   };
 
   const deleteComment = async (commentId, token) => {
+    console.log('got here');
     const options = {
       method: 'DELETE',
       headers: {'x-access-token': token},
     };
-    try {
-      return await baseFetch(`${baseUrl}comments/${commentId}`, options);
-    } catch (error) {
-      console.error('deleteComment hook error', error);
-    }
+
+    return await baseFetch(`${baseUrl}comments/${commentId}`, options);
   };
 
   return {getCommentsByPost, postComment, deleteComment};
@@ -266,7 +276,83 @@ const useLikes = () => {
     return await baseFetch(`${baseUrl}favourites/file/${fileId}`, options);
   };
 
-  return {postLike, getLikesByFileId, deleteLike};
+  const getLikeByToken = async (token) => {
+    const options = {
+      headers: {'x-access-token': token},
+    };
+    return await baseFetch(`${baseUrl}favourites`, options);
+  };
+
+  const getPostsByLikes = async (token) => {
+    const json = await getLikeByToken(token);
+
+    const media = await Promise.all(
+      json.map(async (item) => {
+        const response = await fetch(`${baseUrl}media/${item.file_id}`);
+        return await response.json();
+      })
+    );
+    return media;
+  };
+
+  return {
+    postLike,
+    getLikesByFileId,
+    deleteLike,
+    getPostsByLikes,
+  };
 };
 
-export {useLogin, useUser, useMedia, useTag, useComment, useLikes};
+const useRating = () => {
+  const postRating = async (fileId, token) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+      body: JSON.stringify({file_id: fileId, rating: 1}),
+    };
+    return await baseFetch(`${baseUrl}ratings`, options);
+  };
+
+  const deleteRating = async (fileId, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {'x-access-token': token},
+    };
+    return await baseFetch(`${baseUrl}ratings/file/${fileId}`, options);
+  };
+
+  const getRatedByFileId = async (fileId) => {
+    return await baseFetch(`${baseUrl}ratings/file/${fileId}`);
+  };
+
+  const getRatingByToken = async (token) => {
+    const options = {
+      headers: {'x-access-token': token},
+    };
+    return await baseFetch(`${baseUrl}ratings`, options);
+  };
+
+  const getRatedPostByUser = async (token) => {
+    const json = await getRatingByToken(token);
+
+    const media = await Promise.all(
+      json.map(async (item) => {
+        const response = await fetch(`${baseUrl}media/${item.file_id}`);
+        return await response.json();
+      })
+    );
+    return media;
+  };
+
+  return {
+    postRating,
+    deleteRating,
+    getRatedByFileId,
+    getRatedPostByUser,
+  };
+};
+
+export {useLogin, useUser, useMedia, useTag, useComment, useLikes, useRating};
