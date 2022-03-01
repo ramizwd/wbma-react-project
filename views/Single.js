@@ -1,25 +1,10 @@
-import {
-  View,
-  Image,
-  StyleSheet,
-  ScrollView,
-  FlatList,
-  Dimensions,
-} from 'react-native';
+import {Image, StyleSheet, Dimensions} from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {
-  Button,
-  Card,
-  Input,
-  Layout,
-  List,
-  Popover,
-  Text,
-} from '@ui-kitten/components';
+import {Button, Input, Layout, Popover, Text} from '@ui-kitten/components';
 import {Video} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import {useComment, useTag} from '../hooks/ApiHooks';
+import {useComment} from '../hooks/ApiHooks';
 import {tagDivider, uploadsUrl} from '../utils/variables';
 import {Controller, useForm} from 'react-hook-form';
 import Comment from '../components/Comment';
@@ -236,7 +221,11 @@ const Single = ({route, navigation}) => {
 
         <Layout>
           {comments.map((comment) => (
-            <Comment key={comment.time_added} comment={comment} />
+            <Comment
+              key={comment.comment_id}
+              comment={comment}
+              navigation={navigation}
+            />
           ))}
         </Layout>
       </Layout>
