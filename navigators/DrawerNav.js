@@ -199,14 +199,26 @@ const StackScreen = () => {
               headerShown: false,
             }}
           />
-          <Stack.Screen name="Upload post" component={Upload}></Stack.Screen>
           <Stack.Screen
+            name="Upload post"
+            component={Upload}
+            options={{
+              title: 'Upload Post',
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            options={{
+              title: 'Edit profile',
+            }}
             name="ModifyProfile"
             component={ModifyProfile}
           ></Stack.Screen>
           <Stack.Screen name="Single post" component={Single}></Stack.Screen>
           <Stack.Screen
             name="Modify post"
+            options={{
+              title: 'Edit Post',
+            }}
             component={ModifyPost}
           ></Stack.Screen>
           <Stack.Screen

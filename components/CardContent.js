@@ -26,7 +26,7 @@ import {Video} from 'expo-av';
 // username and the post information
 const CardContent = ({navigation, post, userPost}) => {
   const {getUserById} = useUser();
-  const {deleteMedia} = useMedia();
+  const {deleteMedia, loading} = useMedia();
   const {getCommentsByPost} = useComment();
   const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
   const [comments, setComments] = useState([]);
@@ -182,33 +182,42 @@ const CardContent = ({navigation, post, userPost}) => {
         </Layout>
 
         <Layout style={styles.postContent}>
-          {post.media_type === 'image' ? (
-            <Image
-              source={{uri: uploadsUrl + post.filename}}
-              containerStyle={styles.image}
-              style={styles.image}
-              PlaceholderContent={<Spinner />}
-            />
+          {!loading ? (
+            <Layout>
+              {post.media_type === 'image' ? (
+                <Image
+                  source={{uri: uploadsUrl + post.filename}}
+                  containerStyle={styles.image}
+                  style={styles.image}
+                  PlaceholderContent={<Spinner />}
+                />
+              ) : (
+                <TouchableWithoutFeedback>
+                  <Video
+                    ref={videoRef}
+                    style={styles.image}
+                    source={{
+                      uri: uploadsUrl + post.filename,
+                    }}
+                    usePoster={{
+                      uri: uploadsUrl + post.screenshot,
+                    }}
+                    useNativeControls
+                    isLooping
+                    resizeMode="contain"
+                    onError={(error) => {
+                      console.log('<Video> error', error);
+                    }}
+                  ></Video>
+                </TouchableWithoutFeedback>
+              )}
+            </Layout>
           ) : (
-            <TouchableWithoutFeedback>
-              <Video
-                ref={videoRef}
-                style={styles.image}
-                source={{
-                  uri: uploadsUrl + post.filename,
-                }}
-                usePoster={{
-                  uri: uploadsUrl + post.screenshot,
-                }}
-                useNativeControls
-                isLooping
-                resizeMode="contain"
-                onError={(error) => {
-                  console.log('<Video> error', error);
-                }}
-              ></Video>
-            </TouchableWithoutFeedback>
+            <Layout style={styles.spinner}>
+              <Spinner size="medium" />
+            </Layout>
           )}
+
           <Text category="p2" appearance="hint" style={styles.time}>
             {moment(post.time_added).fromNow()}
           </Text>
@@ -281,6 +290,16 @@ const styles = StyleSheet.create({
     marginTop: 5,
     borderRadius: 8,
     resizeMode: 'contain',
+  },
+  spinner: {
+    height: 250,
+    maxWidth: 600,
+    marginBottom: 10,
+    marginTop: 5,
+    marginRight: 'auto',
+    marginLeft: 'auto',
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   time: {
     textAlign: 'right',
