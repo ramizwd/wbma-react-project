@@ -152,7 +152,7 @@ const Search = ({navigation}) => {
                 onChangeText={
                   !searchByTag
                     ? (val) => {
-                        onChange({val});
+                        onChange(val);
                         setValue(val);
                         setData(mediaArray.filter((item) => filter(item, val)));
                       }
