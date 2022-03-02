@@ -23,7 +23,11 @@ const Register = ({navigation}) => {
         >
           <Layout>
             <Text style={styles.header}>Moment</Text>
-            <RegisterForm />
+            <RegisterForm
+              onPress={() => {
+                navigation.navigate('Login');
+              }}
+            />
 
             <Layout style={styles.singIn}>
               <Text style={styles.singInText}>Already have an account?</Text>

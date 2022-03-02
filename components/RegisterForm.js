@@ -4,8 +4,9 @@ import {useForm, Controller} from 'react-hook-form';
 import {Input, Button, Layout} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useUser} from '../hooks/ApiHooks';
+import PropTypes from 'prop-types';
 
-const RegisterForm = () => {
+const RegisterForm = ({onPress}) => {
   const {postUser, checkUsername} = useUser();
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const {
@@ -30,7 +31,17 @@ const RegisterForm = () => {
       delete data.confirm_password;
       const userData = await postUser(data);
       if (userData) {
-        Alert.alert('Success', 'Account created successfully.');
+        Alert.alert('Success', 'Account successfully. Move to login?', [
+          {
+            text: 'Cancel',
+          },
+          {
+            text: 'OK',
+            onPress: () => {
+              onPress();
+            },
+          },
+        ]);
       }
     } catch (error) {
       Alert.alert('Error', error.message);
@@ -222,5 +233,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
+RegisterForm.propTypes = {
+  onPress: PropTypes.func,
+};
 
 export default RegisterForm;
