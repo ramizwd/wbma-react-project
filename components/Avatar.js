@@ -8,12 +8,14 @@ import {ImageBackground} from 'react-native';
 const Avatar = ({userAvatar, avatarSize = 'large'}) => {
   const {getFilesByTag} = useTag();
   const [avatar, setAvatar] = useState();
+  const [avatarBgSize, setAvatarBgSize] = useState({width: 51, height: 51});
 
   const fetchAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag(`avatar_${userAvatar}`);
       if (avatarArray.length === 0) return;
       setAvatar(uploadsUrl + avatarArray.pop().filename);
+      avatarSize === 'small' && setAvatarBgSize({width: 35, height: 35});
     } catch (error) {
       console.error('avatar fetch error', error);
     }
@@ -27,8 +29,8 @@ const Avatar = ({userAvatar, avatarSize = 'large'}) => {
     <ImageBackground
       source={require('../assets/pfpBg.png')}
       style={{
-        width: 51,
-        height: 51,
+        width: avatarBgSize.width,
+        height: avatarBgSize.height,
         justifyContent: 'center',
         alignItems: 'center',
         shadowColor: 'black',

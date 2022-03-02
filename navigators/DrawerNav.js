@@ -39,6 +39,7 @@ import Upload from '../views/Upload';
 import ModifyPost from '../views/ModifyPost';
 import UserProfile from '../views/UserProfile';
 import {ThemeContext} from '../contexts/ThemeContext';
+import {useFonts} from 'expo-font';
 
 const Stack = createNativeStackNavigator();
 const {Navigator, Screen} = createDrawerNavigator();
@@ -87,9 +88,14 @@ const DrawerContent = ({navigation, state}) => {
         </Text>
         <TouchableOpacity onPress={themeContext.toggleTheme}>
           <Icon
-            name={themeContext.theme == 'light' ? 'moon-outline' : 'moon'}
+            name={themeContext.theme === 'light' ? 'moon-outline' : 'moon'}
             pack="ionIcons"
-            style={{height: 20}}
+            style={
+              ({height: 20},
+              themeContext.theme === 'dark'
+                ? {color: '#F5CB5C', height: 20}
+                : {color: '#CCDBDC', height: 20})
+            }
           />
         </TouchableOpacity>
       </ImageBackground>
@@ -165,6 +171,9 @@ const DrawerScreen = ({navigation}) => (
         borderBottomRightRadius: 10,
         backgroundColor: '#0496FF',
       },
+      headerTitleStyle: {
+        fontFamily: 'IBMPlexMonoMed',
+      },
 
       headerRight: () => (
         <Button
@@ -187,7 +196,14 @@ const DrawerScreen = ({navigation}) => (
 
 const StackScreen = () => {
   const {loggedIn} = useContext(MainContext);
+  const [loaded] = useFonts({
+    JetBrainsMonoReg: require('../assets/fonts/JetBrainsMono/JetBrainsMonoRegular.ttf'),
+    IBMPlexMonoMed: require('../assets/fonts/IBMPlexMono/IBMPlexMonoMedium.ttf'),
+  });
 
+  if (!loaded) {
+    return null;
+  }
   return (
     <Stack.Navigator>
       {loggedIn ? (
@@ -204,11 +220,17 @@ const StackScreen = () => {
             component={Upload}
             options={{
               title: 'Upload Post',
+              headerTitleStyle: {
+                fontFamily: 'JetBrainsMonoReg',
+              },
             }}
           ></Stack.Screen>
           <Stack.Screen
             options={{
               title: 'Edit profile',
+              headerTitleStyle: {
+                fontFamily: 'JetBrainsMonoReg',
+              },
             }}
             name="ModifyProfile"
             component={ModifyProfile}
@@ -218,6 +240,9 @@ const StackScreen = () => {
             name="Modify post"
             options={{
               title: 'Edit Post',
+              headerTitleStyle: {
+                fontFamily: 'JetBrainsMonoReg',
+              },
             }}
             component={ModifyPost}
           ></Stack.Screen>
@@ -236,7 +261,12 @@ const StackScreen = () => {
       <Stack.Screen
         name="Register"
         component={Register}
-        options={{headerTitleAlign: 'center'}}
+        options={{
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontFamily: 'JetBrainsMonoReg',
+          },
+        }}
       ></Stack.Screen>
     </Stack.Navigator>
   );
@@ -275,7 +305,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   profileName: {
-    marginHorizontal: 10,
+    marginHorizontal: 15,
+    fontFamily: 'JetBrainsMonoReg',
   },
   backgroundImg: {
     width: 280,
