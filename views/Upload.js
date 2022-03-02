@@ -1,5 +1,11 @@
-import {StyleSheet, Alert, Image, TouchableOpacity} from 'react-native';
-import {Input, Button, Layout} from '@ui-kitten/components';
+import {
+  StyleSheet,
+  Alert,
+  Image,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
+import {Input, Button, Layout, Spinner} from '@ui-kitten/components';
 import React, {useCallback, useContext, useState} from 'react';
 import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
@@ -19,7 +25,7 @@ const Upload = ({navigation}) => {
   const [image, setImage] = useState();
   const [fileSelected, setFileSelected] = useState(false);
   const [type, setType] = useState('');
-  const {postMedia} = useMedia();
+  const {postMedia, loading} = useMedia();
   const {postTag} = useTag();
   const {update, setUpdate, tags} = useContext(MainContext);
   const {
@@ -93,6 +99,8 @@ const Upload = ({navigation}) => {
     }, [])
   );
 
+  const LoadingIndicator = () => <Spinner size="small" status="basic" />;
+
   // When formdata is submitted
   const onSubmit = async (data) => {
     console.log('onSubmit tag', tags);
@@ -156,7 +164,7 @@ const Upload = ({navigation}) => {
   };
 
   return (
-    <KeyboardAwareScrollView>
+    <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
       <Layout
         style={{
           justifyContent: 'center',
@@ -190,6 +198,10 @@ const Upload = ({navigation}) => {
         style={{height: '100%'}}
       > */}
       <Layout style={styles.modalContent}>
+        <ImageBackground
+          source={require('../assets/drawerBg.png')}
+          style={styles.bgImage}
+        />
         <SelectTags />
         <Controller
           control={control}
@@ -251,6 +263,7 @@ const Upload = ({navigation}) => {
           Choose a file
         </Button>
         <Button
+          accessoryLeft={loading && LoadingIndicator}
           onPress={handleSubmit(onSubmit)}
           style={[styles.button, {backgroundColor: '#26A96C', marginTop: 10}]}
         >
@@ -264,7 +277,15 @@ const Upload = ({navigation}) => {
 
 const styles = StyleSheet.create({
   modalContent: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  bgImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '150%',
+    bottom: '-90%',
   },
   input: {
     width: '90%',
@@ -272,7 +293,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   inputText: {fontSize: 16},
-
   description: {
     height: 100,
     textAlignVertical: 'top',
@@ -282,7 +302,6 @@ const styles = StyleSheet.create({
     height: 250,
     aspectRatio: 3 / 2,
     resizeMode: 'contain',
-    marginBottom: 20,
   },
   button: {
     marginTop: 7,

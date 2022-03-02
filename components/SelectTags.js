@@ -28,6 +28,7 @@ const SelectTags = () => {
     <Layout style={{flexDirection: 'row'}}>
       <Select
         style={{width: '30%'}}
+        size="small"
         selectedIndex={languageIndex}
         onSelect={(index) => setLanguageIndex(index)}
         value={selectedLanguage}
@@ -36,6 +37,7 @@ const SelectTags = () => {
         {languageTags.map(renderOption)}
       </Select>
       <Select
+        size="small"
         style={{width: '30%'}}
         selectedIndex={themeIndex}
         onSelect={(index) => setThemeIndex(index)}
