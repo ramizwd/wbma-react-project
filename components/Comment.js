@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PropTypes} from 'prop-types';
 import {useComment, useUser} from '../hooks/ApiHooks';
 import Avatar from './Avatar';
-import {Button, Divider, Icon, Layout, Text} from '@ui-kitten/components';
+import {Button, Icon, Layout, Spinner, Text} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
 import moment from 'moment';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
@@ -14,7 +14,7 @@ import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 const Comment = ({comment, navigation}) => {
   const [commentOwner, setCommentOwner] = useState([]);
   const {getUserById} = useUser();
-  const {deleteComment} = useComment();
+  const {deleteComment, commentLoad} = useComment();
   const {user} = useContext(MainContext);
   const {setUpdate, update} = useContext(MainContext);
 
@@ -30,29 +30,23 @@ const Comment = ({comment, navigation}) => {
   };
 
   // Delete comment
-  const removeComment = () => {
-    Alert.alert('Delete', 'This comment will be deleted!', [
-      {text: 'Cancel'},
-      {
-        text: 'OK',
-        onPress: async () => {
-          try {
-            const token = await AsyncStorage.getItem('token');
-            const response = await deleteComment(comment.comment_id, token);
-            if (response) {
-              setUpdate(update + 1);
-              Alert.alert('Deleted', 'The comment has been deleted');
-            }
-          } catch (error) {
-            console.error('deleteComment error', error);
-          }
-        },
-      },
-    ]);
+  const removeComment = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await deleteComment(comment.comment_id, token);
+      if (response) {
+        setUpdate(update + 1);
+      }
+    } catch (error) {
+      Alert.alert('Deleted', 'Deleting comment error, please try again later.');
+      console.error('deleteComment error', error);
+    }
   };
 
+  const LoadingIndicator = () => <Spinner size="medium" />;
+
   const renderDeleteIcon = () => (
-    <Icon name="trash" resizeMode="contain" style={{width: 30, height: 30}} />
+    <Icon name="trash" resizeMode="contain" style={{height: 30}} />
   );
 
   // Fetch comments owner
@@ -61,43 +55,39 @@ const Comment = ({comment, navigation}) => {
   }, [update]);
 
   return (
-    <Layout style={{}}>
-      <Layout style={{padding: 10}}>
-        <Layout
-          style={[
-            styles.row,
-            {
-              justifyContent: 'space-between',
-            },
-          ]}
+    <Layout style={{padding: 10}}>
+      <Layout style={styles.row}>
+        <TouchableWithoutFeedback
+          style={styles.row}
+          onPress={() => navigation.navigate('User profile', {file: comment})}
         >
-          <TouchableWithoutFeedback
-            style={styles.row}
-            onPress={() => navigation.navigate('User profile', {file: comment})}
-          >
-            <Avatar userAvatar={comment.user_id} />
-            <Text style={{marginLeft: 5}}>{commentOwner.username}</Text>
-          </TouchableWithoutFeedback>
+          <Avatar userAvatar={comment.user_id} avatarSize="small" />
+          <Text appearance="hint" style={styles.commentAuthor}>
+            @{commentOwner.username}
+          </Text>
+        </TouchableWithoutFeedback>
 
-          {comment.user_id === user.user_id && (
-            <Button
-              style={styles.deleteButton}
-              onPress={() => {
-                removeComment();
-              }}
-              appearance="ghost"
-              accessoryRight={renderDeleteIcon}
-            ></Button>
-          )}
-        </Layout>
-        <Layout>
-          <Text style={{marginVertical: 10}}>{comment.comment}</Text>
-          <Text style={{textAlign: 'right', marginRight: 5}}>{`Posted: ${moment(
-            comment.time_added
-          ).fromNow()}`}</Text>
-        </Layout>
+        {comment.user_id === user.user_id && (
+          <Button
+            style={styles.deleteButton}
+            onPress={() => {
+              removeComment();
+            }}
+            appearance="ghost"
+            accessoryRight={commentLoad ? LoadingIndicator : renderDeleteIcon}
+          ></Button>
+        )}
       </Layout>
-      <Divider />
+      <Layout>
+        <Text style={styles.comment}>{comment.comment}</Text>
+        <Text
+          appearance="hint"
+          category="p2"
+          style={{textAlign: 'right', marginRight: 5}}
+        >
+          {moment(comment.time_added).fromNow()}
+        </Text>
+      </Layout>
     </Layout>
   );
 };
@@ -105,6 +95,15 @@ const Comment = ({comment, navigation}) => {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  comment: {
+    marginVertical: 10,
+    fontFamily: 'IBMPlexMonoReg',
+  },
+  commentAuthor: {
+    marginLeft: 5,
+    fontFamily: 'IBMPlexMonoMed',
   },
   deleteButton: {
     height: '100%',

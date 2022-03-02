@@ -9,6 +9,7 @@ const App = () => {
   const [loaded] = useFonts({
     JetBrainsMonoReg: require('./assets/fonts/JetBrainsMono/JetBrainsMonoRegular.ttf'),
     IBMPlexMonoMed: require('./assets/fonts/IBMPlexMono/IBMPlexMonoMedium.ttf'),
+    IBMPlexMonoReg: require('./assets/fonts/IBMPlexMono/IBMPlexMonoRegular.ttf'),
   });
 
   if (!loaded) {

@@ -284,15 +284,18 @@ const styles = StyleSheet.create({
   bgImage: {
     position: 'absolute',
     width: '100%',
-    height: '150%',
-    bottom: '-90%',
+    height: '140%',
+    bottom: '-80%',
   },
   input: {
     width: '90%',
     borderRadius: 20,
     marginVertical: 10,
   },
-  inputText: {fontSize: 16},
+  inputText: {
+    fontSize: 16,
+    fontFamily: 'JetBrainsMonoReg',
+  },
   description: {
     height: 100,
     textAlignVertical: 'top',

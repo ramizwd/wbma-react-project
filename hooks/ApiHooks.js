@@ -214,11 +214,14 @@ const useTag = () => {
 
 // Comments hook
 const useComment = () => {
+  const [commentLoad, setCommentLoad] = useState(false);
+
   const getCommentsByPost = async (fileId) => {
     return await baseFetch(`${baseUrl}comments/file/${fileId}`);
   };
 
   const postComment = async (formData, fileId, token) => {
+    setCommentLoad(true);
     const options = {
       method: 'POST',
       headers: {
@@ -227,20 +230,34 @@ const useComment = () => {
       },
       body: JSON.stringify({file_id: fileId, comment: formData.comment}),
     };
-    return await baseFetch(`${baseUrl}comments`, options);
+    const result = await baseFetch(`${baseUrl}comments`, options);
+    if (result) {
+      setCommentLoad(false);
+    }
+    return result;
   };
 
   const deleteComment = async (commentId, token) => {
+    setCommentLoad(true);
     console.log('got here');
     const options = {
       method: 'DELETE',
       headers: {'x-access-token': token},
     };
 
-    return await baseFetch(`${baseUrl}comments/${commentId}`, options);
+    const result = await baseFetch(`${baseUrl}comments/${commentId}`, options);
+    if (result) {
+      setCommentLoad(false);
+    }
+    return result;
   };
 
-  return {getCommentsByPost, postComment, deleteComment};
+  return {
+    getCommentsByPost,
+    postComment,
+    deleteComment,
+    commentLoad,
+  };
 };
 
 const useLikes = () => {

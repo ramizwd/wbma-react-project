@@ -1,10 +1,4 @@
-import {
-  Image,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import {Image, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
   Button,
@@ -12,6 +6,7 @@ import {
   Input,
   Layout,
   Popover,
+  Spinner,
   Text,
 } from '@ui-kitten/components';
 import {Video} from 'expo-av';
@@ -32,7 +27,7 @@ import Tags from '../components/Tags';
 const Single = ({route, navigation}) => {
   const [comments, setComments] = useState([]);
   const {file, owner} = route.params;
-  const {getCommentsByPost, postComment} = useComment();
+  const {getCommentsByPost, postComment, commentLoad} = useComment();
   const {setUpdate, update} = useContext(MainContext);
   const [visible, setVisible] = useState(false);
   const windowHeight = Dimensions.get('window').height;
@@ -65,35 +60,24 @@ const Single = ({route, navigation}) => {
 
   // Add new comment to the post
   const createComment = async (data) => {
-    Alert.alert('Submit', 'This comment will be submitted!', [
-      {text: 'Cancel'},
-      {
-        text: 'OK',
-        onPress: async () => {
-          const formData = new FormData();
-          formData.append('comment', data.comment);
-          try {
-            const token = await AsyncStorage.getItem('token');
-            const response = await postComment(data, file.file_id, token);
-            if (response) {
-              setUpdate(update + 1);
-              Alert.alert('Comment', 'Comment has been submitted.');
-            }
-          } catch (error) {
-            console.error('postComment error', error);
-          }
-        },
-      },
-    ]);
+    const formData = new FormData();
+    formData.append('comment', data.comment);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await postComment(data, file.file_id, token);
+      if (response) {
+        setUpdate(update + 1);
+      }
+    } catch (error) {
+      console.error('postComment error', error);
+    }
   };
+
+  const LoadingIndicator = () => <Spinner size="medium" />;
 
   const sendIcon = () => (
     <TouchableOpacity onPress={handleSubmit(createComment)}>
-      <Icon
-        name="send-outline"
-        pack="ionIcons"
-        style={{width: 30, height: 30}}
-      />
+      <Icon name="send-outline" pack="ionIcons" style={{height: 25}} />
     </TouchableOpacity>
   );
 
@@ -242,13 +226,14 @@ const Single = ({route, navigation}) => {
                 style={{width: '95%'}}
                 onBlur={onBlur}
                 multiline={true}
-                accessoryRight={sendIcon}
+                accessoryRight={commentLoad ? LoadingIndicator : sendIcon}
                 onChangeText={onChange}
                 value={value}
                 autoCapitalize="none"
                 placeholder="Write a comment"
                 status={errors.comment ? 'warning' : 'basic'}
                 caption={errors.comment && errors.comment.message}
+                textStyle={styles.comment}
               />
             )}
             name="comment"
@@ -272,6 +257,9 @@ const Single = ({route, navigation}) => {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
+  },
+  comment: {
+    fontFamily: 'JetBrainsMonoReg',
   },
 });
 
