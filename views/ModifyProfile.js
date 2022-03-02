@@ -1,15 +1,17 @@
 import React, {useContext, useState} from 'react';
 import {
   Alert,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  ImageBackground,
+  View,
+  Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import {useForm, Controller} from 'react-hook-form';
-import {Button, Input, Avatar, Card} from '@ui-kitten/components';
+import {Button, Input, Avatar, Card, withStyles} from '@ui-kitten/components';
 import {PropTypes} from 'prop-types';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import * as ImagePicker from 'expo-image-picker';
@@ -120,11 +122,16 @@ const ModifyProfile = ({navigation}) => {
   );
 
   return (
-    <ScrollView>
-      <Card style={styles.container}>
+    <View style={styles.container}>
+      <ImageBackground
+        source={require('../assets/drawerBg.png')}
+        style={styles.bgImage}
+      />
+      <Card style={styles.card}>
         <TouchableOpacity onPress={pickImage} style={styles.pfImageTo}>
           <Avatar source={{uri: avatar}} style={styles.pfImage} />
         </TouchableOpacity>
+        <Text>Name</Text>
         <Controller
           control={control}
           rules={{
@@ -159,7 +166,7 @@ const ModifyProfile = ({navigation}) => {
           )}
           name="username"
         />
-
+        <Text>Password</Text>
         <Controller
           control={control}
           rules={{
@@ -184,7 +191,7 @@ const ModifyProfile = ({navigation}) => {
           )}
           name="password"
         />
-
+        <Text>Confirm password</Text>
         <Controller
           control={control}
           rules={{
@@ -214,7 +221,7 @@ const ModifyProfile = ({navigation}) => {
           )}
           name="confirm_password"
         />
-
+        <Text>Email</Text>
         <Controller
           control={control}
           rules={{
@@ -237,7 +244,7 @@ const ModifyProfile = ({navigation}) => {
           )}
           name="email"
         />
-
+        <Text>Full name</Text>
         <Controller
           control={control}
           rules={{
@@ -259,10 +266,11 @@ const ModifyProfile = ({navigation}) => {
           )}
           name="full_name"
         />
+        <Text> </Text>
 
         <Button onPress={handleSubmit(onSubmit)}>Save</Button>
       </Card>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -279,10 +287,26 @@ const styles = StyleSheet.create({
     height: 170,
   },
   pfImage: {
-    width: '100%',
+    width: '80%',
     height: undefined,
     aspectRatio: 1,
     borderRadius: 400,
+    borderWidth: 2,
+    top: '10%',
+    left: '28%',
+    borderColor: '#F1C40F',
+  },
+  bgImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: '-45%',
+  },
+  animation: {position: 'absolute', width: '100%', height: '50%', top: '20%'},
+  card: {
+    position: 'absolute',
+    top: '8%',
+    backgroundColor: 'rgba(52, 52, 52, 0.1)',
   },
 });
 
