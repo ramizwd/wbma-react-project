@@ -1,11 +1,5 @@
-import {
-  StyleSheet,
-  Alert,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import {Input, Button, Layout, Icon} from '@ui-kitten/components';
+import {StyleSheet, Alert, Image, TouchableOpacity} from 'react-native';
+import {Input, Button, Layout} from '@ui-kitten/components';
 import React, {useCallback, useContext, useState} from 'react';
 import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
@@ -15,7 +9,6 @@ import * as FileSystem from 'expo-file-system';
 import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag} from '../hooks/ApiHooks';
-import {SwipeablePanel} from 'rn-swipeable-panel';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {tagDivider} from '../utils/variables';
 import SelectTags from '../components/SelectTags';
@@ -41,16 +34,6 @@ const Upload = ({navigation}) => {
     },
     mode: 'onBlur',
   });
-  const [panelProps] = useState({
-    fullWidth: true,
-    openLarge: false,
-    showCloseButton: false,
-    noBackgroundOpacity: false,
-    closeOnTouchOutside: true,
-    onClose: () => closePanel(),
-    onPressCloseButton: () => closePanel(),
-  });
-  const [isPanelActive, setIsPanelActive] = useState(true);
 
   // Pick image/video from devices library using Image Picker
   const pickFile = async () => {
@@ -170,18 +153,6 @@ const Upload = ({navigation}) => {
     } catch (error) {
       console.log('onSubmit upload image error', error);
     }
-  };
-
-  const openPanel = () => {
-    setIsPanelActive(true);
-  };
-
-  const closePanel = () => {
-    setIsPanelActive(false);
-  };
-
-  const optionsIcon = () => {
-    return <Icon name="options-outline" pack="ionIcons" style={{height: 25}} />;
   };
 
   return (

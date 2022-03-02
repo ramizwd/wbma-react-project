@@ -3,12 +3,13 @@ import {Alert, Keyboard, StyleSheet, TouchableOpacity} from 'react-native';
 import {PropTypes} from 'prop-types';
 import {
   Button,
-  Input,
   Icon,
   Layout,
   List,
   OverflowMenu,
   MenuItem,
+  AutocompleteItem,
+  Autocomplete,
 } from '@ui-kitten/components';
 import {useForm, Controller} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,12 +19,16 @@ import {useFocusEffect} from '@react-navigation/native';
 import Constants from 'expo-constants';
 import {tagDivider} from '../utils/variables';
 
+const filter = (item, query) =>
+  item.title.toLowerCase().includes(query.toLowerCase());
+
 // Search view that takes navigation props can search posts by title or category
 const Search = ({navigation}) => {
   const [searchResult, setSearchResult] = useState([]);
   const [visible, setVisible] = useState(false);
-  const [selectedMode, setSelectedMode] = useState(false);
+  const [searchByTag, setSearchByTag] = useState(false);
   const {searchMedia} = useMedia();
+  // const [value, setAutoVal] = useState(null);
   const {control, handleSubmit, setValue} = useForm({
     defaultValues: {
       title: '',
@@ -32,12 +37,13 @@ const Search = ({navigation}) => {
   });
   const {mediaArray} = useMedia();
   const {getFilesByTag} = useTag();
+  const [data, setData] = useState(mediaArray);
 
   // submit search keyword by using searchMedia from ApiHooks
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
     try {
-      const response = selectedMode
+      const response = searchByTag
         ? await getFilesByTag(
             Constants.manifest.extra.pvtAppId + tagDivider + data.title
           )
@@ -95,6 +101,15 @@ const Search = ({navigation}) => {
     />
   );
 
+  const renderOption = (item, index) => (
+    <AutocompleteItem key={index} title={item.title} />
+  );
+
+  const onSelect = (index) => {
+    console.log(mediaArray[index].title);
+    setValue('title', data[index].title);
+  };
+
   return (
     <Layout style={styles.container}>
       <Layout>
@@ -107,14 +122,14 @@ const Search = ({navigation}) => {
             <MenuItem
               title="Search By Title"
               onPress={() => {
-                setSelectedMode(false);
+                setSearchByTag(false);
                 setVisible(false);
               }}
             />
             <MenuItem
               title="Search By Tag"
               onPress={() => {
-                setSelectedMode(true);
+                setSearchByTag(true);
                 setVisible(false);
               }}
             />
@@ -125,17 +140,28 @@ const Search = ({navigation}) => {
               required: {value: true, message: 'This is required.'},
             }}
             render={({field: {onChange, onBlur, value}}) => (
-              <Input
+              <Autocomplete
                 onBlur={onBlur}
-                onChangeText={onChange}
                 accessoryRight={searchIcon}
                 value={value}
                 autoCapitalize="none"
-                placeholder={
-                  !selectedMode ? 'Search by title' : 'Search by tag'
+                placeholder={!searchByTag ? 'Search by title' : 'Search by tag'}
+                onSelect={(i) => {
+                  onSelect(i);
+                }}
+                onChangeText={
+                  !searchByTag
+                    ? (val) => {
+                        onChange({val});
+                        setValue(val);
+                        setData(mediaArray.filter((item) => filter(item, val)));
+                      }
+                    : onChange
                 }
                 style={styles.search}
-              />
+              >
+                {!searchByTag && data.map(renderOption)}
+              </Autocomplete>
             )}
             name="title"
           />
@@ -169,7 +195,7 @@ const styles = StyleSheet.create({
   },
   search: {
     padding: 5,
-    width: '85%',
+    width: 350,
     borderRadius: 20,
   },
   optIcon: {},

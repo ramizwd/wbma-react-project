@@ -119,7 +119,12 @@ const CardContent = ({navigation, post, userPost}) => {
       }}
     >
       <Layout style={{marginBottom: 8}}>
-        <Layout style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Layout
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
           <Layout style={styles.postHeader}>
             <TouchableWithoutFeedback
               onPress={() => navigation.navigate('User profile', {file: post})}
@@ -247,12 +252,14 @@ const styles = StyleSheet.create({
   postHeader: {
     flexDirection: 'row',
     padding: 10,
-    marginRight: 25,
+    paddingRight: 0,
+    marginRight: 0,
   },
   headerContent: {
     paddingLeft: 10,
     flexDirection: 'column',
     maxWidth: 290,
+    margin: 0,
   },
   username: {
     fontFamily: 'IBMPlexMonoMed',
