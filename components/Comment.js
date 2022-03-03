@@ -48,7 +48,6 @@ const Comment = ({comment, navigation}) => {
 
   const renderDeleteIcon = () => {
     const themeContext = useContext(ThemeContext);
-
     return (
       <Icon
         name="trash"
