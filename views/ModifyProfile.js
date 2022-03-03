@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     borderColor: '#F1C40F',
   },
   bgImage: {
+    top: '-25%',
     width: '100%',
     height: 500,
     flex: 1,
