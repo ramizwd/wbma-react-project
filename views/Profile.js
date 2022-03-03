@@ -1,26 +1,35 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Image, StyleSheet, ImageBackground, Alert} from 'react-native';
+import {Image, StyleSheet, ImageBackground, Alert} from 'react-native';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useLikes, useTag, useRating} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
-import {Card as Cards, Text, Layout, List} from '@ui-kitten/components';
+import {
+  Text,
+  Layout,
+  List,
+  TabView,
+  Tab,
+  Button,
+  Icon,
+} from '@ui-kitten/components';
 import Card from '../components/Card';
-import {Picker} from '@react-native-picker/picker';
 import CardContent from '../components/CardContent';
+import {ThemeContext} from '../contexts/ThemeContext';
 
 // Profile view that takes navigation props can display user's general information including avatar, user full name ,user's email, and user's post history, besides user can also modify his/her profile from this view
 const Profile = ({navigation}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
   const {getFilesByTag} = useTag();
-  const [selectedValue, setSelectedValue] = useState('post');
+  // const [selectedValue, setSelectedValue] = useState('post');
   const [likeList, setLikeList] = useState([]);
   const [savedList, setSavedList] = useState([]);
   const {getPostsByLikes} = useLikes();
   const {getRatedPostByUser} = useRating();
   const {likeUpdate, saveUpdate} = useContext(MainContext);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const themeContext = useContext(ThemeContext);
 
   // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
   const fetchAvatar = async () => {
@@ -32,6 +41,7 @@ const Profile = ({navigation}) => {
       Alert.alert('Notice', 'Set profile pic please');
     }
   };
+
   // fetching user's liked posts list by using getPostsByLikes from ApiHooks
   const fetchLikesAndSaved = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -53,117 +63,126 @@ const Profile = ({navigation}) => {
     fetchLikesAndSaved();
   }, [likeUpdate, saveUpdate]);
 
+  const renderEditIcon = () => (
+    <Icon
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      style={styles.editIcon}
+      name="pencil"
+      pack="evilIcon"
+    />
+  );
+  const renderLogoutIcon = () => (
+    <Icon
+      name="log-out-outline"
+      pack="ionIcons"
+      style={styles.logoutIcon}
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
+    />
+  );
+
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={{
-          uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGUJD0DgCxdTDAbvk6u3gVm25AqOS6Ksnt9Q&usqp=CAU',
-        }}
-        style={styles.bgImage}
-      />
+    <Layout style={{height: '100%'}}>
+      <Layout style={styles.container}>
+        <ImageBackground
+          source={{
+            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGUJD0DgCxdTDAbvk6u3gVm25AqOS6Ksnt9Q&usqp=CAU',
+          }}
+          style={styles.bgImage}
+        />
 
-      <Image
-        source={
-          avatar === undefined
-            ? require('../assets/defaultAvatar.png')
-            : {uri: avatar}
-        }
-        style={styles.pfImage}
-      />
-      <Text style={styles.uName}>
-        Welcome back {user.full_name ? user.full_name : user.username}!
-      </Text>
-      <Layout style={styles.cardInfo}>
-        <Cards>
+        <Image
+          source={
+            avatar === undefined
+              ? require('../assets/defaultAvatar.png')
+              : {uri: avatar}
+          }
+          style={styles.pfImage}
+        />
+
+        <Text style={styles.userName}>
+          Welcome back {user.full_name ? user.full_name : user.username}!
+        </Text>
+
+        <Layout style={styles.userInfoContainer}>
           <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
+          <Text style={styles.userInfo}>Email: {user.email}</Text>
+        </Layout>
 
-          <Text style={styles.userInfo}>User email: {user.email}</Text>
-        </Cards>
-      </Layout>
-
-      <Icon
-        name="account-edit"
-        color="#4F8EF7"
-        size={32}
-        style={styles.editIcon}
-        onPress={() => {
-          navigation.navigate('ModifyProfile');
-        }}
-      />
-      <Icon
-        name="logout"
-        color="#4F8EF7"
-        size={30}
-        style={styles.logoutIcon}
-        onPress={() => {
-          Alert.alert('Logout', 'Are you sure you want to logout?', [
-            {text: 'Cancel'},
-            {
-              text: 'OK',
-              onPress: async () => {
-                await AsyncStorage.clear();
-                setLoggedIn(false);
+        <Button
+          onPress={() => {
+            navigation.navigate('ModifyProfile');
+          }}
+          style={[styles.iconBtn, {right: '10%'}]}
+          accessoryLeft={renderEditIcon}
+          appearance="ghost"
+        ></Button>
+        <Button
+          onPress={() => {
+            Alert.alert('Logout', 'Are you sure you want to logout?', [
+              {text: 'Cancel'},
+              {
+                text: 'OK',
+                onPress: async () => {
+                  await AsyncStorage.clear();
+                  setLoggedIn(false);
+                },
               },
-            },
-          ]);
-        }}
-      />
-      <Layout style={styles.picker}>
-        <Picker
-          selectedValue={selectedValue}
-          style={{height: 50, width: 150}}
-          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-        >
-          <Picker.Item label="Post history" value="post" />
-          <Picker.Item label="Like history" value="like" />
-          <Picker.Item label="Saved post" value="saved" />
-        </Picker>
+            ]);
+          }}
+          style={[styles.iconBtn, {right: '0%'}]}
+          accessoryLeft={renderLogoutIcon}
+          appearance="ghost"
+        ></Button>
       </Layout>
 
-      {selectedValue === 'post' && (
-        <Layout style={styles.postList}>
-          <Card navigation={navigation} userPost={true} />
-        </Layout>
-      )}
-      {selectedValue === 'like' && (
-        <Layout style={styles.postList}>
-          <List
-            data={likeList}
-            keyExtractor={(item) => item.file_id.toString()}
-            renderItem={({item}) => (
-              <CardContent post={item} navigation={navigation} />
-            )}
-          ></List>
-        </Layout>
-      )}
-      {selectedValue === 'saved' && (
-        <Layout style={styles.postList}>
-          <List
-            data={savedList}
-            keyExtractor={(item) => item.file_id.toString()}
-            renderItem={({item}) => (
-              <CardContent post={item} navigation={navigation} />
-            )}
-          ></List>
-        </Layout>
-      )}
-    </View>
+      <Layout style={{flex: 3}}>
+        <TabView
+          selectedIndex={selectedIndex}
+          onSelect={(index) => setSelectedIndex(index)}
+        >
+          <Tab title="My Posts">
+            <Layout style={styles.postList}>
+              <Card navigation={navigation} userPost={true} />
+            </Layout>
+          </Tab>
+          <Tab title="Liked">
+            <Layout style={styles.postList}>
+              <List
+                data={likeList}
+                keyExtractor={(item) => item.file_id.toString()}
+                renderItem={({item}) => (
+                  <CardContent post={item} navigation={navigation} />
+                )}
+              ></List>
+            </Layout>
+          </Tab>
+          <Tab title="Saved">
+            <Layout style={styles.postList}>
+              <List
+                data={savedList}
+                keyExtractor={(item) => item.file_id.toString()}
+                renderItem={({item}) => (
+                  <CardContent post={item} navigation={navigation} />
+                )}
+              ></List>
+            </Layout>
+          </Tab>
+        </TabView>
+      </Layout>
+    </Layout>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100%',
-    paddingTop: 0,
   },
   bgImage: {
     position: 'absolute',
     width: '100%',
-    height: '50%',
+    height: '70%',
     top: '-2%',
   },
   pfImage: {
@@ -172,39 +191,39 @@ const styles = StyleSheet.create({
     height: undefined,
     aspectRatio: 1,
     borderRadius: 400,
-    top: '15%',
+    top: '30%',
   },
-  uName: {
+  userName: {
     position: 'absolute',
-    top: '5%',
+    top: '10%',
     fontSize: 25,
+    fontFamily: 'JetBrainsMonoReg',
   },
-  editIcon: {
+  iconBtn: {
+    width: 10,
+    height: 50,
     position: 'absolute',
-    top: '24%',
-    right: '20%',
+    top: '45%',
+  },
+
+  editIcon: {
+    height: 35,
+    width: 35,
   },
   logoutIcon: {
-    position: 'absolute',
-    top: '24%',
-    right: '5%',
+    height: 25,
+    width: 25,
   },
-  cardInfo: {
-    position: 'absolute',
-    width: '100%',
+  userInfoContainer: {
     alignItems: 'center',
-    top: '31%',
+    top: '30%',
   },
-  picker: {
-    position: 'absolute',
-    left: '5%',
-    top: '42%',
+  userInfo: {
+    fontFamily: 'JetBrainsMonoReg',
   },
   postList: {
-    position: 'absolute',
-    top: '49%',
-    height: '51%',
-    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   test: {
     position: 'absolute',

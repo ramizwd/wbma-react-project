@@ -22,6 +22,7 @@ import SavePost from './SavePost';
 import Tags from './Tags';
 import {Video} from 'expo-av';
 import {ThemeContext} from '../contexts/ThemeContext';
+
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
 const CardContent = ({navigation, post, userPost}) => {
@@ -274,7 +275,7 @@ const styles = StyleSheet.create({
   headerContent: {
     marginLeft: 10,
     flexDirection: 'column',
-    maxWidth: 290,
+    maxWidth: 283,
     margin: 0,
   },
   username: {
