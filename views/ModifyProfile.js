@@ -1,28 +1,25 @@
 import React, {useContext, useState} from 'react';
 import {
   Alert,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   ImageBackground,
-  View,
   Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import {useForm, Controller} from 'react-hook-form';
-import {Button, Input, Avatar, Card, withStyles} from '@ui-kitten/components';
+import {Button, Input, Avatar, Card, Layout} from '@ui-kitten/components';
 import {PropTypes} from 'prop-types';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import * as ImagePicker from 'expo-image-picker';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ModifyProfile view that takes navigation props can modify user's profile including username, password, email, full name and avatar.
 const ModifyProfile = ({navigation}) => {
-  const [type, setType] = useState('image');
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
   const {user, setUser, avatar, setAvatar} = useContext(MainContext);
   const {checkUsername, putUser} = useUser();
+  const [type, setType] = useState('image');
   const {postTag} = useTag();
   const {postMedia} = useMedia();
 
@@ -35,7 +32,7 @@ const ModifyProfile = ({navigation}) => {
     defaultValues: {
       username: user.username,
       password: '',
-      confirm_password: '',
+      confirmPassword: '',
       email: user.email,
       full_name: user.full_name,
     },
@@ -89,7 +86,7 @@ const ModifyProfile = ({navigation}) => {
     }
 
     try {
-      delete data.confirm_password;
+      delete data.confirmPassword;
       if (data.password === '') {
         delete data.password;
       }
@@ -101,212 +98,186 @@ const ModifyProfile = ({navigation}) => {
         navigation.navigate('Profile');
       }
     } catch (error) {
-      Alert.alert('Error', error.message);
       console.error(error);
     }
   };
-  // toggle password visibility hook
-  const toggleSecureEntry = () => {
-    setSecureTextEntry(!secureTextEntry);
-  };
-
-  // render the proper password icon
-  const renderIcon = (props) => (
-    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
-      <Icon
-        {...props}
-        name={secureTextEntry ? 'eye-off-outline' : 'eye-outline'}
-        style={{fontSize: 20}}
-      />
-    </TouchableWithoutFeedback>
-  );
 
   return (
-    <View style={styles.container}>
+    <Layout style={styles.container}>
       <ImageBackground
         source={require('../assets/drawerBg.png')}
         style={styles.bgImage}
       />
-      <Card style={styles.card}>
-        <TouchableOpacity onPress={pickImage} style={styles.pfImageTo}>
-          <Avatar source={{uri: avatar}} style={styles.pfImage} />
-        </TouchableOpacity>
-        <Text>Name</Text>
-        <Controller
-          control={control}
-          rules={{
-            required: {value: true, message: 'Username is required.'},
-            minLength: {
-              value: 3,
-              message: 'Username has to be at least 3 characters long.',
-            },
-            validate: async (value) => {
-              try {
-                const available = await checkUsername(value);
-                if (available || user.username === value) {
+      <ScrollView>
+        <Card style={styles.scrollView}>
+          <TouchableOpacity onPress={pickImage}>
+            <Avatar source={{uri: avatar}} style={styles.pfImage} />
+          </TouchableOpacity>
+          <Controller
+            control={control}
+            rules={{
+              required: {value: true, message: 'This is required.'},
+              minLength: {
+                value: 3,
+                message: 'Username has to be at least 3 characters.',
+              },
+              validate: async (value) => {
+                try {
+                  const available = await checkUsername(value);
+                  if (available || user.username === value) {
+                    return true;
+                  } else {
+                    return 'Username is already taken.';
+                  }
+                } catch (error) {
+                  throw new Error(error.message);
+                }
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <Input
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                autoCapitalize="none"
+                placeholder="Username"
+                label="Username"
+                errorMessage={errors.username && errors.username.message}
+              />
+            )}
+            name="username"
+          />
+
+          <Controller
+            control={control}
+            rules={{
+              minLength: {
+                value: 5,
+                message: 'Password has to be at least 5 characters.',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <Input
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                autoCapitalize="none"
+                secureTextEntry={true}
+                placeholder="Password"
+                label="Password"
+                errorMessage={errors.password && errors.password.message}
+              />
+            )}
+            name="password"
+          />
+
+          <Controller
+            control={control}
+            rules={{
+              validate: (value) => {
+                const {password} = getValues();
+                if (value === password) {
                   return true;
                 } else {
-                  return 'Username is taken.';
+                  return 'Passwords do not match.';
                 }
-              } catch (error) {
-                throw new Error(error.message);
-              }
-            },
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              autoCapitalize="none"
-              placeholder="Insert username*"
-              status={errors.username ? 'warning' : 'basic'}
-              caption={errors.username && errors.username.message}
-            />
-          )}
-          name="username"
-        />
-        <Text>Password</Text>
-        <Controller
-          control={control}
-          rules={{
-            pattern: {
-              value: /(?=.*[\p{Lu}])(?=.*[0-9]).{5,}/u,
-              message:
-                'Password must match at least the following criteria: 5 characters, uppercase, a number.',
-            },
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              autoCapitalize="none"
-              accessoryRight={renderIcon}
-              secureTextEntry={secureTextEntry}
-              placeholder="Password"
-              status={errors.password ? 'warning' : 'basic'}
-              caption={errors.password && errors.password.message}
-            />
-          )}
-          name="password"
-        />
-        <Text>Confirm password</Text>
-        <Controller
-          control={control}
-          rules={{
-            validate: (value) => {
-              const {password} = getValues();
-              if (value === password) {
-                return true;
-              } else {
-                return 'Passwords do not match.';
-              }
-            },
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              autoCapitalize="none"
-              accessoryRight={renderIcon}
-              secureTextEntry={secureTextEntry}
-              placeholder="Conform password again"
-              status={errors.confirm_password ? 'warning' : 'basic'}
-              caption={
-                errors.confirm_password && errors.confirm_password.message
-              }
-            />
-          )}
-          name="confirm_password"
-        />
-        <Text>Email</Text>
-        <Controller
-          control={control}
-          rules={{
-            required: {value: true, message: 'Email is required.'},
-            pattern: {
-              value: /\S+@\S+\.\S+$/,
-              message: 'Email has to be valid.',
-            },
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              autoCapitalize="none"
-              placeholder="Insert email*"
-              status={errors.email ? 'warning' : 'basic'}
-              caption={errors.email && errors.email.message}
-            />
-          )}
-          name="email"
-        />
-        <Text>Full name</Text>
-        <Controller
-          control={control}
-          rules={{
-            minLength: {
-              value: 2,
-              message: 'Full name has to be at least 2 characters long.',
-            },
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              autoCapitalize="words"
-              placeholder="Full name"
-              status={errors.full_name ? 'warning' : 'basic'}
-              caption={errors.full_name && errors.full_name.message}
-            />
-          )}
-          name="full_name"
-        />
-        <Text> </Text>
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <Input
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                autoCapitalize="none"
+                secureTextEntry={true}
+                placeholder="Confirm password"
+                label="Confirm Password"
+                errorMessage={
+                  errors.confirmPassword && errors.confirmPassword.message
+                }
+              />
+            )}
+            name="confirmPassword"
+          />
 
-        <Button onPress={handleSubmit(onSubmit)}>Save</Button>
-      </Card>
-    </View>
+          <Controller
+            control={control}
+            rules={{
+              required: {value: true, message: 'This is required.'},
+              pattern: {
+                value: /\S+@\S+\.\S+$/,
+                message: 'Has to be valid email.',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <Input
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                autoCapitalize="none"
+                placeholder="Email"
+                label="Email"
+                errorMessage={errors.email && errors.email.message}
+              />
+            )}
+            name="email"
+          />
+
+          <Controller
+            control={control}
+            rules={{
+              minLength: {
+                value: 3,
+                message: 'Full name has to be at least 3 characters.',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <Input
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                autoCapitalize="words"
+                placeholder="Full name"
+                label="Full name"
+                errorMessage={errors.full_name && errors.full_name.message}
+              />
+            )}
+            name="full_name"
+          />
+          <Text> </Text>
+          <Button title="Submit" onPress={handleSubmit(onSubmit)}>
+            Save
+          </Button>
+        </Card>
+      </ScrollView>
+    </Layout>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 100,
-  },
-  pfImageTo: {
-    width: 170,
-    height: 170,
   },
   pfImage: {
-    width: '80%',
+    width: '70%',
     height: undefined,
     aspectRatio: 1,
     borderRadius: 400,
+    left: '15%',
     borderWidth: 2,
-    top: '10%',
-    left: '28%',
     borderColor: '#F1C40F',
   },
   bgImage: {
-    position: 'absolute',
+    top: '-25%',
     width: '100%',
-    height: '100%',
-    top: '-45%',
+    height: 500,
+    flex: 1,
   },
-  animation: {position: 'absolute', width: '100%', height: '50%', top: '20%'},
-  card: {
-    position: 'absolute',
-    top: '8%',
+  scrollView: {
     backgroundColor: 'rgba(52, 52, 52, 0.1)',
+    borderRadius: 20,
   },
 });
 
