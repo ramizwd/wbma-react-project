@@ -4,6 +4,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
@@ -27,6 +28,7 @@ import Likes from '../components/Likes';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import Tags from '../components/Tags';
+import {SwipeablePanel} from 'rn-swipeable-panel';
 
 // View for single post
 const Single = ({route, navigation}) => {
@@ -51,6 +53,25 @@ const Single = ({route, navigation}) => {
       comment: '',
     },
   });
+
+  const [panelProps] = useState({
+    fullWidth: true,
+    // openLarge: true,
+    showCloseButton: true,
+    onClose: () => closePanel(),
+    onPressCloseButton: () => closePanel(),
+    // allowTouchOutside: true,
+    // ...or any prop you want
+  });
+  const [isPanelActive, setIsPanelActive] = useState(false);
+
+  const openPanel = () => {
+    setIsPanelActive(true);
+  };
+
+  const closePanel = () => {
+    setIsPanelActive(false);
+  };
 
   // Get comments for the post
   const getComments = async () => {
@@ -103,156 +124,209 @@ const Single = ({route, navigation}) => {
   }, [update]);
 
   return (
-    <KeyboardAwareScrollView style={{padding: 10}}>
-      <Layout
-        style={
-          !showingMore && {
-            maxHeight: windowHeight * 0.85,
+    <Layout>
+      <KeyboardAwareScrollView style={{padding: 10, height: '90%'}}>
+        <Layout
+          style={
+            !showingMore &&
+            {
+              // maxHeight: windowHeight * 0.85,
+            }
+          }
+        >
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate('User profile', {file: file})}
+            style={{flexDirection: 'row', alignItems: 'center'}}
+          >
+            <Avatar userAvatar={file.user_id} />
+            <Text style={{marginLeft: 10}}>{owner.username}</Text>
+          </TouchableWithoutFeedback>
+          <Layout style={(styles.row, {marginVertical: 5})}>
+            <Tags post={file} />
+          </Layout>
+          <Layout>
+            <Text style={{marginVertical: 5}} category="h6">
+              {file.title}
+            </Text>
+            <Layout
+              onLayout={(evt) => {
+                const {height} = evt.nativeEvent.layout;
+                console.log('height', height);
+                if (height >= maxDescHeight) {
+                  console.log('height reached');
+                  letDescriptionButton(true);
+                }
+              }}
+              maxHeight={maxDescHeight + 5}
+            >
+              <Layout style={descriptionButton && {maxHeight: '90%'}}>
+                <Text>{file.description}</Text>
+              </Layout>
+
+              {descriptionButton && (
+                <Button
+                  onPress={() => {
+                    if (!showingMore) {
+                      setShowingMore(true);
+                      setMaxDescHeigh(1000);
+                      setDescBtnText('Show less');
+                      console.log('showing more', showingMore);
+                    } else {
+                      setMaxDescHeigh(windowHeight * 0.25);
+                      setDescBtnText('Show more');
+                      setShowingMore(false);
+                    }
+                  }}
+                  style={{alignSelf: 'flex-end'}}
+                  size="tiny"
+                >
+                  {desctBtnText}
+                </Button>
+              )}
+            </Layout>
+
+            {file.media_type === 'image' ? (
+              <Popover
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                placement="top"
+                backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+                visible={visible}
+                onBackdropPress={() => setVisible(false)}
+                anchor={() => (
+                  <TouchableWithoutFeedback
+                    style={{height: 250, marginTop: 10}}
+                    onPress={() => setVisible(true)}
+                  >
+                    <Image
+                      source={{uri: uploadsUrl + file.filename}}
+                      style={{
+                        width: undefined,
+                        height: '95%',
+                        borderRadius: 10,
+                        resizeMode: 'contain',
+                        marginTop: 10,
+                      }}
+                    />
+                  </TouchableWithoutFeedback>
+                )}
+              >
+                <Image
+                  source={{uri: uploadsUrl + file.filename}}
+                  resizeMode="contain"
+                  style={{
+                    width: 400,
+                    height: 400,
+                  }}
+                />
+              </Popover>
+            ) : (
+              <Video
+                ref={videoRef}
+                style={{width: '80%', height: '50%'}}
+                source={{uri: uploadsUrl + file.filename}}
+                useNativeControls={true}
+                resizeMode="contain"
+              ></Video>
+            )}
+          </Layout>
+          <Layout style={{alignItems: 'flex-start'}}>
+            <Likes file={file} />
+          </Layout>
+        </Layout>
+        <Layout style={{}}>
+          <Text>{`Comments (${comments.length})`}</Text>
+          <Layout style={styles.row}>
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Enter a comment.',
+                },
+                maxLength: {
+                  value: 100,
+                  message: "The comment's maximum length is 100 characters.",
+                },
+                minLength: {
+                  value: 1,
+                  message: 'The comment cannot be empty',
+                },
+              }}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input
+                  style={{width: '95%'}}
+                  onBlur={onBlur}
+                  multiline={true}
+                  accessoryRight={sendIcon}
+                  onChangeText={onChange}
+                  value={value}
+                  autoCapitalize="none"
+                  placeholder="Write a comment"
+                  status={errors.comment ? 'warning' : 'basic'}
+                  caption={errors.comment && errors.comment.message}
+                />
+              )}
+              name="comment"
+            />
+          </Layout>
+        </Layout>
+      </KeyboardAwareScrollView>
+
+      <SwipeablePanel
+        {...panelProps}
+        isActive={isPanelActive}
+        style={{height: '70%'}}
+        scrollViewProps={
+          {
+            // stickyHeaderIndices: [0], // Comment input to stay on top (doesn't scroll at all)
+            // invertStickyHeaders: true,
           }
         }
       >
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate('User profile', {file: file})}
-          style={{flexDirection: 'row', alignItems: 'center'}}
-        >
-          <Avatar userAvatar={file.user_id} />
-          <Text style={{marginLeft: 10}}>{owner.username}</Text>
-        </TouchableWithoutFeedback>
-        <Layout style={(styles.row, {marginVertical: 5})}>
-          <Tags post={file} />
-        </Layout>
-        <Layout>
-          <Text style={{marginVertical: 5}} category="h6">
-            {file.title}
-          </Text>
-          <Layout
-            onLayout={(evt) => {
-              const {height} = evt.nativeEvent.layout;
-              console.log('height', height);
-              if (height >= maxDescHeight) {
-                console.log('height reached');
-                letDescriptionButton(true);
-              }
-            }}
-            maxHeight={maxDescHeight + 5}
-          >
-            <Layout style={descriptionButton && {maxHeight: '90%'}}>
-              <Text>{file.description}</Text>
-            </Layout>
-
-            {descriptionButton && (
-              <Button
-                onPress={() => {
-                  if (!showingMore) {
-                    setShowingMore(true);
-                    setMaxDescHeigh(1000);
-                    setDescBtnText('Show less');
-                    console.log('showing more', showingMore);
-                  } else {
-                    setMaxDescHeigh(windowHeight * 0.25);
-                    setDescBtnText('Show more');
-                    setShowingMore(false);
-                  }
-                }}
-                style={{alignSelf: 'flex-end'}}
-                size="tiny"
-              >
-                {desctBtnText}
-              </Button>
-            )}
-          </Layout>
-
-          {file.media_type === 'image' ? (
-            <Popover
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                justifyContent: 'center',
-                alignItems: 'center',
+        <Layout style={{}}>
+          <Text>{`Comments (${comments.length})`}</Text>
+          <KeyboardAvoidingView style={styles.row}>
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Enter a comment.',
+                },
+                maxLength: {
+                  value: 100,
+                  message: "The comment's maximum length is 100 characters.",
+                },
+                minLength: {
+                  value: 1,
+                  message: 'The comment cannot be empty',
+                },
               }}
-              placement="top"
-              backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
-              visible={visible}
-              onBackdropPress={() => setVisible(false)}
-              anchor={() => (
-                <TouchableWithoutFeedback
-                  style={{height: 250, marginTop: 10}}
-                  onPress={() => setVisible(true)}
-                >
-                  <Image
-                    source={{uri: uploadsUrl + file.filename}}
-                    style={{
-                      width: undefined,
-                      height: '95%',
-                      borderRadius: 10,
-                      resizeMode: 'contain',
-                      marginTop: 10,
-                    }}
-                  />
-                </TouchableWithoutFeedback>
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input
+                  style={{width: '95%'}}
+                  onBlur={onBlur}
+                  multiline={true}
+                  accessoryRight={sendIcon}
+                  onChangeText={onChange}
+                  value={value}
+                  autoCapitalize="none"
+                  placeholder="Write a comment"
+                  status={errors.comment ? 'warning' : 'basic'}
+                  caption={errors.comment && errors.comment.message}
+                />
               )}
-            >
-              <Image
-                source={{uri: uploadsUrl + file.filename}}
-                resizeMode="contain"
-                style={{
-                  width: 400,
-                  height: 400,
-                }}
-              />
-            </Popover>
-          ) : (
-            <Video
-              ref={videoRef}
-              style={{width: '80%', height: '50%'}}
-              source={{uri: uploadsUrl + file.filename}}
-              useNativeControls={true}
-              resizeMode="contain"
-            ></Video>
-          )}
-        </Layout>
-        <Layout style={{alignItems: 'flex-start'}}>
-          <Likes file={file} />
-        </Layout>
-      </Layout>
-      <Layout style={{}}>
-        <Text>{`Comments (${comments.length})`}</Text>
-        <Layout style={styles.row}>
-          <Controller
-            control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'Enter a comment.',
-              },
-              maxLength: {
-                value: 100,
-                message: "The comment's maximum length is 100 characters.",
-              },
-              minLength: {
-                value: 1,
-                message: 'The comment cannot be empty',
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                style={{width: '95%'}}
-                onBlur={onBlur}
-                multiline={true}
-                accessoryRight={sendIcon}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                placeholder="Write a comment"
-                status={errors.comment ? 'warning' : 'basic'}
-                caption={errors.comment && errors.comment.message}
-              />
-            )}
-            name="comment"
-          />
+              name="comment"
+            />
+          </KeyboardAvoidingView>
         </Layout>
 
         <Layout>
@@ -264,8 +338,17 @@ const Single = ({route, navigation}) => {
             />
           ))}
         </Layout>
-      </Layout>
-    </KeyboardAwareScrollView>
+      </SwipeablePanel>
+      <Button
+        onPress={() => {
+          openPanel();
+          console.log('ll', isPanelActive);
+        }}
+        style={{}}
+      >
+        {`Comments (${comments.length})`}
+      </Button>
+    </Layout>
   );
 };
 
