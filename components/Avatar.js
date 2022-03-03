@@ -4,6 +4,7 @@ import {uploadsUrl} from '../utils/variables';
 import {Avatar as KittenAvatar} from '@ui-kitten/components';
 import PropTypes from 'prop-types';
 import {ImageBackground} from 'react-native';
+import {Shadow} from 'react-native-shadow-2';
 
 const Avatar = ({userAvatar, avatarSize = 'large'}) => {
   const {getFilesByTag} = useTag();
@@ -26,34 +27,26 @@ const Avatar = ({userAvatar, avatarSize = 'large'}) => {
   }, []);
 
   return (
-    <ImageBackground
-      source={require('../assets/pfpBg.png')}
-      style={{
-        width: avatarBgSize.width,
-        height: avatarBgSize.height,
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowColor: 'black',
-        backgroundColor: '#0000',
-        shadowOpacity: 0.4,
-        shadowRadius: 5.3,
-        elevation: 7,
-        borderRadius: 100,
-        shadowOffset: {
-          width: 0,
-          height: 5,
-        },
-      }}
-    >
-      <KittenAvatar
-        source={
-          avatar === undefined
-            ? require('../assets/defaultAvatar.png')
-            : {uri: avatar}
-        }
-        size={avatarSize}
-      ></KittenAvatar>
-    </ImageBackground>
+    <Shadow distance={8} startColor={'#00000020'} radius={100} offset={[0, 3]}>
+      <ImageBackground
+        source={require('../assets/pfpBg.png')}
+        style={{
+          width: avatarBgSize.width,
+          height: avatarBgSize.height,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <KittenAvatar
+          source={
+            avatar === undefined
+              ? require('../assets/defaultAvatar.png')
+              : {uri: avatar}
+          }
+          size={avatarSize}
+        ></KittenAvatar>
+      </ImageBackground>
+    </Shadow>
   );
 };
 
