@@ -35,9 +35,9 @@ const Avatar = ({userAvatar, avatarSize = 'large'}) => {
         alignItems: 'center',
         shadowColor: 'black',
         backgroundColor: '#0000',
-        shadowOpacity: 1,
-        shadowRadius: 16.0,
-        elevation: 6,
+        shadowOpacity: 0.4,
+        shadowRadius: 8.3,
+        elevation: 7,
         borderRadius: 100,
         shadowOffset: {
           width: 5,
