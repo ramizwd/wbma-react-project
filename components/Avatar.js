@@ -36,11 +36,11 @@ const Avatar = ({userAvatar, avatarSize = 'large'}) => {
         shadowColor: 'black',
         backgroundColor: '#0000',
         shadowOpacity: 0.4,
-        shadowRadius: 8.3,
+        shadowRadius: 7.3,
         elevation: 7,
         borderRadius: 100,
         shadowOffset: {
-          width: 5,
+          width: 0,
           height: 5,
         },
       }}
