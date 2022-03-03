@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useContext} from 'react';
 import {Alert, Keyboard, StyleSheet, TouchableOpacity} from 'react-native';
 import {PropTypes} from 'prop-types';
 import {
@@ -18,6 +18,7 @@ import CardContent from '../components/CardContent';
 import {useFocusEffect} from '@react-navigation/native';
 import Constants from 'expo-constants';
 import {tagDivider} from '../utils/variables';
+import {ThemeContext} from '../contexts/ThemeContext';
 
 const filter = (item, query) =>
   item.title.toLowerCase().includes(query.toLowerCase());
@@ -67,15 +68,33 @@ const Search = ({navigation}) => {
     }
   };
 
-  const searchIcon = (props) => (
-    <TouchableOpacity activeOpacity={0.5} onPress={handleSubmit(onSubmit)}>
-      <Icon {...props} name="search" pack="ionIcons" />
-    </TouchableOpacity>
-  );
+  const searchIcon = (props) => {
+    const themeContext = useContext(ThemeContext);
 
-  const optionsIcon = () => (
-    <Icon name="options-outline" pack="ionIcons" style={{height: 20}} />
-  );
+    return (
+      <TouchableOpacity activeOpacity={0.5} onPress={handleSubmit(onSubmit)}>
+        <Icon
+          {...props}
+          name="search"
+          pack="ionIcons"
+          color={themeContext.theme === 'light' ? 'black' : 'white'}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  const optionsIcon = () => {
+    const themeContext = useContext(ThemeContext);
+
+    return (
+      <Icon
+        name="options-outline"
+        pack="ionIcons"
+        style={{height: 20}}
+        color={themeContext.theme === 'light' ? 'black' : 'white'}
+      />
+    );
+  };
 
   // reset search result and text input field
   const reset = () => {
