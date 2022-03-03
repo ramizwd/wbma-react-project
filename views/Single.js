@@ -1,7 +1,6 @@
 import {Image, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
-  Button,
   Icon,
   Input,
   Layout,
@@ -35,7 +34,6 @@ const Single = ({route, navigation}) => {
   const [maxDescHeight, setMaxDescHeigh] = useState(windowHeight * 0.25);
   const [showingMore, setShowingMore] = useState(false);
   const [descriptionButton, letDescriptionButton] = useState(false);
-  const [desctBtnText, setDescBtnText] = useState('Show more');
 
   const videoRef = useRef(null);
   const {
@@ -91,6 +89,28 @@ const Single = ({route, navigation}) => {
     );
   };
 
+  const minusIcon = () => (
+    <TouchableOpacity
+      onPress={() => {
+        setMaxDescHeigh(windowHeight * 0.25);
+        setShowingMore(false);
+      }}
+    >
+      <Icon name="minus" style={styles.descriptionIcon} />
+    </TouchableOpacity>
+  );
+
+  const plusIcon = () => (
+    <TouchableOpacity
+      onPress={() => {
+        setShowingMore(true);
+        setMaxDescHeigh(1000);
+      }}
+    >
+      <Icon name="plus" style={styles.descriptionIcon} />
+    </TouchableOpacity>
+  );
+
   // Getting comments when new comment is added
   useEffect(() => {
     getComments();
@@ -134,26 +154,7 @@ const Single = ({route, navigation}) => {
               <Text>{file.description}</Text>
             </Layout>
 
-            {descriptionButton && (
-              <Button
-                onPress={() => {
-                  if (!showingMore) {
-                    setShowingMore(true);
-                    setMaxDescHeigh(1000);
-                    setDescBtnText('Show less');
-                    console.log('showing more', showingMore);
-                  } else {
-                    setMaxDescHeigh(windowHeight * 0.25);
-                    setDescBtnText('Show more');
-                    setShowingMore(false);
-                  }
-                }}
-                style={{alignSelf: 'flex-end'}}
-                size="tiny"
-              >
-                {desctBtnText}
-              </Button>
-            )}
+            {descriptionButton && (showingMore ? minusIcon() : plusIcon())}
           </Layout>
 
           {file.media_type === 'image' ? (
@@ -270,6 +271,11 @@ const styles = StyleSheet.create({
   },
   comment: {
     fontFamily: 'JetBrainsMonoReg',
+  },
+  descriptionIcon: {
+    height: 40,
+    alignSelf: 'flex-end',
+    marginRight: 20,
   },
 });
 
