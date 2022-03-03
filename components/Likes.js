@@ -5,6 +5,7 @@ import {useLikes} from '../hooks/ApiHooks';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button, Icon, Text} from '@ui-kitten/components';
+import {ThemeContext} from '../contexts/ThemeContext';
 
 const Likes = ({file}) => {
   const {user} = useContext(MainContext);
@@ -14,6 +15,7 @@ const Likes = ({file}) => {
   const [likeColor, setLikeColor] = useState();
   const {setLikeUpdate, likeUpdate} = useContext(MainContext);
   const zoomIconRef = useRef();
+  const themeContext = useContext(ThemeContext);
 
   // fetch likes by file ID, set the like array to the like hook, check if user liked
   // then set Liked hook to true and so the color
@@ -23,6 +25,7 @@ const Likes = ({file}) => {
       setLikes(likes);
       setLiked(false);
       setLikeColor('#000');
+
       likes.forEach((like) => {
         if (like.user_id === user.user_id) {
           setLiked(true);
@@ -79,7 +82,7 @@ const Likes = ({file}) => {
   const renderPulseIcon = () => (
     <Icon
       ref={zoomIconRef}
-      color={likeColor}
+      color={themeContext.theme === 'light' || liked ? likeColor : 'white'}
       animation="zoom"
       name="heart"
       style={styles.icon}

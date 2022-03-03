@@ -21,7 +21,7 @@ import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import SavePost from './SavePost';
 import Tags from './Tags';
 import {Video} from 'expo-av';
-
+import {ThemeContext} from '../contexts/ThemeContext';
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
 const CardContent = ({navigation, post, userPost}) => {
@@ -30,10 +30,10 @@ const CardContent = ({navigation, post, userPost}) => {
   const {getCommentsByPost} = useComment();
   const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
   const [comments, setComments] = useState([]);
-  const {update, setUpdate} = useContext(MainContext);
+  const {update, setUpdate, user} = useContext(MainContext);
   const [visible, setVisible] = useState(false);
-  const {user} = useContext(MainContext);
   const videoRef = useRef(null);
+  const themeContext = useContext(ThemeContext);
 
   // fetching post owner data by ID and setting it to the posterOwner state hook
   const fetchOwner = async () => {
@@ -87,10 +87,17 @@ const CardContent = ({navigation, post, userPost}) => {
     fetchComments();
   }, [update]);
 
-  const renderCommentIcon = () => <Icon style={styles.icon} name="comment" />;
+  const renderCommentIcon = () => (
+    <Icon
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      style={styles.icon}
+      name="comment"
+    />
+  );
 
   const renderOptionsIcon = () => (
     <Icon
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
       style={styles.iconOpt}
       name="ellipsis-vertical-outline"
       pack="ionIcons"
@@ -292,14 +299,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   spinner: {
-    height: 250,
-    maxWidth: 600,
-    marginBottom: 10,
-    marginTop: 5,
-    marginRight: 'auto',
     marginLeft: 'auto',
-    textAlign: 'center',
+    marginRight: 'auto',
     justifyContent: 'center',
+    height: 250,
   },
   time: {
     textAlign: 'right',
@@ -331,7 +334,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     height: 30,
-    width: 30,
   },
   button: {
     color: 'black',

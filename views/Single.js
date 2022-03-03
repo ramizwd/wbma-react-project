@@ -22,6 +22,7 @@ import Likes from '../components/Likes';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import Tags from '../components/Tags';
+import {ThemeContext} from '../contexts/ThemeContext';
 
 // View for single post
 const Single = ({route, navigation}) => {
@@ -75,11 +76,20 @@ const Single = ({route, navigation}) => {
 
   const LoadingIndicator = () => <Spinner size="medium" />;
 
-  const sendIcon = () => (
-    <TouchableOpacity onPress={handleSubmit(createComment)}>
-      <Icon name="send-outline" pack="ionIcons" style={{height: 25}} />
-    </TouchableOpacity>
-  );
+  const sendIcon = () => {
+    const themeContext = useContext(ThemeContext);
+
+    return (
+      <TouchableOpacity onPress={handleSubmit(createComment)}>
+        <Icon
+          name="send-outline"
+          pack="ionIcons"
+          style={{height: 25}}
+          color={themeContext.theme === 'light' ? 'black' : 'white'}
+        />
+      </TouchableOpacity>
+    );
+  };
 
   // Getting comments when new comment is added
   useEffect(() => {

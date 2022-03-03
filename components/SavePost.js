@@ -5,6 +5,7 @@ import {useRating} from '../hooks/ApiHooks';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button, Icon, Text} from '@ui-kitten/components';
+import {ThemeContext} from '../contexts/ThemeContext';
 
 const SavePost = ({file}) => {
   const {user, saveUpdate, setSaveUpdate} = useContext(MainContext);
@@ -12,6 +13,7 @@ const SavePost = ({file}) => {
   const [color, setColor] = useState();
   const [savedStatus, setSavedStatus] = useState(false);
   const pulseIconRef = useRef();
+  const themeContext = useContext(ThemeContext);
 
   const fetchSaved = async () => {
     try {
@@ -64,7 +66,7 @@ const SavePost = ({file}) => {
   const saveIcon = () => (
     <Icon
       ref={pulseIconRef}
-      color={color}
+      color={themeContext.theme === 'light' || savedStatus ? color : 'white'}
       animation="pulse"
       name="tag"
       style={styles.icon}
