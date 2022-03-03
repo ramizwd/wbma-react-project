@@ -44,29 +44,77 @@ import {useFonts} from 'expo-font';
 const Stack = createNativeStackNavigator();
 const {Navigator, Screen} = createDrawerNavigator();
 
-const HomeIcon = () => (
-  <Icon name="home-outline" pack="ionIcons" style={styles.icons} />
-);
+const HomeIcon = () => {
+  const themeContext = useContext(ThemeContext);
+  return (
+    <Icon
+      name="home-outline"
+      pack="ionIcons"
+      style={styles.icons}
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
+    />
+  );
+};
 
-const ProfileIcon = () => (
-  <Icon name="person-outline" pack="ionIcons" style={styles.icons} />
-);
+const ProfileIcon = () => {
+  const themeContext = useContext(ThemeContext);
+  return (
+    <Icon
+      name="person-outline"
+      pack="ionIcons"
+      style={styles.icons}
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
+    />
+  );
+};
 
-const ChatIcon = () => (
-  <Icon name="chatbubbles-outline" pack="ionIcons" style={styles.icons} />
-);
+const ChatIcon = () => {
+  const themeContext = useContext(ThemeContext);
+  return (
+    <Icon
+      name="chatbubbles-outline"
+      pack="ionIcons"
+      style={styles.icons}
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
+    />
+  );
+};
 
-const SearchIcon = () => (
-  <Icon name="search-outline" pack="ionIcons" style={styles.icons} />
-);
+const SearchIcon = () => {
+  const themeContext = useContext(ThemeContext);
+  return (
+    <Icon
+      name="search-outline"
+      pack="ionIcons"
+      style={styles.icons}
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
+    />
+  );
+};
 
-const SettingsIcon = () => (
-  <Icon name="settings-outline" pack="ionIcons" style={styles.icons} />
-);
+const SettingsIcon = () => {
+  const themeContext = useContext(ThemeContext);
+  return (
+    <Icon
+      name="settings-outline"
+      pack="ionIcons"
+      style={styles.icons}
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
+    />
+  );
+};
 
-const LogoutIcon = () => (
-  <Icon name="log-out-outline" pack="ionIcons" style={{height: 20}} />
-);
+const LogoutIcon = () => {
+  const themeContext = useContext(ThemeContext);
+  return (
+    <Icon
+      name="log-out-outline"
+      pack="ionIcons"
+      style={{height: 20}}
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
+    />
+  );
+};
 
 const SearchIconBold = (props) => (
   <Icon {...props} name="search" pack="ionIcons" />

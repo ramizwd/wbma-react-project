@@ -8,6 +8,7 @@ import {Button, Icon, Layout, Spinner, Text} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
 import moment from 'moment';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
+import {ThemeContext} from '../contexts/ThemeContext';
 
 // Component for individual comment. Takes comment prop.
 // Renders comments owners username and avatar, comment text and time when comment was added
@@ -45,9 +46,18 @@ const Comment = ({comment, navigation}) => {
 
   const LoadingIndicator = () => <Spinner size="medium" />;
 
-  const renderDeleteIcon = () => (
-    <Icon name="trash" resizeMode="contain" style={{height: 30}} />
-  );
+  const renderDeleteIcon = () => {
+    const themeContext = useContext(ThemeContext);
+
+    return (
+      <Icon
+        name="trash"
+        resizeMode="contain"
+        style={{height: 30}}
+        color={themeContext.theme === 'light' ? 'black' : 'white'}
+      />
+    );
+  };
 
   // Fetch comments owner
   useEffect(() => {
