@@ -23,7 +23,7 @@ const SavePost = ({file}) => {
       savedPost.forEach((saved) => {
         if (saved.user_id === user.user_id) {
           setSavedStatus(true);
-          setColor('blue');
+          setColor('#2684BA');
         }
       });
     } catch (error) {
