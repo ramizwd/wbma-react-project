@@ -76,6 +76,10 @@ const RegisterForm = ({onPress}) => {
             value: 2,
             message: 'Full name has to be at least 2 characters long.',
           },
+          maxLength: {
+            value: 13,
+            message: 'Full name can be maximum of 13 characters long.',
+          },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
@@ -97,9 +101,17 @@ const RegisterForm = ({onPress}) => {
         control={control}
         rules={{
           required: {value: true, message: 'Username is required.'},
+          pattern: {
+            value: /^.\S*$/,
+            message: 'Please remove any spaces.',
+          },
           minLength: {
             value: 3,
             message: 'Username has to be at least 3 characters long.',
+          },
+          maxLength: {
+            value: 13,
+            message: 'Username can be maximum of 13 characters long.',
           },
           validate: async (value) => {
             try {
