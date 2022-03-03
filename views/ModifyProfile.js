@@ -257,18 +257,9 @@ const ModifyProfile = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    // paddingTop: 5,
-
-    // padding: 20,
-    // borderRadius: 20,
   },
-  // pfImageTo: {
-  //   width: 70,
-  //   height: 70,
-  // },
   pfImage: {
     width: '70%',
     height: undefined,
@@ -277,23 +268,15 @@ const styles = StyleSheet.create({
     left: '15%',
     borderWidth: 2,
     borderColor: '#F1C40F',
-    // top: '1%',
   },
   bgImage: {
     width: '100%',
     height: 500,
     flex: 1,
-    // backgroundColor: '#FFFFFF',
   },
   scrollView: {
-    // marginHorizontal: '10%',
-    // marginTop: '80%',
-    // flex: 1,
-    // height: '100%',
     backgroundColor: 'rgba(52, 52, 52, 0.1)',
     borderRadius: 20,
-    // top: '-50%',
-    // backgroundColor: 'red',
   },
 });
 
