@@ -99,7 +99,7 @@ const CardContent = ({navigation, post, userPost}) => {
     <Icon
       color={themeContext.theme === 'light' ? 'black' : 'white'}
       style={styles.iconOpt}
-      name="ellipsis-vertical-outline"
+      name="ios-ellipsis-vertical-outline"
       pack="ionIcons"
     />
   );
