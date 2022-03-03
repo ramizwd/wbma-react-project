@@ -29,7 +29,6 @@ const Profile = ({navigation}) => {
       const avatar = avatarArray.pop();
       setAvatar(uploadsUrl + avatar.filename);
     } catch (error) {
-      setAvatar('http://placekitten.com/640');
       Alert.alert('Notice', 'Set profile pic please');
     }
   };

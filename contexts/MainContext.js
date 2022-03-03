@@ -10,7 +10,7 @@ const MainProvider = ({children}) => {
   const [update, setUpdate] = useState(0);
   const [likeUpdate, setLikeUpdate] = useState(0);
   const [saveUpdate, setSaveUpdate] = useState(0);
-  const [avatar, setAvatar] = useState('../assets/defaultAvatar.png');
+  const [avatar, setAvatar] = useState();
   const [tags, setTags] = useState([]);
 
   return (
