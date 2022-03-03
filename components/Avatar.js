@@ -27,7 +27,7 @@ const Avatar = ({userAvatar, avatarSize = 'large'}) => {
   }, []);
 
   return (
-    <Shadow distance={10} startColor={'#00000020'} radius={100} offset={[0, 3]}>
+    <Shadow distance={6} startColor={'#00000020'} radius={100} offset={[0, 3]}>
       <ImageBackground
         source={require('../assets/pfpBg.png')}
         style={{
