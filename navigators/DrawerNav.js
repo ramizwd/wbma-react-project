@@ -134,7 +134,10 @@ const DrawerContent = ({navigation, state}) => {
         <Text style={styles.profileName} category="h6">
           {user.full_name ? user.full_name : user.username}
         </Text>
-        <TouchableOpacity onPress={themeContext.toggleTheme}>
+        <TouchableOpacity
+          onPress={themeContext.toggleTheme}
+          activeOpacity={0.7}
+        >
           <Icon
             name={themeContext.theme === 'light' ? 'moon-outline' : 'moon'}
             pack="ionIcons"

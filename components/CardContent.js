@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     marginRight: 0,
   },
   headerContent: {
-    paddingLeft: 10,
+    marginLeft: 10,
     flexDirection: 'column',
     maxWidth: 290,
     margin: 0,

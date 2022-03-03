@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 export default function Tags({post}) {
   const [tags, setTags] = useState([]);
   const {getTagsByFileId} = useTag();
-  const [color, setColor] = useState({backgroundColor: '#0496FF'});
 
   // Get tags for the post
   const getTags = async () => {
@@ -32,14 +31,7 @@ export default function Tags({post}) {
         (tag) =>
           tag.tag.split(tagDivider)[1] != undefined && (
             <TouchableOpacity style={styles.tagBg} key={tag.tag_id}>
-              <Text
-                style={[
-                  styles.tagText,
-                  {backgroundColor: color.backgroundColor},
-                ]}
-              >
-                {tag.tag.split(tagDivider)[1]}
-              </Text>
+              <Text style={styles.tagText}>{tag.tag.split(tagDivider)[1]}</Text>
             </TouchableOpacity>
           )
       )}
@@ -55,6 +47,7 @@ const styles = StyleSheet.create({
   },
   tagBg: {
     borderRadius: 100,
+    overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 5,
@@ -66,6 +59,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     fontSize: 13,
     color: 'white',
+    backgroundColor: '#0496FF',
   },
 });
 
