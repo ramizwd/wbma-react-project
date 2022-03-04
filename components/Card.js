@@ -8,9 +8,9 @@ import {MainContext} from '../contexts/MainContext';
 
 // Card component that renders the CardContent component inside a List component with the post data
 // fetching from useMedia hook
-const Card = ({navigation, userPost = false}) => {
+const Card = ({navigation, userPost = false, othersPost = false}) => {
   const {update, setUpdate} = useContext(MainContext);
-  const {mediaArray, loading} = useMedia(userPost);
+  const {mediaArray, loading} = useMedia(userPost, othersPost);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
@@ -27,7 +27,12 @@ const Card = ({navigation, userPost = false}) => {
       data={mediaArray}
       keyExtractor={(item) => item.file_id.toString()}
       renderItem={({item}) => (
-        <CardContent post={item} navigation={navigation} userPost={userPost} />
+        <CardContent
+          post={item}
+          navigation={navigation}
+          userPost={userPost}
+          othersPost={othersPost}
+        />
       )}
       initialNumToRender={5}
     ></List>
@@ -37,6 +42,7 @@ const Card = ({navigation, userPost = false}) => {
 Card.propTypes = {
   navigation: PropTypes.object,
   userPost: PropTypes.bool,
+  othersPost: PropTypes.bool,
 };
 
 export default Card;
