@@ -22,6 +22,8 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import Tags from '../components/Tags';
 import {ThemeContext} from '../contexts/ThemeContext';
+import moment from 'moment';
+import SavePost from '../components/SavePost';
 
 // View for single post
 const Single = ({route, navigation}) => {
@@ -209,8 +211,23 @@ const Single = ({route, navigation}) => {
             ></Video>
           )}
         </Layout>
-        <Layout style={{alignItems: 'flex-start'}}>
-          <Likes file={file} />
+        <Layout
+          style={[
+            styles.row,
+            {
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            },
+          ]}
+        >
+          <Layout style={[styles.row]}>
+            <Likes file={file} />
+            <SavePost file={file} />
+          </Layout>
+
+          <Text category="p2" appearance="hint" style={{right: 10}}>
+            {moment(file.time_added).fromNow()}
+          </Text>
         </Layout>
       </Layout>
       <Layout style={{}}>
@@ -277,6 +294,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginRight: 20,
   },
+  time: {textAlign: 'right'},
 });
 
 Single.propTypes = {
