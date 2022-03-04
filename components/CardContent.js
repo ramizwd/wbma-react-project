@@ -135,7 +135,11 @@ const CardContent = ({navigation, post, userPost}) => {
         >
           <Layout style={styles.postHeader}>
             <TouchableWithoutFeedback
-              onPress={() => navigation.navigate('User profile', {file: post})}
+              onPress={() => {
+                post.user_id === user.user_id
+                  ? navigation.navigate('Profile')
+                  : navigation.navigate('User profile', {file: post});
+              }}
             >
               {!userPost && <Avatar userAvatar={post.user_id} />}
             </TouchableWithoutFeedback>
