@@ -1,7 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {
   Alert,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
@@ -13,6 +12,7 @@ import {Button, Input, Avatar, Card, Layout, Text} from '@ui-kitten/components';
 import {PropTypes} from 'prop-types';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import * as ImagePicker from 'expo-image-picker';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // ModifyProfile view that takes navigation props can modify user's profile including username, password, email, full name and avatar.
 const ModifyProfile = ({navigation}) => {
@@ -31,7 +31,7 @@ const ModifyProfile = ({navigation}) => {
     defaultValues: {
       username: user.username,
       password: '',
-      confirmPassword: '',
+      confirm_password: '',
       email: user.email,
       full_name: user.full_name,
     },
@@ -85,7 +85,7 @@ const ModifyProfile = ({navigation}) => {
     }
 
     try {
-      delete data.confirmPassword;
+      delete data.confirm_password;
       if (data.password === '') {
         delete data.password;
       }
@@ -107,18 +107,56 @@ const ModifyProfile = ({navigation}) => {
         source={require('../assets/drawerBg.png')}
         style={styles.bgImage}
       />
-      <ScrollView>
-        <Card style={styles.scrollView}>
+      <Card style={styles.content}>
+        <KeyboardAwareScrollView>
           <TouchableOpacity onPress={pickImage}>
             <Avatar source={{uri: avatar}} style={styles.pfImage} />
           </TouchableOpacity>
+
           <Controller
             control={control}
             rules={{
-              required: {value: true, message: 'This is required.'},
+              minLength: {
+                value: 2,
+                message: 'Full name has to be at least 2 characters long.',
+              },
+              maxLength: {
+                value: 13,
+                message: 'Full name can be maximum of 13 characters long.',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <Input
+                style={styles.input}
+                textStyle={styles.inputText}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                autoCapitalize="words"
+                placeholder="Insert full name"
+                label="Full name"
+                status={errors.full_name ? 'danger' : 'basic'}
+                caption={errors.full_name && errors.full_name.message}
+              />
+            )}
+            name="full_name"
+          />
+
+          <Controller
+            control={control}
+            rules={{
+              required: {value: true, message: 'Username is required.'},
+              pattern: {
+                value: /^.\S*$/,
+                message: 'Please remove any spaces.',
+              },
               minLength: {
                 value: 3,
-                message: 'Username has to be at least 3 characters.',
+                message: 'Username has to be at least 3 characters long.',
+              },
+              maxLength: {
+                value: 13,
+                message: 'Username can be maximum of 13 characters long.',
               },
               validate: async (value) => {
                 try {
@@ -135,13 +173,16 @@ const ModifyProfile = ({navigation}) => {
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <Input
+                style={styles.input}
+                textStyle={styles.inputText}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
                 autoCapitalize="none"
-                placeholder="Username"
+                placeholder="Insert username*"
                 label="Username"
-                errorMessage={errors.username && errors.username.message}
+                status={errors.username ? 'danger' : 'basic'}
+                caption={errors.username && errors.username.message}
               />
             )}
             name="username"
@@ -150,21 +191,52 @@ const ModifyProfile = ({navigation}) => {
           <Controller
             control={control}
             rules={{
-              minLength: {
-                value: 5,
-                message: 'Password has to be at least 5 characters.',
+              required: {value: true, message: 'Email is required.'},
+              pattern: {
+                value: /\S+@\S+\.\S+$/,
+                message: 'Email has to be valid.',
               },
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <Input
+                style={styles.input}
+                textStyle={styles.inputText}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                autoCapitalize="none"
+                placeholder="Insert email*"
+                label="Email"
+                status={errors.email ? 'danger' : 'basic'}
+                caption={errors.email && errors.email.message}
+              />
+            )}
+            name="email"
+          />
+
+          <Controller
+            control={control}
+            rules={{
+              required: {value: true, message: 'Password is required.'},
+              pattern: {
+                value: /(?=.*[\p{Lu}])(?=.*[0-9]).{5,}/u,
+                message:
+                  'Password must match at least the following criteria: 5 characters, uppercase, a number.',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <Input
+                style={styles.input}
+                textStyle={styles.inputText}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
                 autoCapitalize="none"
                 secureTextEntry={true}
-                placeholder="Password"
+                placeholder="Insert password*"
                 label="Password"
-                errorMessage={errors.password && errors.password.message}
+                status={errors.password ? 'danger' : 'basic'}
+                caption={errors.password && errors.password.message}
               />
             )}
             name="password"
@@ -178,77 +250,40 @@ const ModifyProfile = ({navigation}) => {
                 if (value === password) {
                   return true;
                 } else {
-                  return 'Passwords do not match.';
+                  return 'Please make sure the passwords match.';
                 }
               },
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <Input
+                style={styles.input}
+                textStyle={styles.inputText}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
                 autoCapitalize="none"
                 secureTextEntry={true}
-                placeholder="Confirm password"
+                placeholder="Insert password again*"
                 label="Confirm Password"
-                errorMessage={
-                  errors.confirmPassword && errors.confirmPassword.message
+                status={errors.confirm_password ? 'danger' : 'basic'}
+                caption={
+                  errors.confirm_password && errors.confirm_password.message
                 }
               />
             )}
-            name="confirmPassword"
+            name="confirm_password"
           />
 
-          <Controller
-            control={control}
-            rules={{
-              required: {value: true, message: 'This is required.'},
-              pattern: {
-                value: /\S+@\S+\.\S+$/,
-                message: 'Has to be valid email.',
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                placeholder="Email"
-                label="Email"
-                errorMessage={errors.email && errors.email.message}
-              />
-            )}
-            name="email"
-          />
-
-          <Controller
-            control={control}
-            rules={{
-              minLength: {
-                value: 3,
-                message: 'Full name has to be at least 3 characters.',
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="words"
-                placeholder="Full name"
-                label="Full name"
-                errorMessage={errors.full_name && errors.full_name.message}
-              />
-            )}
-            name="full_name"
-          />
           <Text> </Text>
-          <Button title="Submit" onPress={handleSubmit(onSubmit)}>
+          <Button
+            style={styles.button}
+            title="Submit"
+            onPress={handleSubmit(onSubmit)}
+          >
             Save
           </Button>
-        </Card>
-      </ScrollView>
+        </KeyboardAwareScrollView>
+      </Card>
     </Layout>
   );
 };
@@ -259,6 +294,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  input: {
+    width: '95%',
+    borderRadius: 20,
+    marginVertical: 5,
+  },
+  inputText: {
+    fontSize: 14,
+    fontFamily: 'JetBrainsMonoReg',
+  },
   pfImage: {
     width: '70%',
     height: undefined,
@@ -266,7 +310,7 @@ const styles = StyleSheet.create({
     borderRadius: 400,
     left: '15%',
     borderWidth: 2,
-    borderColor: '#F1C40F',
+    borderColor: '#0496FF',
   },
   bgImage: {
     top: '-25%',
@@ -274,15 +318,13 @@ const styles = StyleSheet.create({
     height: 500,
     flex: 1,
   },
-  scrollView: {
-    backgroundColor: 'rgba(52, 52, 52, 0.1)',
-    borderRadius: 20,
+  content: {
+    borderRadius: 8,
+    marginVertical: 10,
   },
-  uName: {
-    position: 'absolute',
-    top: '82%',
-    fontSize: 25,
-    left: '5%',
+  button: {
+    borderRadius: 20,
+    backgroundColor: '#26A96C',
   },
 });
 
