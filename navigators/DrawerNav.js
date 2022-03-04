@@ -130,7 +130,7 @@ const DrawerContent = ({navigation, state}) => {
         style={[styles.backgroundImg, styles.profileContainer]}
         source={require('../assets/drawerBg.png')}
       >
-        <Avatar avatarSize="giant" />
+        <Avatar avatarSize="giant" userAvatar={user.user_id} />
         <Text style={styles.profileName} category="h6">
           {user.full_name ? user.full_name : user.username}
         </Text>
@@ -159,7 +159,7 @@ const DrawerContent = ({navigation, state}) => {
       {
         text: 'Log out',
         onPress: async () => {
-          await AsyncStorage.clear();
+          await AsyncStorage.removeItem('token');
           setLoggedIn(false);
         },
       },
