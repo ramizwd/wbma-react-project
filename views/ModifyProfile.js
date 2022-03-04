@@ -5,12 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
-  Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import {useForm, Controller} from 'react-hook-form';
-import {Button, Input, Avatar, Card, Layout} from '@ui-kitten/components';
+import {Button, Input, Avatar, Card, Layout, Text} from '@ui-kitten/components';
 import {PropTypes} from 'prop-types';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import * as ImagePicker from 'expo-image-picker';
@@ -278,6 +277,12 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: 'rgba(52, 52, 52, 0.1)',
     borderRadius: 20,
+  },
+  uName: {
+    position: 'absolute',
+    top: '82%',
+    fontSize: 25,
+    left: '5%',
   },
 });
 

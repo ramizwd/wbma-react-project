@@ -7,9 +7,11 @@ const MainContext = React.createContext({});
 const MainProvider = ({children}) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({});
+  const [postOwner, setPostOwner] = useState({username: 'Loading username...'});
   const [update, setUpdate] = useState(0);
   const [likeUpdate, setLikeUpdate] = useState(0);
   const [saveUpdate, setSaveUpdate] = useState(0);
+  const [ownerUpdate, setOwnerUpdate] = useState(0);
   const [avatar, setAvatar] = useState();
   const [tags, setTags] = useState([]);
 
@@ -30,6 +32,10 @@ const MainProvider = ({children}) => {
         setTags,
         saveUpdate,
         setSaveUpdate,
+        postOwner,
+        setPostOwner,
+        ownerUpdate,
+        setOwnerUpdate,
       }}
     >
       {children}
