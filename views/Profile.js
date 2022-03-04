@@ -71,9 +71,8 @@ const Profile = ({navigation}) => {
     <Layout style={{height: '100%'}}>
       <Layout style={styles.container}>
         <ImageBackground
-          source={{
-            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGUJD0DgCxdTDAbvk6u3gVm25AqOS6Ksnt9Q&usqp=CAU',
-          }}
+          blurRadius={5}
+          source={require('../assets/banner2.jpg')}
           style={styles.bgImage}
         />
 
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '70%',
-    top: '-2%',
+    top: '-3%',
   },
   pfImage: {
     position: 'absolute',
@@ -148,6 +147,7 @@ const styles = StyleSheet.create({
     top: '30%',
   },
   userName: {
+    color: 'white',
     position: 'absolute',
     top: '10%',
     fontSize: 25,
