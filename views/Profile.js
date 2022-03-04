@@ -104,7 +104,7 @@ const Profile = ({navigation}) => {
       </Layout>
 
       <Layout style={{flex: 3}}>
-        <Tabs navigation={navigation} />
+        <Tabs navigation={navigation} othersPosts={false} />
       </Layout>
     </Layout>
   );

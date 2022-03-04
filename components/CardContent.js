@@ -138,7 +138,9 @@ const CardContent = ({navigation, post, userPost}) => {
               onPress={() => {
                 post.user_id === user.user_id
                   ? navigation.navigate('Profile')
-                  : navigation.navigate('User profile', {file: post});
+                  : navigation.navigate('User profile', {
+                      file: post,
+                    });
               }}
             >
               {!userPost && <Avatar userAvatar={post.user_id} />}

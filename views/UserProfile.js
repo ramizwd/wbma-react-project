@@ -5,8 +5,8 @@ import {Card as Cards, Layout, Text} from '@ui-kitten/components';
 import {useUser} from '../hooks/ApiHooks';
 import Avatar from '../components/Avatar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Card from '../components/Card';
 import {MainContext} from '../contexts/MainContext';
+import Tabs from '../components/Tabs';
 
 // UserProfile view that takes navigation and route props and renders poster's info including ID, username, full name, email and post history.
 const UserProfile = ({navigation, route}) => {
@@ -44,9 +44,8 @@ const UserProfile = ({navigation, route}) => {
         <Text>Full name:{postOwner.full_name}</Text>
         <Text>Email: {postOwner.email}</Text>
       </Cards>
-      <Text style={styles.text}>Post history:</Text>
       <Layout style={styles.postList}>
-        <Card navigation={navigation} othersPost={true} />
+        <Tabs othersPosts={true} userPost={true} />
       </Layout>
     </Layout>
   );
