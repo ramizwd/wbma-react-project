@@ -1,34 +1,19 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Image, StyleSheet, ImageBackground, Alert} from 'react-native';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
-import {useLikes, useTag, useRating} from '../hooks/ApiHooks';
+import {useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
-import {
-  Text,
-  Layout,
-  List,
-  TabView,
-  Tab,
-  Button,
-  Icon,
-} from '@ui-kitten/components';
-import Card from '../components/Card';
-import CardContent from '../components/CardContent';
+import {Text, Layout, Button, Icon} from '@ui-kitten/components';
 import {ThemeContext} from '../contexts/ThemeContext';
+import Tabs from '../components/Tabs';
 
 // Profile view that takes navigation props can display user's general information including avatar, user full name ,user's email, and user's post history, besides user can also modify his/her profile from this view
 const Profile = ({navigation}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
   const {getFilesByTag} = useTag();
   // const [selectedValue, setSelectedValue] = useState('post');
-  const [likeList, setLikeList] = useState([]);
-  const [savedList, setSavedList] = useState([]);
-  const {getPostsByLikes} = useLikes();
-  const {getRatedPostByUser} = useRating();
-  const {likeUpdate, saveUpdate} = useContext(MainContext);
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const themeContext = useContext(ThemeContext);
 
   // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
@@ -42,26 +27,9 @@ const Profile = ({navigation}) => {
     }
   };
 
-  // fetching user's liked posts list by using getPostsByLikes from ApiHooks
-  const fetchLikesAndSaved = async () => {
-    const token = await AsyncStorage.getItem('token');
-    try {
-      const likes = await getPostsByLikes(token);
-      const saved = await getRatedPostByUser(token);
-      setLikeList(likes);
-      setSavedList(saved);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
     fetchAvatar();
   }, []);
-
-  useEffect(() => {
-    fetchLikesAndSaved();
-  }, [likeUpdate, saveUpdate]);
 
   const renderEditIcon = () => (
     <Icon
@@ -136,38 +104,7 @@ const Profile = ({navigation}) => {
       </Layout>
 
       <Layout style={{flex: 3}}>
-        <TabView
-          selectedIndex={selectedIndex}
-          onSelect={(index) => setSelectedIndex(index)}
-        >
-          <Tab title="My Posts">
-            <Layout style={styles.postList}>
-              <Card navigation={navigation} userPost={true} />
-            </Layout>
-          </Tab>
-          <Tab title="Liked">
-            <Layout style={styles.postList}>
-              <List
-                data={likeList}
-                keyExtractor={(item) => item.file_id.toString()}
-                renderItem={({item}) => (
-                  <CardContent post={item} navigation={navigation} />
-                )}
-              ></List>
-            </Layout>
-          </Tab>
-          <Tab title="Saved">
-            <Layout style={styles.postList}>
-              <List
-                data={savedList}
-                keyExtractor={(item) => item.file_id.toString()}
-                renderItem={({item}) => (
-                  <CardContent post={item} navigation={navigation} />
-                )}
-              ></List>
-            </Layout>
-          </Tab>
-        </TabView>
+        <Tabs navigation={navigation} />
       </Layout>
     </Layout>
   );
