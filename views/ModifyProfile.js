@@ -16,7 +16,8 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // ModifyProfile view that takes navigation props can modify user's profile including username, password, email, full name and avatar.
 const ModifyProfile = ({navigation}) => {
-  const {user, setUser, avatar, setAvatar} = useContext(MainContext);
+  const {user, setUser, avatar, setAvatar, update, setUpdate} =
+    useContext(MainContext);
   const {checkUsername, putUser} = useUser();
   const [type, setType] = useState('image');
   const {postTag} = useTag();
@@ -54,8 +55,6 @@ const ModifyProfile = ({navigation}) => {
   // submit form date by using postMedia and postTag from ApiHooks
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
-    console.log('on Submit data:', data);
-
     const formData = new FormData();
     formData.append('title', 'avatar');
     const filename = avatar.split('/').pop();
@@ -93,6 +92,7 @@ const ModifyProfile = ({navigation}) => {
       if (userData) {
         Alert.alert('Success', userData.message);
         delete data.password;
+        setUpdate(update + 1);
         setUser(data);
         navigation.navigate('Profile');
       }
@@ -217,7 +217,6 @@ const ModifyProfile = ({navigation}) => {
           <Controller
             control={control}
             rules={{
-              required: {value: true, message: 'Password is required.'},
               pattern: {
                 value: /(?=.*[\p{Lu}])(?=.*[0-9]).{5,}/u,
                 message:
