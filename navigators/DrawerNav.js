@@ -110,7 +110,7 @@ const LogoutIcon = () => {
     <Icon
       name="log-out-outline"
       pack="ionIcons"
-      style={{height: 20}}
+      style={styles.icons}
       color={themeContext.theme === 'light' ? 'black' : 'white'}
     />
   );
@@ -137,16 +137,13 @@ const DrawerContent = ({navigation, state}) => {
         <TouchableOpacity
           onPress={themeContext.toggleTheme}
           activeOpacity={0.7}
+          style={{top: '30%', left: '25%', transform: [{scaleX: -1}]}}
         >
           <Icon
             name={themeContext.theme === 'light' ? 'moon-outline' : 'moon'}
             pack="ionIcons"
-            style={
-              ({height: 20},
-              themeContext.theme === 'dark'
-                ? {color: '#F5CB5C', height: 20}
-                : {color: '#CCDBDC', height: 20})
-            }
+            style={styles.icons}
+            color={themeContext.theme === 'light' ? '#000' : '#F5CB5C'}
           />
         </TouchableOpacity>
       </ImageBackground>
