@@ -89,10 +89,10 @@ const useUser = () => {
 };
 
 // Hook for media related functions
-const useMedia = (userPost) => {
+const useMedia = (userPost, othersPost) => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {update, user} = useContext(MainContext);
+  const {update, user, postOwner, ownerUpdate} = useContext(MainContext);
 
   // fetching media files and mapping them
   const getMedia = async () => {
@@ -103,6 +103,9 @@ const useMedia = (userPost) => {
       );
       if (userPost) {
         json = json.filter((file) => file.user_id === user.user_id);
+      }
+      if (othersPost) {
+        json = json.filter((file) => file.user_id === postOwner.user_id);
       }
       const media = await Promise.all(
         json.map(async (item) => {
@@ -122,7 +125,7 @@ const useMedia = (userPost) => {
   // effect hook for refetching the media
   useEffect(() => {
     getMedia();
-  }, [update]);
+  }, [update, ownerUpdate]);
 
   // posting media
   const postMedia = async (formData, token) => {
