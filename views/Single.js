@@ -51,7 +51,6 @@ const Single = ({route, navigation}) => {
   // Get comments for the post
   const getComments = async () => {
     try {
-      console.log('get comments');
       const comments = await getCommentsByPost(file.file_id);
       setComments(comments.reverse());
     } catch (error) {
@@ -66,9 +65,7 @@ const Single = ({route, navigation}) => {
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await postComment(data, file.file_id, token);
-      if (response) {
-        setUpdate(update + 1);
-      }
+      response && setUpdate(update + 1);
     } catch (error) {
       console.error('postComment error', error);
     }
@@ -91,6 +88,7 @@ const Single = ({route, navigation}) => {
     );
   };
 
+  // When pressed the full long description is shown less.
   const minusIcon = () => (
     <TouchableOpacity
       onPress={() => {
@@ -102,13 +100,9 @@ const Single = ({route, navigation}) => {
     </TouchableOpacity>
   );
 
+  // When pressed the full description is shown.
   const plusIcon = () => (
-    <TouchableOpacity
-      onPress={() => {
-        setShowingMore(true);
-        setMaxDescHeigh(1000);
-      }}
-    >
+    <TouchableOpacity onPress={() => setShowingMore(true)}>
       <Icon name="plus" style={styles.descriptionIcon} />
     </TouchableOpacity>
   );
@@ -129,7 +123,7 @@ const Single = ({route, navigation}) => {
       >
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate('User profile', {file: file})}
-          style={{flexDirection: 'row', alignItems: 'center'}}
+          style={[styles.row, {alignItems: 'center'}]}
         >
           <Avatar userAvatar={file.user_id} />
           <Text style={{marginLeft: 10}}>{owner.username}</Text>
@@ -138,22 +132,26 @@ const Single = ({route, navigation}) => {
           <Tags post={file} />
         </Layout>
         <Layout>
-          <Text style={{marginVertical: 5}} category="h6">
+          <Text style={[styles.font, {marginVertical: 5}]} category="h6">
             {file.title}
           </Text>
           <Layout
             onLayout={(evt) => {
               const {height} = evt.nativeEvent.layout;
-              console.log('height', height);
-              if (height >= maxDescHeight) {
-                console.log('height reached');
-                letDescriptionButton(true);
-              }
+              height >= maxDescHeight && letDescriptionButton(true);
             }}
-            maxHeight={maxDescHeight + 5}
+            style={
+              !showingMore && {
+                maxHeight: maxDescHeight + 5,
+              }
+            }
           >
-            <Layout style={descriptionButton && {maxHeight: '90%'}}>
-              <Text>{file.description}</Text>
+            <Layout
+              style={descriptionButton && !showingMore && {maxHeight: '90%'}}
+            >
+              <Text style={[styles.font, {fontSize: 14}]}>
+                {file.description}
+              </Text>
             </Layout>
 
             {descriptionButton && (showingMore ? minusIcon() : plusIcon())}
@@ -161,29 +159,21 @@ const Single = ({route, navigation}) => {
 
           {file.media_type === 'image' ? (
             <Popover
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
+              style={styles.popover}
               placement="top"
               backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
               visible={visible}
               onBackdropPress={() => setVisible(false)}
               anchor={() => (
                 <TouchableWithoutFeedback
-                  style={{height: 250, marginTop: 10}}
+                  style={{height: 250}}
                   onPress={() => setVisible(true)}
                 >
                   <Image
                     source={{uri: uploadsUrl + file.filename}}
                     style={{
                       width: undefined,
-                      height: '95%',
+                      height: '100%',
                       borderRadius: 10,
                       resizeMode: 'contain',
                       marginTop: 10,
@@ -204,7 +194,7 @@ const Single = ({route, navigation}) => {
           ) : (
             <Video
               ref={videoRef}
-              style={{width: '80%', height: '50%'}}
+              style={{width: undefined, height: 250}}
               source={{uri: uploadsUrl + file.filename}}
               useNativeControls={true}
               resizeMode="contain"
@@ -294,7 +284,18 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginRight: 20,
   },
-  time: {textAlign: 'right'},
+  font: {
+    fontFamily: 'JetBrainsMonoReg',
+  },
+  popover: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 Single.propTypes = {
