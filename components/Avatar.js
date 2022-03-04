@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
 import {Avatar as KittenAvatar} from '@ui-kitten/components';
 import PropTypes from 'prop-types';
-import {Shadow} from 'react-native-shadow-2';
+import {MainContext} from '../contexts/MainContext';
 
 const Avatar = ({userAvatar, avatarSize = 'large'}) => {
   const {getFilesByTag} = useTag();
   const [avatar, setAvatar] = useState();
-
+  const {update} = useContext(MainContext);
   const fetchAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag(`avatar_${userAvatar}`);
@@ -21,20 +21,18 @@ const Avatar = ({userAvatar, avatarSize = 'large'}) => {
 
   useEffect(() => {
     fetchAvatar();
-  }, []);
+  }, [update]);
 
   return (
-    <Shadow distance={6} startColor={'#00000020'} radius={100} offset={[0, 3]}>
-      <KittenAvatar
-        style={{borderColor: '#0496FF', borderWidth: 1.5}}
-        source={
-          avatar === undefined
-            ? require('../assets/defaultAvatar.png')
-            : {uri: avatar}
-        }
-        size={avatarSize}
-      ></KittenAvatar>
-    </Shadow>
+    <KittenAvatar
+      style={{borderColor: '#0496FF', borderWidth: 1.5}}
+      source={
+        avatar === undefined
+          ? require('../assets/defaultAvatar.png')
+          : {uri: avatar}
+      }
+      size={avatarSize}
+    ></KittenAvatar>
   );
 };
 

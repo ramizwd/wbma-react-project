@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Image, StyleSheet, ImageBackground, Alert} from 'react-native';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,19 +15,38 @@ const Profile = ({navigation}) => {
   const {getFilesByTag} = useTag();
   // const [selectedValue, setSelectedValue] = useState('post');
   const themeContext = useContext(ThemeContext);
-
+  const [newUser, setNewUser] = useState('');
   // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
+
+  const welcomeText = async () => {
+    const newUser = await AsyncStorage.getItem('newUser');
+    setNewUser(
+      user.full_name
+        ? 'Welcome back ' + user.full_name
+        : 'Welcome back ' + user.username
+    );
+    if (newUser !== user.user_id.toString()) {
+      setNewUser(
+        user.full_name
+          ? 'Welcome ' + user.full_name
+          : 'Welcome ' + user.username
+      );
+      await AsyncStorage.setItem('newUser', user.user_id.toString());
+    }
+  };
+
   const fetchAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
       const avatar = avatarArray.pop();
       setAvatar(uploadsUrl + avatar.filename);
     } catch (error) {
-      Alert.alert('Notice', 'Set profile pic please');
+      console.log('error fetching profile', error);
     }
   };
 
   useEffect(() => {
+    welcomeText();
     fetchAvatar();
   }, []);
 
@@ -52,9 +71,8 @@ const Profile = ({navigation}) => {
     <Layout style={{height: '100%'}}>
       <Layout style={styles.container}>
         <ImageBackground
-          source={{
-            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGUJD0DgCxdTDAbvk6u3gVm25AqOS6Ksnt9Q&usqp=CAU',
-          }}
+          blurRadius={5}
+          source={require('../assets/banner2.jpg')}
           style={styles.bgImage}
         />
 
@@ -67,9 +85,7 @@ const Profile = ({navigation}) => {
           style={styles.pfImage}
         />
 
-        <Text style={styles.userName}>
-          Welcome back {user.full_name ? user.full_name : user.username}!
-        </Text>
+        <Text style={styles.userName}>{newUser}</Text>
 
         <Layout style={styles.userInfoContainer}>
           <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
@@ -91,7 +107,7 @@ const Profile = ({navigation}) => {
               {
                 text: 'OK',
                 onPress: async () => {
-                  await AsyncStorage.clear();
+                  await AsyncStorage.removeItem('token');
                   setLoggedIn(false);
                 },
               },
@@ -120,7 +136,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '70%',
-    top: '-2%',
+    top: '-3%',
   },
   pfImage: {
     position: 'absolute',
@@ -131,6 +147,7 @@ const styles = StyleSheet.create({
     top: '30%',
   },
   userName: {
+    color: 'white',
     position: 'absolute',
     top: '10%',
     fontSize: 25,
@@ -140,7 +157,8 @@ const styles = StyleSheet.create({
     width: 10,
     height: 50,
     position: 'absolute',
-    top: '45%',
+    top: '47%',
+    marginHorizontal: 5,
   },
 
   editIcon: {
