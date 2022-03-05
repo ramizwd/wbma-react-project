@@ -75,7 +75,13 @@ const Comment = ({comment, navigation}) => {
       <Layout style={styles.content}>
         <Layout style={styles.commentAndAuthor}>
           <TouchableWithoutFeedback
-            onPress={() => navigation.navigate('User profile', {file: comment})}
+            onPress={() => {
+              commentOwner.user_id === user.user_id
+                ? navigation.navigate('Profile')
+                : navigation.navigate('User profile', {
+                    file: comment,
+                  });
+            }}
           >
             <Layout style={styles.author}>
               <Avatar userAvatar={comment.user_id} avatarSize="small" />
