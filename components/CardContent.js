@@ -10,6 +10,7 @@ import {
   Button,
   OverflowMenu,
   MenuItem,
+  Popover,
 } from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useComment, useMedia, useUser} from '../hooks/ApiHooks';
@@ -25,7 +26,7 @@ import {ThemeContext} from '../contexts/ThemeContext';
 
 // Media post content component that takes navigation and post props and renders poster's avatar,
 // username and the post information
-const CardContent = ({navigation, post, userPost}) => {
+const CardContent = ({navigation, post, userPost, singlePost = false}) => {
   const {getUserById} = useUser();
   const {deleteMedia, loading} = useMedia();
   const {getCommentsByPost} = useComment();
@@ -35,6 +36,8 @@ const CardContent = ({navigation, post, userPost}) => {
   const [visible, setVisible] = useState(false);
   const videoRef = useRef(null);
   const themeContext = useContext(ThemeContext);
+  const [showMore, setShowMore] = useState(false);
+  const [popover, setPopover] = useState(false);
 
   // fetching post owner data by ID and setting it to the posterOwner state hook
   const fetchOwner = async () => {
@@ -78,6 +81,11 @@ const CardContent = ({navigation, post, userPost}) => {
     ]);
   };
 
+  const showMoreDesc = () => {
+    const toggleShowMore = showMore === false ? true : false;
+    setShowMore(toggleShowMore);
+  };
+
   // fetch both owner and avatar on component render
   useEffect(() => {
     fetchOwner();
@@ -102,6 +110,14 @@ const CardContent = ({navigation, post, userPost}) => {
       style={styles.iconOpt}
       name="ios-ellipsis-vertical-outline"
       pack="ionIcons"
+    />
+  );
+
+  const renderMoreIcon = () => (
+    <Icon
+      name={showMore ? 'remove-sharp' : 'add'}
+      pack="ionIcons"
+      style={styles.moreIcon}
     />
   );
 
@@ -199,12 +215,41 @@ const CardContent = ({navigation, post, userPost}) => {
           {!loading ? (
             <Layout>
               {post.media_type === 'image' ? (
-                <Image
-                  source={{uri: uploadsUrl + post.filename}}
-                  containerStyle={styles.image}
-                  style={styles.image}
-                  PlaceholderContent={<Spinner />}
-                />
+                singlePost ? (
+                  <Popover
+                    style={styles.popover}
+                    backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+                    visible={popover}
+                    onBackdropPress={() => setPopover(false)}
+                    anchor={() => (
+                      <TouchableWithoutFeedback
+                        style={{height: 250}}
+                        onPress={() => setPopover(true)}
+                      >
+                        <Image
+                          source={{uri: uploadsUrl + post.filename}}
+                          style={styles.image}
+                          PlaceholderContent={<Spinner />}
+                        />
+                      </TouchableWithoutFeedback>
+                    )}
+                  >
+                    <Image
+                      source={{uri: uploadsUrl + post.filename}}
+                      resizeMode="contain"
+                      style={{
+                        width: 400,
+                        height: 400,
+                      }}
+                    />
+                  </Popover>
+                ) : (
+                  <Image
+                    source={{uri: uploadsUrl + post.filename}}
+                    style={styles.image}
+                    PlaceholderContent={<Spinner />}
+                  />
+                )
               ) : (
                 <TouchableWithoutFeedback>
                   <Video
@@ -237,9 +282,25 @@ const CardContent = ({navigation, post, userPost}) => {
           </Text>
 
           <Layout style={styles.bottomContent}>
-            <Text numberOfLines={2} style={styles.description}>
+            <Text numberOfLines={!showMore ? 2 : 0} style={styles.description}>
               {post.description}
             </Text>
+
+            {singlePost && post.description.length > 150 && (
+              <Button
+                style={styles.showMoreBtn}
+                size="tiny"
+                appearance="ghost"
+                status="basic"
+                accessoryRight={renderMoreIcon}
+                onPress={() => {
+                  showMoreDesc();
+                }}
+              >
+                {showMore ? 'Show Less' : 'Show More'}
+              </Button>
+            )}
+
             <Tags post={post} />
           </Layout>
         </Layout>
@@ -330,6 +391,14 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMonoReg',
     fontSize: 14,
   },
+  showMoreBtn: {
+    width: 100,
+    height: 35,
+    alignSelf: 'flex-end',
+  },
+  moreIcon: {
+    height: 19,
+  },
   feedback: {
     flexDirection: 'row',
     padding: 10,
@@ -350,12 +419,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20,
   },
+  popover: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 CardContent.propTypes = {
   post: PropTypes.object.isRequired,
   navigation: PropTypes.object,
   userPost: PropTypes.bool,
+  singlePost: PropTypes.bool,
 };
 
 export default CardContent;
