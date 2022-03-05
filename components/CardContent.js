@@ -314,6 +314,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
               navigation.navigate('Single post', {
                 file: post,
                 owner: postOwner,
+                openComments: true,
               });
             }}
             appearance="ghost"
