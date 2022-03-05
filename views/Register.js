@@ -22,7 +22,9 @@ const Register = ({navigation}) => {
           activeOpacity={1}
         >
           <Layout>
-            <Text style={styles.header}>Moment</Text>
+            <Text style={styles.appTitle} category="h3">
+              {'<Moment/>'}
+            </Text>
             <RegisterForm
               onPress={() => {
                 navigation.navigate('Login');
@@ -52,9 +54,11 @@ const Register = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  header: {
+  appTitle: {
     marginRight: 'auto',
     marginLeft: 'auto',
+    fontFamily: 'JetBrainsMonoReg',
+    marginTop: 10,
   },
   container: {
     alignItems: 'center',

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {createRef, useContext, useEffect} from 'react';
 import {Keyboard, StyleSheet, TouchableOpacity} from 'react-native';
 import LoginForm from '../components/LoginForm';
 import PropTypes from 'prop-types';
@@ -6,11 +6,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {Button, Layout, Text} from '@ui-kitten/components';
+import LottieView from 'lottie-react-native';
 
 // Login view
 const Login = ({navigation}) => {
   const {getUserByToken} = useUser();
   const {setLoggedIn, setUser} = useContext(MainContext);
+  const animation = createRef();
 
   // authenticate the user if token is found and login automatically
   const authUser = async () => {
@@ -31,6 +33,7 @@ const Login = ({navigation}) => {
   // launch authUser when the view is rendered
   useEffect(() => {
     authUser();
+    animation.current?.play();
   }, []);
 
   // Login layout
@@ -41,7 +44,17 @@ const Login = ({navigation}) => {
       activeOpacity={1}
     >
       <Layout style={styles.container}>
-        <Text>Moment</Text>
+        <Text style={styles.appTitle} category="h3">
+          {'<Moment/>'}
+        </Text>
+        <Layout style={styles.loginAnimation}>
+          <LottieView
+            ref={animation}
+            source={require('../assets/animation/lottie-secure-login.json')}
+            style={styles.animation}
+            loop={false}
+          />
+        </Layout>
         <LoginForm />
         <Layout style={styles.singUp}>
           <Text style={styles.singUpText}>{"Don't have an account?"}</Text>
@@ -68,6 +81,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  loginAnimation: {
+    height: 300,
+    width: '100%',
+  },
+  appTitle: {
+    fontFamily: 'JetBrainsMonoReg',
   },
   singUp: {
     marginTop: 20,
