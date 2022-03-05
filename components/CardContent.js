@@ -115,6 +115,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
 
   const renderMoreIcon = () => (
     <Icon
+      color={themeContext.theme === 'light' ? 'black' : 'white'}
       name={showMore ? 'remove-sharp' : 'add'}
       pack="ionIcons"
       style={styles.moreIcon}
