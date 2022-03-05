@@ -1,43 +1,24 @@
-import {Image, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import {
-  Icon,
-  Input,
-  Layout,
-  Popover,
-  Spinner,
-  Text,
-} from '@ui-kitten/components';
-import {Video} from 'expo-av';
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {Icon, Input, Layout, Button, Spinner} from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 import {useComment} from '../hooks/ApiHooks';
-import {uploadsUrl} from '../utils/variables';
 import {Controller, useForm} from 'react-hook-form';
 import Comment from '../components/Comment';
 import {MainContext} from '../contexts/MainContext';
-import Avatar from '../components/Avatar';
-import Likes from '../components/Likes';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
-import Tags from '../components/Tags';
 import {ThemeContext} from '../contexts/ThemeContext';
-import moment from 'moment';
-import SavePost from '../components/SavePost';
+import {SwipeablePanel} from 'rn-swipeable-panel';
+import CardContent from '../components/CardContent';
 
 // View for single post
 const Single = ({route, navigation}) => {
   const [comments, setComments] = useState([]);
-  const {file, owner} = route.params;
+  const [isPanelActive, setIsPanelActive] = useState(false);
+  const {file} = route.params;
   const {getCommentsByPost, postComment, commentLoad} = useComment();
   const {setUpdate, update} = useContext(MainContext);
-  const [visible, setVisible] = useState(false);
-  const windowHeight = Dimensions.get('window').height;
-  const [maxDescHeight, setMaxDescHeigh] = useState(windowHeight * 0.25);
-  const [showingMore, setShowingMore] = useState(false);
-  const [descriptionButton, letDescriptionButton] = useState(false);
-
-  const videoRef = useRef(null);
   const {
     control,
     handleSubmit,
@@ -47,6 +28,21 @@ const Single = ({route, navigation}) => {
       comment: '',
     },
   });
+
+  const [panelProps] = useState({
+    fullWidth: true,
+    openLarge: true,
+    onClose: () => closePanel(),
+    onPressCloseButton: () => closePanel(),
+  });
+
+  const openPanel = () => {
+    setIsPanelActive(true);
+  };
+
+  const closePanel = () => {
+    setIsPanelActive(false);
+  };
 
   // Get comments for the post
   const getComments = async () => {
@@ -71,8 +67,6 @@ const Single = ({route, navigation}) => {
     }
   };
 
-  const LoadingIndicator = () => <Spinner size="medium" />;
-
   const sendIcon = () => {
     const themeContext = useContext(ThemeContext);
 
@@ -88,141 +82,30 @@ const Single = ({route, navigation}) => {
     );
   };
 
-  // When pressed the full long description is shown less.
-  const minusIcon = () => (
-    <TouchableOpacity
-      onPress={() => {
-        setMaxDescHeigh(windowHeight * 0.25);
-        setShowingMore(false);
-      }}
-    >
-      <Icon name="minus" style={styles.descriptionIcon} />
-    </TouchableOpacity>
-  );
-
-  // When pressed the full description is shown.
-  const plusIcon = () => (
-    <TouchableOpacity onPress={() => setShowingMore(true)}>
-      <Icon name="plus" style={styles.descriptionIcon} />
-    </TouchableOpacity>
-  );
-
   // Getting comments when new comment is added
   useEffect(() => {
     getComments();
   }, [update]);
 
   return (
-    <KeyboardAwareScrollView style={{padding: 10}}>
-      <Layout
-        style={
-          !showingMore && {
-            maxHeight: windowHeight * 0.85,
-          }
-        }
-      >
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate('User profile', {file: file})}
-          style={[styles.row, {alignItems: 'center'}]}
+    <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
+      <Layout style={{height: '100%'}}>
+        <CardContent post={file} navigation={navigation} singlePost={true} />
+        <Button
+          style={styles.commentBtn}
+          onPress={() => {
+            openPanel();
+          }}
         >
-          <Avatar userAvatar={file.user_id} />
-          <Text style={{marginLeft: 10}}>{owner.username}</Text>
-        </TouchableWithoutFeedback>
-        <Layout style={(styles.row, {marginVertical: 5})}>
-          <Tags post={file} />
-        </Layout>
-        <Layout>
-          <Text style={[styles.font, {marginVertical: 5}]} category="h6">
-            {file.title}
-          </Text>
-          <Layout
-            onLayout={(evt) => {
-              const {height} = evt.nativeEvent.layout;
-              height >= maxDescHeight && letDescriptionButton(true);
-            }}
-            style={
-              !showingMore && {
-                maxHeight: maxDescHeight + 5,
-              }
-            }
-          >
-            <Layout
-              style={descriptionButton && !showingMore && {maxHeight: '90%'}}
-            >
-              <Text style={[styles.font, {fontSize: 14}]}>
-                {file.description}
-              </Text>
-            </Layout>
-
-            {descriptionButton && (showingMore ? minusIcon() : plusIcon())}
-          </Layout>
-
-          {file.media_type === 'image' ? (
-            <Popover
-              style={styles.popover}
-              placement="top"
-              backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
-              visible={visible}
-              onBackdropPress={() => setVisible(false)}
-              anchor={() => (
-                <TouchableWithoutFeedback
-                  style={{height: 250}}
-                  onPress={() => setVisible(true)}
-                >
-                  <Image
-                    source={{uri: uploadsUrl + file.filename}}
-                    style={{
-                      width: undefined,
-                      height: '100%',
-                      borderRadius: 10,
-                      resizeMode: 'contain',
-                      marginTop: 10,
-                    }}
-                  />
-                </TouchableWithoutFeedback>
-              )}
-            >
-              <Image
-                source={{uri: uploadsUrl + file.filename}}
-                resizeMode="contain"
-                style={{
-                  width: 400,
-                  height: 400,
-                }}
-              />
-            </Popover>
-          ) : (
-            <Video
-              ref={videoRef}
-              style={{width: undefined, height: 250}}
-              source={{uri: uploadsUrl + file.filename}}
-              useNativeControls={true}
-              resizeMode="contain"
-            ></Video>
-          )}
-        </Layout>
-        <Layout
-          style={[
-            styles.row,
-            {
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            },
-          ]}
-        >
-          <Layout style={[styles.row]}>
-            <Likes file={file} />
-            <SavePost file={file} />
-          </Layout>
-
-          <Text category="p2" appearance="hint" style={{right: 10}}>
-            {moment(file.time_added).fromNow()}
-          </Text>
-        </Layout>
+          Open Comments
+        </Button>
       </Layout>
-      <Layout style={{}}>
-        <Text>{`Comments (${comments.length})`}</Text>
-        <Layout style={styles.row}>
+      <SwipeablePanel
+        style={{height: '75%'}}
+        {...panelProps}
+        isActive={isPanelActive}
+      >
+        <Layout style={{alignItems: 'center'}}>
           <Controller
             control={control}
             rules={{
@@ -239,19 +122,17 @@ const Single = ({route, navigation}) => {
                 message: 'The comment cannot be empty',
               },
             }}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({field: {onChange, value}}) => (
               <Input
-                style={{width: '95%'}}
-                onBlur={onBlur}
+                style={styles.input}
                 multiline={true}
-                accessoryRight={commentLoad ? LoadingIndicator : sendIcon}
+                accessoryRight={commentLoad ? <Spinner /> : sendIcon}
                 onChangeText={onChange}
                 value={value}
                 autoCapitalize="none"
                 placeholder="Write a comment"
                 status={errors.comment ? 'warning' : 'basic'}
                 caption={errors.comment && errors.comment.message}
-                textStyle={styles.comment}
               />
             )}
             name="comment"
@@ -267,34 +148,27 @@ const Single = ({route, navigation}) => {
             />
           ))}
         </Layout>
-      </Layout>
+      </SwipeablePanel>
     </KeyboardAwareScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-  },
   comment: {
     fontFamily: 'JetBrainsMonoReg',
-  },
-  descriptionIcon: {
-    height: 40,
-    alignSelf: 'flex-end',
-    marginRight: 20,
   },
   font: {
     fontFamily: 'JetBrainsMonoReg',
   },
-  popover: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
+  input: {
+    width: '90%',
+    borderRadius: 20,
+    marginVertical: 5,
+  },
+  commentBtn: {
+    width: '90%',
+    marginRight: 'auto',
+    marginLeft: 'auto',
   },
 });
 
