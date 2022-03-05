@@ -16,7 +16,7 @@ import CardContent from '../components/CardContent';
 const Single = ({route, navigation}) => {
   const [comments, setComments] = useState([]);
   const [isPanelActive, setIsPanelActive] = useState(false);
-  const {file} = route.params;
+  const {file, openComments = false} = route.params;
   const {getCommentsByPost, postComment, commentLoad} = useComment();
   const {setUpdate, update} = useContext(MainContext);
   const {
@@ -28,6 +28,10 @@ const Single = ({route, navigation}) => {
       comment: '',
     },
   });
+
+  useEffect(() => {
+    openComments && openPanel();
+  }, []);
 
   const [panelProps] = useState({
     fullWidth: true,
