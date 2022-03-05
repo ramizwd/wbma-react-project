@@ -4,7 +4,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PropTypes} from 'prop-types';
 import {useComment, useUser} from '../hooks/ApiHooks';
 import Avatar from './Avatar';
-import {Button, Icon, Layout, Spinner, Text} from '@ui-kitten/components';
+import {
+  Button,
+  Divider,
+  Icon,
+  Layout,
+  Spinner,
+  Text,
+} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
 import moment from 'moment';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
@@ -64,17 +71,21 @@ const Comment = ({comment, navigation}) => {
   }, [update]);
 
   return (
-    <Layout style={{padding: 10}}>
-      <Layout style={styles.row}>
-        <TouchableWithoutFeedback
-          style={styles.row}
-          onPress={() => navigation.navigate('User profile', {file: comment})}
-        >
-          <Avatar userAvatar={comment.user_id} avatarSize="small" />
-          <Text appearance="hint" style={styles.commentAuthor}>
-            @{commentOwner.username}
-          </Text>
-        </TouchableWithoutFeedback>
+    <Layout style={styles.container}>
+      <Layout style={styles.content}>
+        <Layout style={styles.commentAndAuthor}>
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate('User profile', {file: comment})}
+          >
+            <Layout style={styles.author}>
+              <Avatar userAvatar={comment.user_id} avatarSize="small" />
+              <Text appearance="hint" style={styles.commentAuthor}>
+                @{commentOwner.username}
+              </Text>
+            </Layout>
+          </TouchableWithoutFeedback>
+          <Text style={styles.comment}>{comment.comment}</Text>
+        </Layout>
 
         {comment.user_id === user.user_id && (
           <Button
@@ -87,32 +98,40 @@ const Comment = ({comment, navigation}) => {
           ></Button>
         )}
       </Layout>
-      <Layout>
-        <Text style={styles.comment}>{comment.comment}</Text>
-        <Text
-          appearance="hint"
-          category="p2"
-          style={{textAlign: 'right', marginRight: 5}}
-        >
-          {moment(comment.time_added).fromNow()}
-        </Text>
-      </Layout>
+      <Text
+        appearance="hint"
+        category="p2"
+        style={{textAlign: 'right', marginRight: 5}}
+      >
+        {moment(comment.time_added).fromNow()}
+      </Text>
+      <Divider />
     </Layout>
   );
 };
 
 const styles = StyleSheet.create({
-  row: {
+  container: {
+    padding: 8,
+    paddingRight: 0,
+  },
+  content: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  comment: {
-    marginVertical: 10,
-    fontFamily: 'IBMPlexMonoReg',
+  commentAndAuthor: {
+    flexDirection: 'column',
+  },
+  author: {
+    flexDirection: 'row',
   },
   commentAuthor: {
     marginLeft: 5,
     fontFamily: 'IBMPlexMonoMed',
+    alignSelf: 'flex-start',
+  },
+  comment: {
+    fontFamily: 'IBMPlexMonoReg',
   },
   deleteButton: {
     height: '100%',

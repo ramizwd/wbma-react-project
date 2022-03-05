@@ -283,7 +283,16 @@ const StackScreen = () => {
             name="ModifyProfile"
             component={ModifyProfile}
           ></Stack.Screen>
-          <Stack.Screen name="Single post" component={Single}></Stack.Screen>
+          <Stack.Screen
+            name="Single post"
+            options={{
+              title: 'Post',
+              headerTitleStyle: {
+                fontFamily: 'JetBrainsMonoReg',
+              },
+            }}
+            component={Single}
+          ></Stack.Screen>
           <Stack.Screen
             name="Modify post"
             options={{
