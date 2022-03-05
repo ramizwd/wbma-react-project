@@ -7,6 +7,7 @@ import {useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {Button, Layout, Text} from '@ui-kitten/components';
 import LottieView from 'lottie-react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // Login view
 const Login = ({navigation}) => {
@@ -38,41 +39,51 @@ const Login = ({navigation}) => {
 
   // Login layout
   return (
-    <TouchableOpacity
-      onPress={() => Keyboard.dismiss()}
-      style={{flex: 1}}
-      activeOpacity={1}
+    <Layout
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+      }}
     >
-      <Layout style={styles.container}>
-        <Text style={styles.appTitle} category="h3">
-          {'<Moment/>'}
-        </Text>
-        <Layout style={styles.loginAnimation}>
-          <LottieView
-            ref={animation}
-            source={require('../assets/animation/lottie-secure-login.json')}
-            style={styles.animation}
-            loop={false}
-          />
-        </Layout>
-        <LoginForm />
-        <Layout style={styles.singUp}>
-          <Text style={styles.singUpText}>{"Don't have an account?"}</Text>
-          <Button
-            style={styles.singInBtn}
-            onPress={() => navigation.navigate('Register')}
-            appearance="ghost"
-            status="success"
-          >
-            {(evaProps) => (
-              <Text {...evaProps} style={styles.singUpBtn}>
-                Sign Up
-              </Text>
-            )}
-          </Button>
-        </Layout>
-      </Layout>
-    </TouchableOpacity>
+      <KeyboardAwareScrollView style={{width: '100%'}}>
+        <TouchableOpacity
+          onPress={() => Keyboard.dismiss()}
+          style={{flex: 1}}
+          activeOpacity={1}
+        >
+          <Layout style={styles.container}>
+            <Text style={styles.appTitle} category="h3">
+              {'<Moment/>'}
+            </Text>
+            <Layout style={styles.loginAnimation}>
+              <LottieView
+                ref={animation}
+                source={require('../assets/animation/lottie-secure-login.json')}
+                style={styles.animation}
+                loop={false}
+              />
+            </Layout>
+            <LoginForm />
+            <Layout style={styles.singUp}>
+              <Text style={styles.singUpText}>{"Don't have an account?"}</Text>
+              <Button
+                style={styles.singInBtn}
+                onPress={() => navigation.navigate('Register')}
+                appearance="ghost"
+                status="success"
+              >
+                {(evaProps) => (
+                  <Text {...evaProps} style={styles.singUpBtn}>
+                    Sign Up
+                  </Text>
+                )}
+              </Button>
+            </Layout>
+          </Layout>
+        </TouchableOpacity>
+      </KeyboardAwareScrollView>
+    </Layout>
   );
 };
 
@@ -88,6 +99,7 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontFamily: 'JetBrainsMonoReg',
+    marginTop: 20,
   },
   singUp: {
     marginTop: 20,
