@@ -15,13 +15,29 @@ const Tabs = ({navigation, othersPosts}) => {
   const {getPostsByLikes} = useLikes();
   const {getRatedPostByUser} = useRating();
   const {likeUpdate, saveUpdate} = useContext(MainContext);
-  const {loading} = useMedia();
+  const {loading, getMedia} = useMedia();
+
   // fetching user's liked posts list by using getPostsByLikes from ApiHooks
   const fetchLikesAndSaved = async () => {
     const token = await AsyncStorage.getItem('token');
+
     try {
-      const likes = await getPostsByLikes(token);
-      const saved = await getRatedPostByUser(token);
+      const response = await getMedia();
+      const likesResponse = await getPostsByLikes(token);
+      const savedResponse = await getRatedPostByUser(token);
+
+      const likes = likesResponse.filter((x) => {
+        return response.some((y) => {
+          return x.file_id == y.file_id;
+        });
+      });
+
+      const saved = savedResponse.filter((x) => {
+        return response.some((y) => {
+          return x.file_id == y.file_id;
+        });
+      });
+
       setLikeList(likes);
       setSavedList(saved);
     } catch (error) {
@@ -104,6 +120,7 @@ const styles = StyleSheet.create({
   postList: {
     alignItems: 'center',
     justifyContent: 'center',
+    height: '95%',
   },
 });
 
