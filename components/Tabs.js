@@ -1,6 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet} from 'react-native';
-import {Layout, List, TabView, Tab, Spinner} from '@ui-kitten/components';
+import {
+  Layout,
+  List,
+  TabView,
+  Tab,
+  Spinner,
+  Divider,
+} from '@ui-kitten/components';
 import {MainContext} from '../contexts/MainContext';
 import Card from './Card';
 import CardContent from './CardContent';
@@ -35,6 +42,7 @@ const Tabs = ({navigation, othersPosts}) => {
 
   return (
     <Layout>
+      <Divider />
       {!othersPosts ? (
         <TabView
           selectedIndex={selectedIndex}

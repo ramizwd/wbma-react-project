@@ -58,6 +58,7 @@ const Profile = ({navigation}) => {
       pack="evilIcon"
     />
   );
+
   const renderLogoutIcon = () => (
     <Icon
       name="log-out-outline"
@@ -73,7 +74,7 @@ const Profile = ({navigation}) => {
         <ImageBackground
           blurRadius={5}
           source={require('../assets/banner2.jpg')}
-          style={styles.bgImage}
+          style={styles.banner}
         />
 
         <Image
@@ -88,7 +89,10 @@ const Profile = ({navigation}) => {
         <Text style={styles.userName}>{newUser}</Text>
 
         <Layout style={styles.userInfoContainer}>
-          <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
+          {user.full_name && (
+            <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
+          )}
+          <Text style={styles.userInfo}>Username: {user.username}</Text>
           <Text style={styles.userInfo}>Email: {user.email}</Text>
         </Layout>
 
@@ -105,7 +109,7 @@ const Profile = ({navigation}) => {
             Alert.alert('Logout', 'Are you sure you want to logout?', [
               {text: 'Cancel'},
               {
-                text: 'OK',
+                text: 'Logout',
                 onPress: async () => {
                   await AsyncStorage.removeItem('token');
                   setLoggedIn(false);
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bgImage: {
+  banner: {
     position: 'absolute',
     width: '100%',
     height: '70%',
@@ -160,7 +164,6 @@ const styles = StyleSheet.create({
     top: '47%',
     marginHorizontal: 5,
   },
-
   editIcon: {
     height: 35,
     width: 35,
@@ -171,7 +174,7 @@ const styles = StyleSheet.create({
   },
   userInfoContainer: {
     alignItems: 'center',
-    top: '30%',
+    top: '33%',
   },
   userInfo: {
     fontFamily: 'JetBrainsMonoReg',

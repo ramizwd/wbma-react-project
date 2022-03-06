@@ -151,10 +151,10 @@ const DrawerContent = ({navigation, state}) => {
   );
 
   const onLogout = () => {
-    Alert.alert('Logout', 'Are you sure you want to log out?', [
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
       {text: 'Cancel'},
       {
-        text: 'Log out',
+        text: 'Logout',
         onPress: async () => {
           await AsyncStorage.removeItem('token');
           setLoggedIn(false);
@@ -198,7 +198,7 @@ const DrawerContent = ({navigation, state}) => {
         />
       </Drawer>
       <DrawerItem
-        title="Log out"
+        title="Logout"
         style={{paddingBottom: 40}}
         onPress={onLogout}
         accessoryLeft={LogoutIcon}
