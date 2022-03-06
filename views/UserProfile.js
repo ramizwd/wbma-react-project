@@ -1,19 +1,33 @@
-import React, {useEffect, useContext} from 'react';
-import {StyleSheet, ImageBackground} from 'react-native';
+import React, {useEffect, useContext, useState} from 'react';
+import {StyleSheet, ImageBackground, Image} from 'react-native';
 import {PropTypes} from 'prop-types';
-import {Card as Cards, Layout, Text} from '@ui-kitten/components';
-import {useUser} from '../hooks/ApiHooks';
-import Avatar from '../components/Avatar';
+import {Layout, Text} from '@ui-kitten/components';
+import {useUser, useTag} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import Tabs from '../components/Tabs';
+import {uploadsUrl} from '../utils/variables';
 
 // UserProfile view that takes navigation and route props and renders poster's info including ID, username, full name, email and post history.
 const UserProfile = ({navigation, route}) => {
   const {file} = route.params;
   const {getUserById} = useUser();
+  const {getFilesByTag} = useTag();
+  const {update} = useContext(MainContext);
+  const [avatar, setAvatar] = useState();
   const {postOwner, setPostOwner, ownerUpdate, setOwnerUpdate} =
     useContext(MainContext);
+
+  // fetching poster's avatar by tag
+  const fetchAvatar = async () => {
+    try {
+      const avatarArray = await getFilesByTag(`avatar_${file.user_id}`);
+      if (avatarArray.length === 0) return;
+      setAvatar(uploadsUrl + avatarArray.pop().filename);
+    } catch (error) {
+      console.error('avatar fetch error', error);
+    }
+  };
 
   // fetching post owner data by ID
   const fetchOwner = async () => {
@@ -31,20 +45,38 @@ const UserProfile = ({navigation, route}) => {
     fetchOwner();
   }, []);
 
+  useEffect(() => {
+    fetchAvatar();
+  }, [update]);
+
   return (
-    <Layout style={styles.container}>
-      <ImageBackground
-        source={require('../assets/drawerBg.png')}
-        style={styles.bgImage}
-      />
-      <Cards style={styles.card}>
-        <Avatar userAvatar={file.user_id} style={styles.pfImage} />
-        <Text>ID: {postOwner.user_id}</Text>
-        <Text>Username: {postOwner.username}</Text>
-        <Text>Full name:{postOwner.full_name}</Text>
-        <Text>Email: {postOwner.email}</Text>
-      </Cards>
-      <Layout style={styles.postList}>
+    <Layout style={{height: '100%'}}>
+      <Layout style={styles.container}>
+        <ImageBackground
+          blurRadius={5}
+          source={require('../assets/banner2.jpg')}
+          style={styles.bgImage}
+        />
+
+        <Image
+          source={
+            avatar === undefined
+              ? require('../assets/defaultAvatar.png')
+              : {uri: avatar}
+          }
+          style={styles.pfImage}
+        />
+        {/* <Avatar userAvatar={file.user_id} style={styles.pfImage} /> */}
+
+        <Text style={styles.userName}>User {postOwner.username}</Text>
+
+        <Layout style={styles.userInfoContainer}>
+          <Text style={styles.userInfo}>Full name: {postOwner.full_name}</Text>
+          <Text style={styles.userInfo}>Email: {postOwner.email}</Text>
+        </Layout>
+      </Layout>
+
+      <Layout style={{flex: 3}}>
         <Tabs othersPosts={true} userPost={true} />
       </Layout>
     </Layout>
@@ -53,47 +85,43 @@ const UserProfile = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pfImageTo: {
-    width: 170,
-    height: 170,
-  },
   pfImage: {
-    width: '100%',
+    position: 'absolute',
+    width: '25%',
     height: undefined,
     aspectRatio: 1,
     borderRadius: 400,
-    left: '50%',
-    borderWidth: 2,
-    borderColor: '#F1C40F',
-  },
-  text: {
-    // minHeight: '20%',
-    // textAlignVertical: 'top',
-    position: 'absolute',
-    top: '45%',
-    fontSize: 25,
-    left: '5%',
+    top: '30%',
   },
   bgImage: {
-    top: '-20%',
+    position: 'absolute',
     width: '100%',
-    height: 500,
-    flex: 1,
-  },
-  card: {
-    backgroundColor: 'rgba(52, 52, 52, 0.1)',
-    borderRadius: 20,
-    top: '-70%',
+    height: '70%',
+    top: '-3%',
   },
   postList: {
     position: 'absolute',
     top: '50%',
     height: '50%',
     width: '100%',
+  },
+  userName: {
+    color: 'white',
+    position: 'absolute',
+    top: '10%',
+    fontSize: 25,
+    fontFamily: 'JetBrainsMonoReg',
+  },
+  userInfoContainer: {
+    alignItems: 'center',
+    top: '30%',
+  },
+  userInfo: {
+    fontFamily: 'JetBrainsMonoReg',
   },
 });
 
