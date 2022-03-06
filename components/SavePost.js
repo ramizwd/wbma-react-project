@@ -42,6 +42,7 @@ const SavePost = ({file}) => {
         setSaveUpdate(saveUpdate + 1);
       }
     } catch (error) {
+      alert('Error saving, please check network connectivity.');
       console.error(error);
     }
   };
@@ -55,6 +56,7 @@ const SavePost = ({file}) => {
         setSaveUpdate(saveUpdate + 1);
       }
     } catch (error) {
+      alert('Error un-saving, please check network connectivity.');
       console.error(error);
     }
   };

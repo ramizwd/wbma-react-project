@@ -1,11 +1,6 @@
 import React, {useContext} from 'react';
 import * as eva from '@eva-design/eva';
-import {
-  Alert,
-  ImageBackground,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {Alert, ImageBackground, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -116,6 +111,18 @@ const LogoutIcon = () => {
   );
 };
 
+const moonIcon = () => {
+  const themeContext = useContext(ThemeContext);
+  return (
+    <Icon
+      name={themeContext.theme === 'light' ? 'moon-outline' : 'moon'}
+      pack="ionIcons"
+      style={[styles.icons, {transform: [{scaleX: -1}]}]}
+      color={themeContext.theme === 'light' ? '#000' : '#F5CB5C'}
+    />
+  );
+};
+
 const SearchIconBold = (props) => (
   <Icon {...props} name="search" pack="ionIcons" />
 );
@@ -134,18 +141,13 @@ const DrawerContent = ({navigation, state}) => {
         <Text style={styles.profileName} category="h6">
           {user.full_name ? user.full_name : user.username}
         </Text>
-        <TouchableOpacity
+        <Button
+          accessoryLeft={moonIcon}
           onPress={themeContext.toggleTheme}
           activeOpacity={0.7}
-          style={{top: '30%', left: '25%', transform: [{scaleX: -1}]}}
-        >
-          <Icon
-            name={themeContext.theme === 'light' ? 'moon-outline' : 'moon'}
-            pack="ionIcons"
-            style={styles.icons}
-            color={themeContext.theme === 'light' ? '#000' : '#F5CB5C'}
-          />
-        </TouchableOpacity>
+          appearance="ghost"
+          style={{top: '25%', left: '30%', height: 45}}
+        ></Button>
       </ImageBackground>
     </Layout>
   );
