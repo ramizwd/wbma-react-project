@@ -45,6 +45,7 @@ const Tabs = ({navigation, othersPosts}) => {
       <Divider />
       {!othersPosts ? (
         <TabView
+          style={{height: '100%', paddingBottom: 8}}
           selectedIndex={selectedIndex}
           onSelect={(index) => setSelectedIndex(index)}
         >
@@ -87,6 +88,7 @@ const Tabs = ({navigation, othersPosts}) => {
         </TabView>
       ) : (
         <TabView
+          style={{height: '100%', paddingBottom: 8}}
           selectedIndex={selectedIndex}
           onSelect={(index) => setSelectedIndex(index)}
         >
