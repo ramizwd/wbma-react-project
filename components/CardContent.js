@@ -214,7 +214,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
 
         <Layout style={styles.postContent}>
           {!loading ? (
-            <Layout>
+            <Layout style={styles.file}>
               {post.media_type === 'image' ? (
                 singlePost ? (
                   <Popover
@@ -360,12 +360,14 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     width: '95%',
   },
-  image: {
-    height: 250,
-    maxWidth: 600,
+  file: {
     marginBottom: 10,
     marginTop: 5,
+  },
+  image: {
     borderRadius: 8,
+    height: 250,
+    maxWidth: 600,
     resizeMode: 'contain',
   },
   spinner: {
