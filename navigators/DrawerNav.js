@@ -46,7 +46,7 @@ const HomeIcon = () => {
       name="home-outline"
       pack="ionIcons"
       style={styles.icons}
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
     />
   );
 };
@@ -58,7 +58,7 @@ const ProfileIcon = () => {
       name="person-outline"
       pack="ionIcons"
       style={styles.icons}
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
     />
   );
 };
@@ -70,7 +70,7 @@ const ChatIcon = () => {
       name="chatbubbles-outline"
       pack="ionIcons"
       style={styles.icons}
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
     />
   );
 };
@@ -82,7 +82,7 @@ const SearchIcon = () => {
       name="search-outline"
       pack="ionIcons"
       style={styles.icons}
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
     />
   );
 };
@@ -94,7 +94,7 @@ const SettingsIcon = () => {
       name="settings-outline"
       pack="ionIcons"
       style={styles.icons}
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
     />
   );
 };
@@ -106,7 +106,7 @@ const LogoutIcon = () => {
       name="log-out-outline"
       pack="ionIcons"
       style={styles.icons}
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
     />
   );
 };

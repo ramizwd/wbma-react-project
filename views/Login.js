@@ -60,7 +60,6 @@ const Login = ({navigation}) => {
               <LottieView
                 ref={animation}
                 source={require('../assets/animation/lottie-secure-login.json')}
-                style={styles.animation}
                 loop={false}
               />
             </Layout>

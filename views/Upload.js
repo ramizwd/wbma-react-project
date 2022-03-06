@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import {Input, Button, Layout, Spinner} from '@ui-kitten/components';
+import {Input, Button, Layout, Spinner, Text} from '@ui-kitten/components';
 import React, {useCallback, useContext, useState} from 'react';
 import {PropTypes} from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
@@ -180,23 +180,16 @@ const Upload = ({navigation}) => {
             }
             style={styles.image}
           />
+          <Text
+            style={{textAlign: 'center', marginTop: 5}}
+            appearance="hint"
+            category="p2"
+          >
+            Select a file by clicking on the images
+          </Text>
         </TouchableOpacity>
       </Layout>
 
-      {/* <Button
-        appearance="ghost"
-        accessoryLeft={optionsIcon}
-        style={{marginLeft: 'auto', bottom: 4}}
-        onPress={() => {
-          openPanel();
-        }}
-      ></Button> */}
-
-      {/* <SwipeablePanel
-        {...panelProps}
-        isActive={isPanelActive}
-        style={{height: '100%'}}
-      > */}
       <Layout style={styles.modalContent}>
         <ImageBackground
           source={require('../assets/drawerBg.png')}
@@ -270,7 +263,6 @@ const Upload = ({navigation}) => {
           Post
         </Button>
       </Layout>
-      {/* </SwipeablePanel> */}
     </KeyboardAwareScrollView>
   );
 };

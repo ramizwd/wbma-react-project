@@ -1,6 +1,13 @@
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
-import {Icon, Input, Layout, Button, Spinner} from '@ui-kitten/components';
+import React, {createRef, useContext, useEffect, useState} from 'react';
+import {
+  Icon,
+  Input,
+  Layout,
+  Button,
+  Spinner,
+  Text,
+} from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 import {useComment} from '../hooks/ApiHooks';
@@ -11,6 +18,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {ThemeContext} from '../contexts/ThemeContext';
 import {SwipeablePanel} from 'rn-swipeable-panel';
 import CardContent from '../components/CardContent';
+import LottieView from 'lottie-react-native';
 
 // View for single post
 const Single = ({route, navigation}) => {
@@ -19,6 +27,7 @@ const Single = ({route, navigation}) => {
   const {file, openComments = false} = route.params;
   const {getCommentsByPost, postComment, commentLoad} = useComment();
   const {setUpdate, update} = useContext(MainContext);
+  const animation = createRef();
   const {
     control,
     handleSubmit,
@@ -29,10 +38,6 @@ const Single = ({route, navigation}) => {
       comment: '',
     },
   });
-
-  useEffect(() => {
-    openComments && openPanel();
-  }, []);
 
   const [panelProps] = useState({
     fullWidth: true,
@@ -85,7 +90,7 @@ const Single = ({route, navigation}) => {
           name="send-outline"
           pack="ionIcons"
           style={{height: 25}}
-          color={themeContext.theme === 'light' ? 'black' : 'white'}
+          color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
         />
       </TouchableOpacity>
     );
@@ -95,6 +100,12 @@ const Single = ({route, navigation}) => {
   useEffect(() => {
     getComments();
   }, [update]);
+
+  useEffect(() => {
+    animation.current?.play();
+    openComments && openPanel();
+  }, []);
+
   const LoadingIndicator = () => <Spinner size="medium" />;
 
   return (
@@ -150,13 +161,29 @@ const Single = ({route, navigation}) => {
         </Layout>
 
         <Layout>
-          {comments.map((comment) => (
-            <Comment
-              key={comment.comment_id}
-              comment={comment}
-              navigation={navigation}
-            />
-          ))}
+          {comments.length > 0 ? (
+            comments.map((comment) => (
+              <Comment
+                key={comment.comment_id}
+                comment={comment}
+                navigation={navigation}
+              />
+            ))
+          ) : (
+            <>
+              <Layout style={styles.emptyAnimation}>
+                <LottieView
+                  ref={animation}
+                  source={require('../assets/animation/lottie-astronaut.json')}
+                  loop={true}
+                  autoPlay
+                />
+                <Text style={styles.animationTxt} appearance="hint">
+                  No comments yet...
+                </Text>
+              </Layout>
+            </>
+          )}
         </Layout>
       </SwipeablePanel>
     </KeyboardAwareScrollView>
@@ -180,6 +207,19 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     marginLeft: 'auto',
     marginBottom: 5,
+  },
+  emptyAnimation: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 300,
+    width: '100%',
+  },
+  animationTxt: {
+    alignSelf: 'flex-end',
+    marginBottom: 20,
+    fontFamily: 'JetBrainsMonoReg',
   },
 });
 
