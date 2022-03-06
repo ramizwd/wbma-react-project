@@ -36,6 +36,7 @@ const Single = ({route, navigation}) => {
   const [panelProps] = useState({
     fullWidth: true,
     openLarge: true,
+    closeOnTouchOutside: true,
     onClose: () => closePanel(),
     onPressCloseButton: () => closePanel(),
   });
@@ -90,6 +91,7 @@ const Single = ({route, navigation}) => {
   useEffect(() => {
     getComments();
   }, [update]);
+  const LoadingIndicator = () => <Spinner size="medium" />;
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
@@ -130,7 +132,7 @@ const Single = ({route, navigation}) => {
               <Input
                 style={styles.input}
                 multiline={true}
-                accessoryRight={commentLoad ? <Spinner /> : sendIcon}
+                accessoryRight={commentLoad ? LoadingIndicator : sendIcon}
                 onChangeText={onChange}
                 value={value}
                 autoCapitalize="none"
