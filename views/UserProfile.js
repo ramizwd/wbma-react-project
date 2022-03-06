@@ -76,7 +76,7 @@ const UserProfile = ({navigation, route}) => {
       </Layout>
 
       <Layout style={{flex: 3}}>
-        <Tabs othersPosts={true} userPost={true} />
+        <Tabs navigation={navigation} othersPosts={true} userPost={true} />
       </Layout>
     </Layout>
   );
