@@ -68,7 +68,7 @@ const SavePost = ({file}) => {
   const saveIcon = () => (
     <Icon
       ref={pulseIconRef}
-      color={themeContext.theme === 'light' || savedStatus ? color : 'white'}
+      color={themeContext.theme === 'light' || savedStatus ? color : '#8F9BB3'}
       animation="pulse"
       name="tag"
       style={styles.icon}

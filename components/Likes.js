@@ -4,18 +4,18 @@ import {MainContext} from '../contexts/MainContext';
 import {useLikes} from '../hooks/ApiHooks';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Button, Icon, Text} from '@ui-kitten/components';
-import {ThemeContext} from '../contexts/ThemeContext';
+import {Text} from '@ui-kitten/components';
+import LottieView from 'lottie-react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const Likes = ({file}) => {
   const {user} = useContext(MainContext);
   const {getLikesByFileId, postLike, deleteLike} = useLikes();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState([]);
-  const [likeColor, setLikeColor] = useState();
   const {setLikeUpdate, likeUpdate} = useContext(MainContext);
-  const zoomIconRef = useRef();
-  const themeContext = useContext(ThemeContext);
+  const animation = useRef(null);
+  const isFirstRun = useRef(true);
 
   // fetch likes by file ID, set the like array to the like hook, check if user liked
   // then set Liked hook to true and so the color
@@ -24,18 +24,14 @@ const Likes = ({file}) => {
       const likes = await getLikesByFileId(file.file_id);
       setLikes(likes);
       setLiked(false);
-      setLikeColor('#000');
 
       likes.forEach((like) => {
         if (like.user_id === user.user_id) {
           setLiked(true);
-          setLikeColor('red');
         }
       });
     } catch (error) {
       console.error('fetching likes error: ', error);
-    } finally {
-      zoomIconRef.current.startAnimation();
     }
   };
 
@@ -71,15 +67,16 @@ const Likes = ({file}) => {
     }
   };
 
-  const renderPulseIcon = () => (
-    <Icon
-      ref={zoomIconRef}
-      color={themeContext.theme === 'light' || liked ? likeColor : 'white'}
-      animation="zoom"
-      name="heart"
-      style={styles.icon}
-    />
-  );
+  useEffect(() => {
+    if (isFirstRun.current) {
+      liked ? animation.current.play(25, 25) : animation.current.play(0, 0);
+      isFirstRun.current = false;
+    } else if (liked) {
+      animation.current.play(0, 35);
+    } else {
+      animation.current.play(0, 0);
+    }
+  }, [liked]);
 
   // fetch likes on render
   useEffect(() => {
@@ -87,33 +84,49 @@ const Likes = ({file}) => {
   }, [likeUpdate]);
 
   return (
-    <Button
+    <TouchableOpacity
+      activeOpacity={0.7}
       onPress={() => {
         liked ? removeLike() : createLike();
       }}
       appearance="ghost"
-      style={styles.button}
-      accessoryLeft={renderPulseIcon}
+      style={styles.likeContainer}
       status="basic"
     >
-      {(props) => (
-        <Text {...props} style={styles.likeTxt}>
-          {likes.length > 1 ? likes.length + ' likes' : likes.length + ' like'}
-        </Text>
-      )}
-    </Button>
+      <LottieView
+        ref={animation}
+        source={require('../assets/animation/like.json')}
+        loop={false}
+        autoPlay={false}
+        style={styles.likeAnimation}
+      />
+      <Text style={styles.likeTxt}>
+        {likes.length > 1 ? likes.length + ' likes' : likes.length + ' like'}
+      </Text>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  icon: {
-    height: 30,
-    width: 30,
+  likeContainer: {
+    flexDirection: 'row',
+    textAlign: 'center',
+    justifyContent: 'center',
+    marginTop: 7,
+    marginRight: 5,
+  },
+  likeAnimation: {
+    height: 37,
+    width: 37,
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
   likeTxt: {
     marginLeft: 5,
     fontFamily: 'JetBrainsMonoReg',
     fontSize: 14,
+    marginTop: 'auto',
+    marginBottom: 'auto',
   },
 });
 

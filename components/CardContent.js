@@ -98,7 +98,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
 
   const renderCommentIcon = () => (
     <Icon
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
       style={styles.icon}
       name="comment"
     />
@@ -106,7 +106,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
 
   const renderOptionsIcon = () => (
     <Icon
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
       style={styles.iconOpt}
       name="ios-ellipsis-vertical-outline"
       pack="ionIcons"
@@ -115,7 +115,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
 
   const renderMoreIcon = () => (
     <Icon
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
       name={showMore ? 'remove-sharp' : 'add'}
       pack="ionIcons"
       style={styles.moreIcon}
@@ -307,7 +307,9 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
         </Layout>
 
         <Layout style={styles.feedback}>
-          <Likes file={post} />
+          <TouchableWithoutFeedback>
+            <Likes file={post} />
+          </TouchableWithoutFeedback>
           <SavePost file={post} />
           <Button
             onPress={() => {

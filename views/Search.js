@@ -77,7 +77,7 @@ const Search = ({navigation}) => {
           {...props}
           name="search"
           pack="ionIcons"
-          color={themeContext.theme === 'light' ? 'black' : 'white'}
+          color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
         />
       </TouchableOpacity>
     );
@@ -91,7 +91,7 @@ const Search = ({navigation}) => {
         name="options-outline"
         pack="ionIcons"
         style={{height: 20}}
-        color={themeContext.theme === 'light' ? 'black' : 'white'}
+        color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
       />
     );
   };

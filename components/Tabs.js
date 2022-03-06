@@ -23,6 +23,7 @@ const Tabs = ({navigation, othersPosts}) => {
   const {getRatedPostByUser} = useRating();
   const {likeUpdate, saveUpdate} = useContext(MainContext);
   const {loading} = useMedia();
+
   // fetching user's liked posts list by using getPostsByLikes from ApiHooks
   const fetchLikesAndSaved = async () => {
     const token = await AsyncStorage.getItem('token');

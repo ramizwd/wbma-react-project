@@ -66,7 +66,7 @@ const Profile = ({navigation}) => {
 
   const renderEditIcon = () => (
     <Icon
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
       style={styles.editIcon}
       name="pencil"
       pack="evilIcon"
@@ -78,7 +78,7 @@ const Profile = ({navigation}) => {
       name="log-out-outline"
       pack="ionIcons"
       style={styles.logoutIcon}
-      color={themeContext.theme === 'light' ? 'black' : 'white'}
+      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
     />
   );
 
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: 400,
     top: '30%',
-    borderColor: 'white',
+    borderColor: '#8F9BB3',
     borderWidth: 1.5,
   },
   userName: {
