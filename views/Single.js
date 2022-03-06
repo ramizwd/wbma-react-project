@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     width: '90%',
     marginRight: 'auto',
     marginLeft: 'auto',
+    marginBottom: 5,
   },
 });
 
