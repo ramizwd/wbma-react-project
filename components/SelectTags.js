@@ -9,7 +9,26 @@ const SelectTags = () => {
   const {setTags} = useContext(MainContext);
 
   // Tag arrays
-  const languageTags = ['None', 'Javascript', 'C', 'Java', 'C#'];
+  const languageTags = [
+    'None',
+    'JavaScript',
+    'C',
+    'Java',
+    'C#',
+    'Kotlin',
+    'Ruby',
+    'Python',
+    'PHP',
+    'C++',
+    'TypeScript',
+    'GO',
+    'Swift',
+    'R',
+    'CSS',
+    'HTML',
+    'SQL',
+    'Rust',
+  ];
   const themeTags = ['None', 'help', 'meme', 'share'];
 
   // Get selected tags from arrays with selected index
