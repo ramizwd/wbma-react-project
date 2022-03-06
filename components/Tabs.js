@@ -14,8 +14,9 @@ const Tabs = ({navigation, othersPosts}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const {getPostsByLikes} = useLikes();
   const {getRatedPostByUser} = useRating();
-  const {likeUpdate, saveUpdate} = useContext(MainContext);
-  const {loading, getMedia} = useMedia();
+  const {likeUpdate, saveUpdate, user} = useContext(MainContext);
+  const {loading, getMedia, getFilesByUserId} = useMedia();
+  const [filesList, setFiles] = useState();
 
   // fetching user's liked posts list by using getPostsByLikes from ApiHooks
   const fetchLikesAndSaved = async () => {
@@ -25,6 +26,7 @@ const Tabs = ({navigation, othersPosts}) => {
       const response = await getMedia();
       const likesResponse = await getPostsByLikes(token);
       const savedResponse = await getRatedPostByUser(token);
+      const mediaResponse = await getFilesByUserId(user.user_id);
 
       const likes = likesResponse.filter((x) => {
         return response.some((y) => {
@@ -38,6 +40,13 @@ const Tabs = ({navigation, othersPosts}) => {
         });
       });
 
+      const media = mediaResponse.filter((x) => {
+        return response.some((y) => {
+          return x.file_id == y.file_id;
+        });
+      });
+
+      setFiles(media);
       setLikeList(likes);
       setSavedList(saved);
     } catch (error) {
@@ -61,11 +70,18 @@ const Tabs = ({navigation, othersPosts}) => {
               {loading ? (
                 <Spinner />
               ) : (
-                <Card
-                  navigation={navigation}
-                  userPost={true}
-                  othersPost={false}
-                />
+                <List
+                  data={filesList}
+                  keyExtractor={(item) => item.file_id.toString()}
+                  renderItem={({item}) => (
+                    <CardContent
+                      post={item}
+                      userPost={true}
+                      othersPost={false}
+                      navigation={navigation}
+                    />
+                  )}
+                ></List>
               )}
             </Layout>
           </Tab>
