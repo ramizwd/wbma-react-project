@@ -92,18 +92,17 @@ const Comment = ({comment, navigation}) => {
           </TouchableWithoutFeedback>
           <Text style={styles.comment}>{comment.comment}</Text>
         </Layout>
-
-        {comment.user_id === user.user_id && (
-          <Button
-            style={styles.deleteButton}
-            onPress={() => {
-              removeComment();
-            }}
-            appearance="ghost"
-            accessoryRight={commentLoad ? LoadingIndicator : renderDeleteIcon}
-          ></Button>
-        )}
       </Layout>
+      {comment.user_id === user.user_id && (
+        <Button
+          style={styles.deleteButton}
+          onPress={() => {
+            removeComment();
+          }}
+          appearance="ghost"
+          accessoryRight={commentLoad ? LoadingIndicator : renderDeleteIcon}
+        ></Button>
+      )}
       <Text
         appearance="hint"
         category="p2"
@@ -119,7 +118,6 @@ const Comment = ({comment, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     padding: 8,
-    paddingRight: 0,
   },
   content: {
     flexDirection: 'row',
@@ -140,8 +138,8 @@ const styles = StyleSheet.create({
     fontFamily: 'IBMPlexMonoReg',
   },
   deleteButton: {
-    height: '100%',
-    width: 'auto',
+    alignSelf: 'flex-end',
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },

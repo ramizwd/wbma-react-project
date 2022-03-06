@@ -23,6 +23,7 @@ const Single = ({route, navigation}) => {
     control,
     handleSubmit,
     formState: {errors},
+    setValue,
   } = useForm({
     defaultValues: {
       comment: '',
@@ -55,6 +56,7 @@ const Single = ({route, navigation}) => {
       const comments = await getCommentsByPost(file.file_id);
       setComments(comments.reverse());
     } catch (error) {
+      alert('Error getting comment, please check your internet connectivity.');
       console.error('getComments error', error);
     }
   };
@@ -67,7 +69,9 @@ const Single = ({route, navigation}) => {
       const token = await AsyncStorage.getItem('token');
       const response = await postComment(data, file.file_id, token);
       response && setUpdate(update + 1);
+      response && setValue('comment', '');
     } catch (error) {
+      alert('Error posting comment, please check your internet connectivity.');
       console.error('postComment error', error);
     }
   };
@@ -107,7 +111,7 @@ const Single = ({route, navigation}) => {
         </Button>
       </Layout>
       <SwipeablePanel
-        style={{height: '75%'}}
+        style={{maxHeight: '80%'}}
         {...panelProps}
         isActive={isPanelActive}
       >
@@ -120,8 +124,8 @@ const Single = ({route, navigation}) => {
                 message: 'Enter a comment.',
               },
               maxLength: {
-                value: 100,
-                message: "The comment's maximum length is 100 characters.",
+                value: 300,
+                message: "The comment's maximum length is 300 characters.",
               },
               minLength: {
                 value: 1,

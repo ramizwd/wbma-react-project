@@ -109,6 +109,8 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: 400,
     top: '30%',
+    borderColor: 'white',
+    borderWidth: 1.5,
   },
   bgImage: {
     position: 'absolute',
