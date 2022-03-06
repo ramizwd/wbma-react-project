@@ -146,7 +146,7 @@ const DrawerContent = ({navigation, state}) => {
           onPress={themeContext.toggleTheme}
           activeOpacity={0.7}
           appearance="ghost"
-          style={{top: '25%', left: '30%', height: 45}}
+          style={{top: '25%', left: '30%', height: 47}}
         ></Button>
       </ImageBackground>
     </Layout>

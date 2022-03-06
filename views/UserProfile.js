@@ -8,6 +8,12 @@ import {MainContext} from '../contexts/MainContext';
 import Tabs from '../components/Tabs';
 import {uploadsUrl} from '../utils/variables';
 
+import image1 from '../assets/banner1.jpg';
+import image2 from '../assets/banner2.jpg';
+import image3 from '../assets/banner3.jpg';
+import image4 from '../assets/banner4.jpg';
+import image5 from '../assets/banner5.jpg';
+
 // UserProfile view that takes navigation and route props and renders poster's info including ID, username, full name, email and post history.
 const UserProfile = ({navigation, route}) => {
   const {file} = route.params;
@@ -17,6 +23,13 @@ const UserProfile = ({navigation, route}) => {
   const [avatar, setAvatar] = useState();
   const {postOwner, setPostOwner, ownerUpdate, setOwnerUpdate} =
     useContext(MainContext);
+  const [randImage, setRandImage] = useState();
+
+  const images = [image1, image2, image3, image4, image5];
+
+  const changeImage = () => {
+    setRandImage(Math.floor(Math.random() * images.length));
+  };
 
   // fetching poster's avatar by tag
   const fetchAvatar = async () => {
@@ -42,6 +55,7 @@ const UserProfile = ({navigation, route}) => {
   };
 
   useEffect(() => {
+    changeImage();
     fetchOwner();
   }, []);
 
@@ -53,8 +67,8 @@ const UserProfile = ({navigation, route}) => {
     <Layout style={{height: '100%'}}>
       <Layout style={styles.container}>
         <ImageBackground
-          blurRadius={5}
-          source={require('../assets/banner2.jpg')}
+          blurRadius={2}
+          source={images[randImage]}
           style={styles.bgImage}
         />
 
@@ -67,7 +81,7 @@ const UserProfile = ({navigation, route}) => {
           style={styles.pfImage}
         />
 
-        <Text style={styles.userName}>User {postOwner.username}</Text>
+        <Text style={styles.userName}>{postOwner.username}</Text>
 
         <Layout style={styles.userInfoContainer}>
           <Text style={styles.userInfo}>Full name: {postOwner.full_name}</Text>
@@ -109,7 +123,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   userName: {
-    color: 'white',
+    color: 'black',
     position: 'absolute',
     top: '10%',
     fontSize: 25,

@@ -9,6 +9,12 @@ import {Text, Layout, Button, Icon} from '@ui-kitten/components';
 import {ThemeContext} from '../contexts/ThemeContext';
 import Tabs from '../components/Tabs';
 
+import image1 from '../assets/banner1.jpg';
+import image2 from '../assets/banner2.jpg';
+import image3 from '../assets/banner3.jpg';
+import image4 from '../assets/banner4.jpg';
+import image5 from '../assets/banner5.jpg';
+
 // Profile view that takes navigation props can display user's general information including avatar, user full name ,user's email, and user's post history, besides user can also modify his/her profile from this view
 const Profile = ({navigation}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
@@ -17,6 +23,13 @@ const Profile = ({navigation}) => {
   const themeContext = useContext(ThemeContext);
   const [newUser, setNewUser] = useState('');
   // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
+  const [randImage, setRandImage] = useState();
+
+  const images = [image1, image2, image3, image4, image5];
+
+  const changeImage = () => {
+    setRandImage(Math.floor(Math.random() * images.length));
+  };
 
   const welcomeText = async () => {
     const newUser = await AsyncStorage.getItem('newUser');
@@ -46,6 +59,7 @@ const Profile = ({navigation}) => {
   };
 
   useEffect(() => {
+    changeImage();
     welcomeText();
     fetchAvatar();
   }, []);
@@ -72,8 +86,8 @@ const Profile = ({navigation}) => {
     <Layout style={{height: '100%'}}>
       <Layout style={styles.container}>
         <ImageBackground
-          blurRadius={5}
-          source={require('../assets/banner2.jpg')}
+          blurRadius={2}
+          source={images[randImage]}
           style={styles.banner}
         />
 
@@ -151,7 +165,7 @@ const styles = StyleSheet.create({
     top: '30%',
   },
   userName: {
-    color: 'white',
+    color: 'black',
     position: 'absolute',
     top: '10%',
     fontSize: 25,
