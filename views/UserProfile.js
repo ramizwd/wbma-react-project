@@ -66,7 +66,6 @@ const UserProfile = ({navigation, route}) => {
           }
           style={styles.pfImage}
         />
-        {/* <Avatar userAvatar={file.user_id} style={styles.pfImage} /> */}
 
         <Text style={styles.userName}>User {postOwner.username}</Text>
 
