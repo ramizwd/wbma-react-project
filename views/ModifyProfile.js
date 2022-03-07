@@ -38,6 +38,7 @@ const ModifyProfile = ({navigation}) => {
     },
     mode: 'onBlur',
   });
+
   // choosing image form device
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -83,6 +84,8 @@ const ModifyProfile = ({navigation}) => {
       console.error(error.message);
     }
 
+    // delete confirm password and if password is empty then delete that
+    // set user hook with the new data and navigate to profile
     try {
       delete data.confirm_password;
       if (data.password === '') {
@@ -101,6 +104,7 @@ const ModifyProfile = ({navigation}) => {
     }
   };
 
+  // return inputs layout
   return (
     <Layout style={styles.container}>
       <ImageBackground

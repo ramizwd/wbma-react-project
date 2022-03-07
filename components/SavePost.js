@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button, Icon, Text} from '@ui-kitten/components';
 import {ThemeContext} from '../contexts/ThemeContext';
 
+// component for saving and fetching posts using the Rating system from the API
 const SavePost = ({file}) => {
   const {user, saveUpdate, setSaveUpdate} = useContext(MainContext);
   const {postRating, deleteRating, getRatedByFileId} = useRating();
@@ -15,6 +16,8 @@ const SavePost = ({file}) => {
   const pulseIconRef = useRef();
   const themeContext = useContext(ThemeContext);
 
+  // Fetch rated(saved) and set the color to black
+  // if user's saved then set color to blue
   const fetchSaved = async () => {
     try {
       const savedPost = await getRatedByFileId(file.file_id);
@@ -33,6 +36,7 @@ const SavePost = ({file}) => {
     }
   };
 
+  // Send rating(save) request for the file
   const save = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -47,6 +51,7 @@ const SavePost = ({file}) => {
     }
   };
 
+  // delete rating(save) from file
   const unSave = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -61,10 +66,12 @@ const SavePost = ({file}) => {
     }
   };
 
+  // fetch saved on render
   useEffect(() => {
     fetchSaved();
   }, [saveUpdate]);
 
+  // save icon
   const saveIcon = () => (
     <Icon
       ref={pulseIconRef}

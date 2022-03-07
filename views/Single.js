@@ -38,7 +38,6 @@ const Single = ({route, navigation}) => {
       comment: '',
     },
   });
-
   const [panelProps] = useState({
     fullWidth: true,
     openLarge: true,
@@ -47,10 +46,10 @@ const Single = ({route, navigation}) => {
     onPressCloseButton: () => closePanel(),
   });
 
+  // function for opening or closing swipeable panel
   const openPanel = () => {
     setIsPanelActive(true);
   };
-
   const closePanel = () => {
     setIsPanelActive(false);
   };

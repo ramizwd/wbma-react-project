@@ -11,10 +11,12 @@ import {
 import {database} from '../config/firebase';
 import {MainContext} from '../contexts/MainContext';
 
-const Messaging = ({navigation}) => {
+// Messages view
+const Messaging = () => {
   const [messages, setMessages] = useState([]);
   const {user, avatar} = useContext(MainContext);
 
+  // getting old messages from Firebase DB using the useLayoutEffect hook
   useLayoutEffect(() => {
     const collectionRef = collection(database, 'chats');
     const q = query(collectionRef, orderBy('createdAt', 'desc'));
@@ -29,9 +31,12 @@ const Messaging = ({navigation}) => {
         }))
       );
     });
+
     return unsubscribe;
   });
 
+  // Handler method using useCallback hook for storing messages in Firebase collection ('chats')
+  // using addDoc method to create a new document when a new message is sent
   const onSend = useCallback((messages = []) => {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
@@ -45,6 +50,7 @@ const Messaging = ({navigation}) => {
     });
   }, []);
 
+  // render GiftedChat component
   return (
     <GiftedChat
       messages={messages}

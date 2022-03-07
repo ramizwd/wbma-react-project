@@ -14,7 +14,8 @@ import image3 from '../assets/banner3.jpg';
 import image4 from '../assets/banner4.jpg';
 import image5 from '../assets/banner5.jpg';
 
-// UserProfile view that takes navigation and route props and renders poster's info including ID, username, full name, email and post history.
+// UserProfile view that takes navigation and route props and renders poster's
+// info including ID, username, full name, email and post history.
 const UserProfile = ({navigation, route}) => {
   const {file} = route.params;
   const {getUserById} = useUser();

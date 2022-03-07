@@ -20,6 +20,7 @@ import Constants from 'expo-constants';
 import {tagDivider} from '../utils/variables';
 import {ThemeContext} from '../contexts/ThemeContext';
 
+// for filtering media array and getting media titles
 const filter = (item, query) =>
   item.title.toLowerCase().includes(query.toLowerCase());
 
@@ -29,7 +30,6 @@ const Search = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
   const [searchByTag, setSearchByTag] = useState(false);
   const {searchMedia} = useMedia();
-  // const [value, setAutoVal] = useState(null);
   const {autoSearch, tag} = route.params;
 
   const {control, handleSubmit, setValue} = useForm({
@@ -42,7 +42,8 @@ const Search = ({navigation, route}) => {
   const {getFilesByTag} = useTag();
   const [data, setData] = useState(mediaArray);
 
-  // submit search keyword by using searchMedia from ApiHooks
+  // submit search keyword by using searchMedia
+  // or getFilesByTag from ApiHooks if searchByTag is true
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
     try {
@@ -52,6 +53,7 @@ const Search = ({navigation, route}) => {
           )
         : await searchMedia(data, token);
 
+      // filter files for this app only
       const result = response.filter((x) => {
         return mediaArray.some((y) => {
           return x.file_id == y.file_id;
@@ -70,9 +72,9 @@ const Search = ({navigation, route}) => {
     }
   };
 
+  // render icons and set color accordingly
   const searchIcon = (props) => {
     const themeContext = useContext(ThemeContext);
-
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={handleSubmit(onSubmit)}>
         <Icon
@@ -87,7 +89,6 @@ const Search = ({navigation, route}) => {
 
   const optionsIcon = () => {
     const themeContext = useContext(ThemeContext);
-
     return (
       <Icon
         name="options-outline"
@@ -104,6 +105,7 @@ const Search = ({navigation, route}) => {
     setValue('title', '');
   };
 
+  // use this function if autoSearch is true
   const getPostsByTag = async (tag) => {
     const token = await AsyncStorage.getItem('token');
     try {
@@ -117,6 +119,7 @@ const Search = ({navigation, route}) => {
     }
   };
 
+  // render on tag change and trigger function if autoSearch is true
   useEffect(() => {
     if (autoSearch) {
       setSearchByTag(true);
@@ -131,6 +134,7 @@ const Search = ({navigation, route}) => {
     }, [!autoSearch])
   );
 
+  // Search icon/button
   const searchBtn = () => (
     <Button
       onPress={() => {
@@ -142,15 +146,17 @@ const Search = ({navigation, route}) => {
     />
   );
 
+  // render autocomplete options
   const renderOption = (item, index) => (
     <AutocompleteItem key={index} title={item.title} />
   );
 
+  // set title value with the selected autocomplete option
   const onSelect = (index) => {
-    // console.log(mediaArray[index].title);
     setValue('title', data[index].title);
   };
 
+  // render components and use autocomplete if searchByTag is false
   return (
     <Layout style={styles.container}>
       <Layout>
@@ -220,6 +226,7 @@ const Search = ({navigation, route}) => {
   );
 };
 
+// styling
 const styles = StyleSheet.create({
   container: {
     flex: 1,
