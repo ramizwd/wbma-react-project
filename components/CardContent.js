@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
     paddingRight: 0,
-    marginRight: 0,
+    marginTop: 5,
   },
   headerContent: {
     marginLeft: 10,

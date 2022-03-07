@@ -60,6 +60,7 @@ const LoginForm = () => {
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             style={styles.input}
+            textStyle={styles.inputTxt}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -80,6 +81,7 @@ const LoginForm = () => {
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             style={styles.input}
+            textStyle={styles.inputTxt}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -105,6 +107,10 @@ const styles = StyleSheet.create({
     width: '90%',
     borderRadius: 20,
     marginVertical: 10,
+  },
+  inputTxt: {
+    fontSize: 14,
+    fontFamily: 'JetBrainsMonoReg',
   },
   loginBtn: {
     height: 56,

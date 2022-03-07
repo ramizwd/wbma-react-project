@@ -27,7 +27,6 @@ import Home from '../views/Home';
 import Profile from '../views/Profile';
 import Messaging from '../views/Messaging';
 import Search from '../views/Search';
-import Settings from '../views/Settings';
 import Login from '../views/Login';
 import Register from '../views/Register';
 import Upload from '../views/Upload';
@@ -87,17 +86,17 @@ const SearchIcon = () => {
   );
 };
 
-const SettingsIcon = () => {
-  const themeContext = useContext(ThemeContext);
-  return (
-    <Icon
-      name="settings-outline"
-      pack="ionIcons"
-      style={styles.icons}
-      color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
-    />
-  );
-};
+// const SettingsIcon = () => {
+//   const themeContext = useContext(ThemeContext);
+//   return (
+//     <Icon
+//       name="settings-outline"
+//       pack="ionIcons"
+//       style={styles.icons}
+//       color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
+//     />
+//   );
+// };
 
 const LogoutIcon = () => {
   const themeContext = useContext(ThemeContext);
@@ -160,6 +159,7 @@ const DrawerContent = ({navigation, state}) => {
         onPress: async () => {
           await AsyncStorage.removeItem('token');
           setLoggedIn(false);
+          themeContext.theme === 'dark' && themeContext.toggleTheme();
         },
       },
     ]);
@@ -174,29 +174,72 @@ const DrawerContent = ({navigation, state}) => {
         appearance="noDivider"
       >
         <DrawerItem
-          title="Home"
           style={styles.drawerItem}
           accessoryLeft={HomeIcon}
+          title={(evaProps) => (
+            <Text
+              {...evaProps}
+              style={[
+                evaProps.style,
+                themeContext.theme === 'dark'
+                  ? [styles.drawerText, {color: 'white'}]
+                  : [styles.drawerText],
+              ]}
+            >
+              Home
+            </Text>
+          )}
         />
         <DrawerItem
-          title="Profile"
+          title={(evaProps) => (
+            <Text
+              {...evaProps}
+              style={[
+                evaProps.style,
+                themeContext.theme === 'dark'
+                  ? [styles.drawerText, {color: 'white'}]
+                  : [styles.drawerText],
+              ]}
+            >
+              Profile
+            </Text>
+          )}
           style={styles.drawerItem}
           accessoryLeft={ProfileIcon}
         />
         <DrawerItem
-          title="Messages"
+          title={(evaProps) => (
+            <Text
+              {...evaProps}
+              style={[
+                evaProps.style,
+                themeContext.theme === 'dark'
+                  ? [styles.drawerText, {color: 'white'}]
+                  : [styles.drawerText],
+              ]}
+            >
+              Messages
+            </Text>
+          )}
           style={styles.drawerItem}
           accessoryLeft={ChatIcon}
         />
         <DrawerItem
-          title="Explore"
+          title={(evaProps) => (
+            <Text
+              {...evaProps}
+              style={[
+                evaProps.style,
+                themeContext.theme === 'dark'
+                  ? [styles.drawerText, {color: 'white'}]
+                  : [styles.drawerText],
+              ]}
+            >
+              Explore
+            </Text>
+          )}
           style={styles.drawerItem}
           accessoryLeft={SearchIcon}
-        />
-        <DrawerItem
-          title="Settings"
-          style={styles.drawerItem}
-          accessoryLeft={SettingsIcon}
         />
       </Drawer>
       <DrawerItem
@@ -240,7 +283,6 @@ const DrawerScreen = ({navigation}) => (
     <Screen name="Profile" component={Profile} />
     <Screen name="Messaging" component={Messaging} />
     <Screen name="Explore" component={Search} />
-    <Screen name="Settings" component={Settings} />
   </Navigator>
 );
 
@@ -377,6 +419,10 @@ const styles = StyleSheet.create({
   },
   icons: {
     height: 20,
+  },
+  drawerText: {
+    fontSize: 14,
+    fontFamily: 'JetBrainsMonoReg',
   },
 });
 

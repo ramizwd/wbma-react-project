@@ -11,11 +11,9 @@ export default function Tags({post}) {
 
   // Get tags for the post
   const getTags = async () => {
-    console.log('tags', tags.length);
     try {
       const tags = await getTagsByFileId(post.file_id);
       setTags(tags);
-      console.log('tags', tags);
     } catch (error) {
       console.error('getTags error', error);
     }
@@ -59,7 +57,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     fontSize: 13,
     color: 'white',
-    backgroundColor: '#0496FF',
+    backgroundColor: '#066fba',
   },
 });
 

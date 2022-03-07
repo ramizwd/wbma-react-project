@@ -73,9 +73,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
     marginTop: 13,
+    fontSize: 14,
+    fontFamily: 'JetBrainsMonoReg',
   },
   singInBtn: {
     color: '#26A96C',
+    fontSize: 14,
+    fontFamily: 'JetBrainsMonoReg',
   },
 });
 

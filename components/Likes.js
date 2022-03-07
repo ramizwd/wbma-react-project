@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 7,
     marginRight: 5,
+    marginLeft: 8,
   },
   likeAnimation: {
     height: 37,

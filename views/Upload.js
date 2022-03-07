@@ -172,20 +172,21 @@ const Upload = ({navigation}) => {
         }}
       >
         <TouchableOpacity onPress={pickFile} activeOpacity={0.7}>
-          <Image
-            source={
-              image === undefined
-                ? require('../assets/uploadDefaultImg.png')
-                : {uri: image}
-            }
-            style={styles.image}
-          />
+          {image === undefined ? (
+            <Image
+              source={require('../assets/uploadDefaultImg.png')}
+              style={styles.defaultImage}
+            />
+          ) : (
+            <Image source={{uri: image}} style={styles.image} />
+          )}
+
           <Text
             style={{textAlign: 'center', marginTop: 5}}
             appearance="hint"
             category="p2"
           >
-            Select a file by clicking on the images
+            Select a file by clicking on the image
           </Text>
         </TouchableOpacity>
       </Layout>
@@ -253,12 +254,13 @@ const Upload = ({navigation}) => {
           name="description"
         />
         <Button onPress={pickFile} style={styles.button}>
-          Choose a file
+          Pick a file
         </Button>
         <Button
           accessoryLeft={loading && LoadingIndicator}
           onPress={handleSubmit(onSubmit)}
           style={[styles.button, {backgroundColor: '#26A96C', marginTop: 10}]}
+          tt
         >
           Post
         </Button>
@@ -282,7 +284,7 @@ const styles = StyleSheet.create({
   input: {
     width: '90%',
     borderRadius: 20,
-    marginVertical: 10,
+    marginVertical: 7,
   },
   inputText: {
     fontSize: 16,
@@ -292,14 +294,22 @@ const styles = StyleSheet.create({
     height: 100,
     textAlignVertical: 'top',
   },
+  defaultImage: {
+    width: undefined,
+    height: 150,
+    aspectRatio: 3 / 2,
+    resizeMode: 'contain',
+    marginTop: 30,
+  },
   image: {
     width: undefined,
     height: 250,
     aspectRatio: 3 / 2,
     resizeMode: 'contain',
+    marginTop: 10,
   },
   button: {
-    marginTop: 7,
+    marginTop: 20,
     borderRadius: 10,
     width: '90%',
   },

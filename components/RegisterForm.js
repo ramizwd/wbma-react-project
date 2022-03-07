@@ -84,6 +84,7 @@ const RegisterForm = ({onPress}) => {
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             style={styles.input}
+            textStyle={styles.inputTxt}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -129,6 +130,7 @@ const RegisterForm = ({onPress}) => {
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             style={styles.input}
+            textStyle={styles.inputTxt}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -154,6 +156,7 @@ const RegisterForm = ({onPress}) => {
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             style={styles.input}
+            textStyle={styles.inputTxt}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -180,6 +183,7 @@ const RegisterForm = ({onPress}) => {
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             style={styles.input}
+            textStyle={styles.inputTxt}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -211,6 +215,7 @@ const RegisterForm = ({onPress}) => {
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             style={styles.input}
+            textStyle={styles.inputTxt}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -238,6 +243,10 @@ const styles = StyleSheet.create({
     width: '90%',
     borderRadius: 20,
     marginVertical: 10,
+  },
+  inputTxt: {
+    fontSize: 14,
+    fontFamily: 'JetBrainsMonoReg',
   },
   registerBtn: {
     width: '90%',
