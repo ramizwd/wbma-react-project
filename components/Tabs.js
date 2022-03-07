@@ -30,8 +30,8 @@ const Tabs = ({navigation, othersPosts}) => {
     try {
       const likes = await getPostsByLikes(token);
       const saved = await getRatedPostByUser(token);
-      setLikeList(likes);
-      setSavedList(saved);
+      setLikeList(likes.reverse());
+      setSavedList(saved.reverse());
     } catch (error) {
       console.error(error);
     }

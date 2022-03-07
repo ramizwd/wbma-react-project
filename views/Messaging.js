@@ -1,6 +1,6 @@
 import React, {useState, useLayoutEffect, useCallback, useContext} from 'react';
 import {PropTypes} from 'prop-types';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {Bubble, GiftedChat} from 'react-native-gifted-chat';
 import {
   collection,
   addDoc,
@@ -50,6 +50,18 @@ const Messaging = ({navigation}) => {
       messages={messages}
       showAvatarForEveryMessage={true}
       onSend={(messages) => onSend(messages)}
+      renderBubble={(props) => {
+        return (
+          <Bubble
+            {...props}
+            wrapperStyle={{
+              left: {
+                color: '#E6E8E6',
+              },
+            }}
+          />
+        );
+      }}
       user={{
         _id: user.user_id,
         avatar: avatar,
