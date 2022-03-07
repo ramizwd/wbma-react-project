@@ -282,7 +282,11 @@ const DrawerScreen = ({navigation}) => (
     <Screen name="Home" component={Home} />
     <Screen name="Profile" component={Profile} />
     <Screen name="Messaging" component={Messaging} />
-    <Screen name="Explore" component={Search} />
+    <Screen
+      name="Explore"
+      component={Search}
+      initialParams={{autoSearch: false, tag: ''}}
+    />
   </Navigator>
 );
 

@@ -21,15 +21,39 @@ const Tabs = ({navigation, othersPosts}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const {getPostsByLikes} = useLikes();
   const {getRatedPostByUser} = useRating();
-  const {likeUpdate, saveUpdate} = useContext(MainContext);
-  const {loading} = useMedia();
+  const {likeUpdate, saveUpdate, user} = useContext(MainContext);
+  const {loading, getMedia, getFilesByUserId} = useMedia();
+  const [filesList, setFiles] = useState();
 
   // fetching user's liked posts list by using getPostsByLikes from ApiHooks
   const fetchLikesAndSaved = async () => {
     const token = await AsyncStorage.getItem('token');
+
     try {
-      const likes = await getPostsByLikes(token);
-      const saved = await getRatedPostByUser(token);
+      const response = await getMedia();
+      const likesResponse = await getPostsByLikes(token);
+      const savedResponse = await getRatedPostByUser(token);
+      const mediaResponse = await getFilesByUserId(user.user_id);
+
+      const likes = likesResponse.filter((x) => {
+        return response.some((y) => {
+          return x.file_id == y.file_id;
+        });
+      });
+
+      const saved = savedResponse.filter((x) => {
+        return response.some((y) => {
+          return x.file_id == y.file_id;
+        });
+      });
+
+      const media = mediaResponse.filter((x) => {
+        return response.some((y) => {
+          return x.file_id == y.file_id;
+        });
+      });
+
+      setFiles(media.reverse());
       setLikeList(likes.reverse());
       setSavedList(saved.reverse());
     } catch (error) {
@@ -55,11 +79,18 @@ const Tabs = ({navigation, othersPosts}) => {
               {loading ? (
                 <Spinner />
               ) : (
-                <Card
-                  navigation={navigation}
-                  userPost={true}
-                  othersPost={false}
-                />
+                <List
+                  data={filesList}
+                  keyExtractor={(item) => item.file_id.toString()}
+                  renderItem={({item}) => (
+                    <CardContent
+                      post={item}
+                      userPost={true}
+                      othersPost={false}
+                      navigation={navigation}
+                    />
+                  )}
+                ></List>
               )}
             </Layout>
           </Tab>
@@ -115,6 +146,7 @@ const styles = StyleSheet.create({
   postList: {
     alignItems: 'center',
     justifyContent: 'center',
+    height: '95%',
   },
 });
 

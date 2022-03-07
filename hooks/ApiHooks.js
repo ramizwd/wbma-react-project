@@ -115,6 +115,7 @@ const useMedia = (userPost, othersPost) => {
       );
       // state hook for storing the fetched media
       setMediaArray(media.reverse());
+      return media;
     } catch (error) {
       console.error(error);
     } finally {
@@ -180,13 +181,24 @@ const useMedia = (userPost, othersPost) => {
     return await baseFetch(baseUrl + 'media/search', options);
   };
 
+  const getFilesByUserId = async (userId) => {
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    return await baseFetch(baseUrl + 'media/user/' + userId, options);
+  };
+
   return {
     mediaArray,
+    getMedia,
     postMedia,
     putMedia,
     deleteMedia,
     loading,
     searchMedia,
+    getFilesByUserId,
   };
 };
 
