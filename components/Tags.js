@@ -5,7 +5,7 @@ import {tagDivider} from '../utils/variables';
 import {useTag} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 
-export default function Tags({post}) {
+export default function Tags({post, navigation}) {
   const [tags, setTags] = useState([]);
   const {getTagsByFileId} = useTag();
 
@@ -30,7 +30,16 @@ export default function Tags({post}) {
       {tags.map(
         (tag) =>
           tag.tag.split(tagDivider)[1] != undefined && (
-            <TouchableOpacity style={styles.tagBg} key={tag.tag_id}>
+            <TouchableOpacity
+              style={styles.tagBg}
+              key={tag.tag_id}
+              onPress={() =>
+                navigation.navigate('Explore', {
+                  autoSearch: true,
+                  tag: tag.tag.split(tagDivider)[1],
+                })
+              }
+            >
               <Text style={styles.tagText}>{tag.tag.split(tagDivider)[1]}</Text>
             </TouchableOpacity>
           )
@@ -65,4 +74,5 @@ const styles = StyleSheet.create({
 
 Tags.propTypes = {
   post: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
 };

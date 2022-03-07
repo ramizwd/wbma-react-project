@@ -301,7 +301,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
               </Button>
             )}
 
-            <Tags post={post} />
+            <Tags post={post} navigation={navigation} />
           </Layout>
         </Layout>
 
@@ -311,6 +311,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
           <Button
             onPress={() => {
               navigation.navigate('Single post', {
+                navigation: navigation,
                 file: post,
                 owner: postOwner,
               });
