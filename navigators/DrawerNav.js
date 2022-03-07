@@ -243,7 +243,19 @@ const DrawerContent = ({navigation, state}) => {
         />
       </Drawer>
       <DrawerItem
-        title="Logout"
+        title={(evaProps) => (
+          <Text
+            {...evaProps}
+            style={[
+              evaProps.style,
+              themeContext.theme === 'dark'
+                ? [styles.drawerText, {color: 'white'}]
+                : [styles.drawerText],
+            ]}
+          >
+            Logout
+          </Text>
+        )}
         style={{paddingBottom: 40}}
         onPress={onLogout}
         accessoryLeft={LogoutIcon}

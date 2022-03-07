@@ -16,6 +16,7 @@ const PostButton = ({onPress}) => {
   );
 };
 
+// Styling
 const styles = StyleSheet.create({
   buttonStyle: {
     position: 'absolute',
