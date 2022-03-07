@@ -37,7 +37,7 @@ const Login = ({navigation}) => {
     animation.current?.play();
   }, []);
 
-  // Login layout
+  // Login layout and animation
   return (
     <Layout
       style={{

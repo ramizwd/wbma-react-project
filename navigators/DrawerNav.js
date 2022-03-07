@@ -38,6 +38,7 @@ import {useFonts} from 'expo-font';
 const Stack = createNativeStackNavigator();
 const {Navigator, Screen} = createDrawerNavigator();
 
+// Icons and themeContext for changing icons color on theme toggle
 const HomeIcon = () => {
   const themeContext = useContext(ThemeContext);
   return (
@@ -126,6 +127,7 @@ const SearchIconBold = (props) => (
   <Icon {...props} name="search" pack="ionIcons" />
 );
 
+// The content of the drawer (Items and drawer header)
 const DrawerContent = ({navigation, state}) => {
   const {setLoggedIn, user} = useContext(MainContext);
   const themeContext = useContext(ThemeContext);
@@ -264,6 +266,7 @@ const DrawerContent = ({navigation, state}) => {
   );
 };
 
+// Drawer screen to be rendered
 const DrawerScreen = ({navigation}) => (
   <Navigator
     initialRouteName="Home"
@@ -303,6 +306,7 @@ const DrawerScreen = ({navigation}) => (
 );
 
 const StackScreen = () => {
+  // Fonts
   const {loggedIn} = useContext(MainContext);
   const [loaded] = useFonts({
     JetBrainsMonoReg: require('../assets/fonts/JetBrainsMono/JetBrainsMonoRegular.ttf'),
@@ -312,6 +316,7 @@ const StackScreen = () => {
   if (!loaded) {
     return null;
   }
+
   return (
     <Stack.Navigator>
       {loggedIn ? (
@@ -390,6 +395,7 @@ const StackScreen = () => {
 };
 
 const DrawerNavigator = () => {
+  // Theme hook and toggleTheme function
   const [theme, setTheme] = React.useState('light');
 
   const toggleTheme = () => {

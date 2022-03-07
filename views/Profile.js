@@ -19,7 +19,6 @@ import image5 from '../assets/banner5.jpg';
 const Profile = ({navigation}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
   const {getFilesByTag} = useTag();
-  // const [selectedValue, setSelectedValue] = useState('post');
   const themeContext = useContext(ThemeContext);
   const [newUser, setNewUser] = useState('');
   // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
@@ -31,6 +30,8 @@ const Profile = ({navigation}) => {
     setRandImage(Math.floor(Math.random() * images.length));
   };
 
+  // Set welcome text accordingly for new users
+  // if user is new then set their ID in async storage and display correct welcome message
   const welcomeText = async () => {
     const newUser = await AsyncStorage.getItem('newUser');
     setNewUser(
@@ -48,6 +49,7 @@ const Profile = ({navigation}) => {
     }
   };
 
+  // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
   const fetchAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
@@ -58,12 +60,14 @@ const Profile = ({navigation}) => {
     }
   };
 
+  // fetch both functions on render
   useEffect(() => {
     changeImage();
     welcomeText();
     fetchAvatar();
   }, []);
 
+  // render icons
   const renderEditIcon = () => (
     <Icon
       color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}

@@ -51,6 +51,7 @@ const Upload = ({navigation}) => {
         base64: true,
       });
 
+      // get file info using FileSystem to validate the selected file size
       if (!result.cancelled) {
         const {type} = result;
         const fileInfo = await FileSystem.getInfoAsync(result.uri);
@@ -62,6 +63,7 @@ const Upload = ({navigation}) => {
           return;
         }
 
+        // format size correctly and check the file type then check size accordingly
         const fileSize = fileInfo.size / 1024 / 1024;
         if (type === 'image' || type === 'audio') {
           fileSize > 5 &&
@@ -87,12 +89,14 @@ const Upload = ({navigation}) => {
     }
   };
 
+  // reset  fields
   const reset = () => {
     setFileSelected(false);
     setValue('title', '');
     setValue('description', '');
   };
 
+  // reset when user leaves the view
   useFocusEffect(
     useCallback(() => {
       return () => reset();
@@ -101,7 +105,7 @@ const Upload = ({navigation}) => {
 
   const LoadingIndicator = () => <Spinner size="small" status="basic" />;
 
-  // When formdata is submitted
+  // When formData is submitted
   const onSubmit = async (data) => {
     console.log('onSubmit tag', tags);
     // File must be selected to submit the post
@@ -112,7 +116,6 @@ const Upload = ({navigation}) => {
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('description', data.description);
-    // formData.append('tag', data.tag);
     const filename = image.split('/').pop();
     let fileExtension = filename.split('.').pop();
     fileExtension = fileExtension === 'jpg' ? 'jpeg' : fileExtension;
