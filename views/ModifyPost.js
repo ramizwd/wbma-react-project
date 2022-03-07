@@ -46,6 +46,7 @@ const ModifyPost = ({navigation: {goBack}, route}) => {
     }
   };
 
+  // Modify post inputs layout
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
       <Layout style={styles.container}>

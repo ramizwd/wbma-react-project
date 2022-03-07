@@ -275,6 +275,7 @@ const useComment = () => {
   };
 };
 
+// Likes Hook
 const useLikes = () => {
   const postLike = async (fileId, token) => {
     const options = {
@@ -327,6 +328,7 @@ const useLikes = () => {
   };
 };
 
+// Rating hook - used for "saving" posts
 const useRating = () => {
   const postRating = async (fileId, token) => {
     const options = {

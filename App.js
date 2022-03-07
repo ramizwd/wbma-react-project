@@ -5,6 +5,7 @@ import {StatusBar} from 'react-native';
 import {MainProvider} from './contexts/MainContext';
 import {useFonts} from 'expo-font';
 
+// Starting point of the app, get fonts from assets folder
 const App = () => {
   const [loaded] = useFonts({
     JetBrainsMonoReg: require('./assets/fonts/JetBrainsMono/JetBrainsMonoRegular.ttf'),

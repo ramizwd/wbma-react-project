@@ -8,7 +8,8 @@ import {MainContext} from '../contexts/MainContext';
 import Tabs from '../components/Tabs';
 import {uploadsUrl} from '../utils/variables';
 
-// UserProfile view that takes navigation and route props and renders poster's info including ID, username, full name, email and post history.
+// UserProfile view that takes navigation and route props and renders poster's
+// info including ID, username, full name, email and post history.
 const UserProfile = ({navigation, route}) => {
   const {file} = route.params;
   const {getUserById} = useUser();
