@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext} from 'react';
+import React, {useState, useCallback, useContext, useEffect} from 'react';
 import {Alert, Keyboard, StyleSheet, TouchableOpacity} from 'react-native';
 import {PropTypes} from 'prop-types';
 import {
@@ -24,12 +24,14 @@ const filter = (item, query) =>
   item.title.toLowerCase().includes(query.toLowerCase());
 
 // Search view that takes navigation props can search posts by title or category
-const Search = ({navigation}) => {
+const Search = ({navigation, route}) => {
   const [searchResult, setSearchResult] = useState([]);
   const [visible, setVisible] = useState(false);
   const [searchByTag, setSearchByTag] = useState(false);
   const {searchMedia} = useMedia();
   // const [value, setAutoVal] = useState(null);
+  const {autoSearch, tag} = route.params;
+
   const {control, handleSubmit, setValue} = useForm({
     defaultValues: {
       title: '',
@@ -98,15 +100,35 @@ const Search = ({navigation}) => {
 
   // reset search result and text input field
   const reset = () => {
-    setSearchResult([]);
+    !autoSearch && setSearchResult([]);
     setValue('title', '');
   };
+
+  const getPostsByTag = async (tag) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const response = await getFilesByTag(
+        Constants.manifest.extra.pvtAppId + tagDivider + tag,
+        token
+      );
+      setSearchResult(response);
+    } catch (error) {
+      console.error('getTag error', error);
+    }
+  };
+
+  useEffect(() => {
+    if (autoSearch) {
+      setSearchByTag(true);
+      getPostsByTag(tag);
+    }
+  }, [tag]);
 
   // when user switch away from this view, call reset function
   useFocusEffect(
     useCallback(() => {
       return () => reset();
-    }, [])
+    }, [!autoSearch])
   );
 
   const searchBtn = () => (
@@ -125,7 +147,7 @@ const Search = ({navigation}) => {
   );
 
   const onSelect = (index) => {
-    console.log(mediaArray[index].title);
+    // console.log(mediaArray[index].title);
     setValue('title', data[index].title);
   };
 
@@ -222,6 +244,7 @@ const styles = StyleSheet.create({
 
 Search.propTypes = {
   navigation: PropTypes.object,
+  route: PropTypes.object,
 };
 
 export default Search;
