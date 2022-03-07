@@ -5,13 +5,13 @@ import {tagDivider} from '../utils/variables';
 import {useTag} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 
-export default function Tags({post, navigation}) {
+// Component for getting tags
+const Tags = ({post, navigation}) => {
   const [tags, setTags] = useState([]);
   const {getTagsByFileId} = useTag();
 
   // Get tags for the post
   const getTags = async () => {
-    console.log('tags', tags.length);
     try {
       const tags = await getTagsByFileId(post.file_id);
       setTags(tags);
@@ -21,10 +21,13 @@ export default function Tags({post, navigation}) {
     }
   };
 
+  // fetch tags on component render
   useEffect(() => {
     getTags();
   }, []);
 
+  // map the tags, if tag is found then render component
+  // on tag press navigate to Explore, send autoSearch and the tag in route parameters
   return (
     <Layout style={styles.tagContainer}>
       {tags.map(
@@ -46,7 +49,7 @@ export default function Tags({post, navigation}) {
       )}
     </Layout>
   );
-}
+};
 
 const styles = StyleSheet.create({
   tagContainer: {
@@ -76,3 +79,5 @@ Tags.propTypes = {
   post: PropTypes.object.isRequired,
   navigation: PropTypes.object,
 };
+
+export default Tags;

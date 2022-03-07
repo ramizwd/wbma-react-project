@@ -8,6 +8,7 @@ import {useLikes, useMedia, useRating} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PropTypes} from 'prop-types';
 
+// Component for rending the user' activity history in tabs
 const Tabs = ({navigation, othersPosts}) => {
   const [likeList, setLikeList] = useState([]);
   const [savedList, setSavedList] = useState([]);
@@ -18,7 +19,8 @@ const Tabs = ({navigation, othersPosts}) => {
   const {loading, getMedia, getFilesByUserId} = useMedia();
   const [filesList, setFiles] = useState();
 
-  // fetching user's liked posts list by using getPostsByLikes from ApiHooks
+  // fetching user's liked, posts, and saved(rated) media files
+  // then filter them to just theis app
   const fetchLikesAndSaved = async () => {
     const token = await AsyncStorage.getItem('token');
 
@@ -58,6 +60,8 @@ const Tabs = ({navigation, othersPosts}) => {
     fetchLikesAndSaved();
   }, [likeUpdate, saveUpdate]);
 
+  // return all tabs if it's owners profile or return just post history if
+  // it's other users' profile
   return (
     <Layout>
       {!othersPosts ? (

@@ -9,15 +9,15 @@ import {Text, Layout, Button, Icon} from '@ui-kitten/components';
 import {ThemeContext} from '../contexts/ThemeContext';
 import Tabs from '../components/Tabs';
 
-// Profile view that takes navigation props can display user's general information including avatar, user full name ,user's email, and user's post history, besides user can also modify his/her profile from this view
+// Profile view
 const Profile = ({navigation}) => {
   const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
   const {getFilesByTag} = useTag();
-  // const [selectedValue, setSelectedValue] = useState('post');
   const themeContext = useContext(ThemeContext);
   const [newUser, setNewUser] = useState('');
-  // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
 
+  // Set welcome text accordingly for new users
+  // if user is new then set their ID in async storage and display correct welcome message
   const welcomeText = async () => {
     const newUser = await AsyncStorage.getItem('newUser');
     setNewUser(
@@ -35,6 +35,7 @@ const Profile = ({navigation}) => {
     }
   };
 
+  // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
   const fetchAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
@@ -45,11 +46,13 @@ const Profile = ({navigation}) => {
     }
   };
 
+  // fetch both functions on render
   useEffect(() => {
     welcomeText();
     fetchAvatar();
   }, []);
 
+  // render icons
   const renderEditIcon = () => (
     <Icon
       color={themeContext.theme === 'light' ? 'black' : 'white'}

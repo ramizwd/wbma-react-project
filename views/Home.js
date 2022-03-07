@@ -5,6 +5,7 @@ import PostButton from '../components/PostButton';
 import {PropTypes} from 'prop-types';
 import {Layout} from '@ui-kitten/components';
 
+// Home view for rendering post button and Card component
 const Home = ({navigation}) => {
   return (
     <SafeAreaView>
