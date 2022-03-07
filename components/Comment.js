@@ -51,6 +51,7 @@ const Comment = ({comment, navigation}) => {
     }
   };
 
+  // loading indicator
   const LoadingIndicator = () => <Spinner size="medium" />;
 
   const renderDeleteIcon = () => {
@@ -65,11 +66,12 @@ const Comment = ({comment, navigation}) => {
     );
   };
 
-  // Fetch comments owner
+  // Fetch comments owner and re fetch when update hook changes
   useEffect(() => {
     getCommentOwner();
   }, [update]);
 
+  // return comments and navigate to profile when user is pressed
   return (
     <Layout style={styles.container}>
       <Layout style={styles.content}>

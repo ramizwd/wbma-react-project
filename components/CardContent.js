@@ -24,8 +24,7 @@ import Tags from './Tags';
 import {Video} from 'expo-av';
 import {ThemeContext} from '../contexts/ThemeContext';
 
-// Media post content component that takes navigation and post props and renders poster's avatar,
-// username and the post information
+// Media post content component that takes navigation and post props and renders poster's and posts' information
 const CardContent = ({navigation, post, userPost, singlePost = false}) => {
   const {getUserById} = useUser();
   const {deleteMedia, loading} = useMedia();
@@ -81,6 +80,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
     ]);
   };
 
+  // Toggle show more description
   const showMoreDesc = () => {
     const toggleShowMore = showMore === false ? true : false;
     setShowMore(toggleShowMore);
@@ -96,6 +96,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
     fetchComments();
   }, [update]);
 
+  // render's the comment icon and changes color depending on the theme
   const renderCommentIcon = () => (
     <Icon
       color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
@@ -122,6 +123,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
     />
   );
 
+  // options button that sets the dropdown menu's visibility to true
   const optionsBtn = () => (
     <Button
       onPress={() => {
@@ -133,6 +135,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
     />
   );
 
+  // return the card content info and render components depending on where the card content component is being rendered
   return (
     <TouchableOpacity
       activeOpacity={0.9}

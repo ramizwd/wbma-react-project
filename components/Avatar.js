@@ -5,6 +5,7 @@ import {Avatar as KittenAvatar} from '@ui-kitten/components';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 
+// Avatar component that fetches user's avatar image
 const Avatar = ({userAvatar, avatarSize = 'large'}) => {
   const {getFilesByTag} = useTag();
   const [avatar, setAvatar] = useState();
@@ -23,6 +24,7 @@ const Avatar = ({userAvatar, avatarSize = 'large'}) => {
     fetchAvatar();
   }, [update]);
 
+  // render avatar or default image if avatar not found
   return (
     <KittenAvatar
       style={{borderColor: '#0496FF', borderWidth: 1.5}}

@@ -8,6 +8,7 @@ import {Text} from '@ui-kitten/components';
 import LottieView from 'lottie-react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
+// Component for rendering likes
 const Likes = ({file}) => {
   const {user} = useContext(MainContext);
   const {getLikesByFileId, postLike, deleteLike} = useLikes();
@@ -18,13 +19,11 @@ const Likes = ({file}) => {
   const isFirstRun = useRef(true);
 
   // fetch likes by file ID, set the like array to the like hook, check if user liked
-  // then set Liked hook to true and so the color
   const fetchLikes = async () => {
     try {
       const likes = await getLikesByFileId(file.file_id);
       setLikes(likes);
       setLiked(false);
-
       likes.forEach((like) => {
         if (like.user_id === user.user_id) {
           setLiked(true);
@@ -35,14 +34,13 @@ const Likes = ({file}) => {
     }
   };
 
-  // create a like, set color of like button to red
+  // create a like and set liked hook to true, also update likes
   const createLike = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
       const res = await postLike(file.file_id, token);
       if (res) {
         setLiked(true);
-
         setLikeUpdate(likeUpdate + 1);
       }
     } catch (error) {
@@ -67,6 +65,8 @@ const Likes = ({file}) => {
     }
   };
 
+  // Check if it's first render then show correct frame (red) for liked, if like button pressed
+  // and liked is true then play animation else play the first frame (gray icon)
   useEffect(() => {
     if (isFirstRun.current) {
       liked ? animation.current.play(25, 25) : animation.current.play(0, 0);

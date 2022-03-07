@@ -15,11 +15,13 @@ const Card = ({navigation, userPost = false, othersPost = false}) => {
   const [refreshing, setRefreshing] = useState(false);
   const themeContext = useContext(ThemeContext);
 
+  // Re-fetch media and set refresh icon to true
   const onRefresh = useCallback(() => {
     setUpdate(update + 1);
     loading && setRefreshing(true);
   }, []);
 
+  // render a list of posts
   return (
     <List
       refreshControl={
