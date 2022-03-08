@@ -145,6 +145,7 @@ const Single = ({route, navigation}) => {
             render={({field: {onChange, value}}) => (
               <Input
                 style={styles.input}
+                textStyle={styles.inputText}
                 multiline={true}
                 accessoryRight={commentLoad ? LoadingIndicator : sendIcon}
                 onChangeText={onChange}
@@ -200,6 +201,10 @@ const styles = StyleSheet.create({
     width: '90%',
     borderRadius: 20,
     marginVertical: 5,
+  },
+  inputText: {
+    fontSize: 14,
+    fontFamily: 'JetBrainsMonoReg',
   },
   commentBtn: {
     width: '90%',

@@ -19,6 +19,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Constants from 'expo-constants';
 import {tagDivider} from '../utils/variables';
 import {ThemeContext} from '../contexts/ThemeContext';
+import {baseUrl} from '../utils/variables';
 
 // for filtering media array and getting media titles
 const filter = (item, query) =>
@@ -54,11 +55,19 @@ const Search = ({navigation, route}) => {
         : await searchMedia(data, token);
 
       // filter files for this app only
-      const result = response.filter((x) => {
+      const resultFiltered = response.filter((x) => {
         return mediaArray.some((y) => {
           return x.file_id == y.file_id;
         });
       });
+
+      // map result to get the image thumbnails
+      const result = await Promise.all(
+        resultFiltered.map(async (item) => {
+          const response = await fetch(`${baseUrl}media/${item.file_id}`);
+          return await response.json();
+        })
+      );
 
       if (result.length < 1) {
         Alert.alert('No match');
@@ -113,7 +122,15 @@ const Search = ({navigation, route}) => {
         Constants.manifest.extra.pvtAppId + tagDivider + tag,
         token
       );
-      setSearchResult(response);
+
+      // map result to get the image thumbnails
+      const result = await Promise.all(
+        response.map(async (item) => {
+          const response = await fetch(`${baseUrl}media/${item.file_id}`);
+          return await response.json();
+        })
+      );
+      setSearchResult(result);
     } catch (error) {
       console.error('getTag error', error);
     }

@@ -28,7 +28,7 @@ const Tabs = ({navigation, othersPosts}) => {
   const [filesList, setFiles] = useState();
 
   // fetching user's liked, posts, and saved(rated) media files
-  // then filter them to just theis app
+  // then filter them to just this app and map them to het thumbnails
   const fetchMedia = async () => {
     const token = await AsyncStorage.getItem('token');
 

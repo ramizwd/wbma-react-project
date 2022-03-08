@@ -105,20 +105,22 @@ const Upload = ({navigation}) => {
 
   const LoadingIndicator = () => <Spinner size="small" status="basic" />;
 
-  // When formData is submitted
   const onSubmit = async (data) => {
-    console.log('onSubmit tag', tags);
     // File must be selected to submit the post
     if (!fileSelected) {
       Alert.alert('Please, select a file');
       return;
     }
+
+    // form data to get file extension to change it from jpg to jpeg
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('description', data.description);
     const filename = image.split('/').pop();
     let fileExtension = filename.split('.').pop();
     fileExtension = fileExtension === 'jpg' ? 'jpeg' : fileExtension;
+    // append fomData with correct avatar data then make
+    // a post request using postMedia function
     formData.append('file', {
       uri: image,
       name: filename,
