@@ -245,7 +245,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
                   </Popover>
                 ) : (
                   <Image
-                    source={{uri: uploadsUrl + post.filename}}
+                    source={{uri: uploadsUrl + post.thumbnails.w640}}
                     style={styles.image}
                     PlaceholderContent={<Spinner />}
                   />
