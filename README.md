@@ -29,7 +29,7 @@ MESSAGING_SENDER_ID=XXXX
 APP_ID=XXXX
 PVT_APP_ID=XXXX
 ```
-- [Fix the Firebase timer warning](https://stackoverflow.com/a/58666279)
+- [Get rid of the Firebase timer warning](https://stackoverflow.com/a/58666279)
   1. Navigate to your node_modules/react-native/Libraries/Core/Timers/JSTimers.js file.   
   2. Look for the variable MAX_TIMER_DURATION_MS
   3. Change its value to 10000 * 1000
