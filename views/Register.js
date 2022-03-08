@@ -1,25 +1,14 @@
-import React, {createRef, useContext, useEffect} from 'react';
+import React from 'react';
 import {Keyboard, StyleSheet, TouchableOpacity} from 'react-native';
 import RegisterForm from '../components/RegisterForm';
 import {Button, Layout, Text} from '@ui-kitten/components';
 import PropTypes from 'prop-types';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import LottieView from 'lottie-react-native';
 
 // Register views
 const Register = ({navigation}) => {
-  const animation = createRef();
-  useEffect(() => {
-    animation.current?.play();
-  }, []);
   return (
-    <Layout
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex: 1,
-      }}
-    >
+    <Layout style={styles.container}>
       <KeyboardAwareScrollView style={{width: '100%'}}>
         <TouchableOpacity
           onPress={() => Keyboard.dismiss()}
@@ -30,15 +19,6 @@ const Register = ({navigation}) => {
             <Text style={styles.appTitle} category="h3">
               {'<Moment/>'}
             </Text>
-            <Layout style={styles.loginAnimation}>
-              <LottieView
-                ref={animation}
-                source={require('../assets/animation/jumping-balls.json')}
-                style={styles.animation}
-                loop={true}
-              />
-            </Layout>
-
             <RegisterForm
               onPress={() => {
                 navigation.navigate('Login');
@@ -75,8 +55,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   container: {
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
   singIn: {
     flexDirection: 'row',
@@ -87,13 +68,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
     marginTop: 13,
+    fontSize: 14,
+    fontFamily: 'JetBrainsMonoReg',
   },
   singInBtn: {
     color: '#26A96C',
-  },
-  loginAnimation: {
-    height: 110,
-    width: '100%',
+    fontSize: 14,
+    fontFamily: 'JetBrainsMonoReg',
   },
 });
 
