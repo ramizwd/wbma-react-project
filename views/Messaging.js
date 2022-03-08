@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import {database} from '../config/firebase';
 import {MainContext} from '../contexts/MainContext';
+import {Layout} from '@ui-kitten/components';
 
 // Messages view
 const Messaging = () => {
@@ -52,27 +53,29 @@ const Messaging = () => {
 
   // render GiftedChat component
   return (
-    <GiftedChat
-      messages={messages}
-      showAvatarForEveryMessage={true}
-      onSend={(messages) => onSend(messages)}
-      renderBubble={(props) => {
-        return (
-          <Bubble
-            {...props}
-            wrapperStyle={{
-              left: {
-                color: '#E6E8E6',
-              },
-            }}
-          />
-        );
-      }}
-      user={{
-        _id: user.user_id,
-        avatar: avatar,
-      }}
-    />
+    <Layout style={{flex: 1, marginTop: -10, paddingTop: 10}}>
+      <GiftedChat
+        messages={messages}
+        showAvatarForEveryMessage={true}
+        onSend={(messages) => onSend(messages)}
+        renderBubble={(props) => {
+          return (
+            <Bubble
+              {...props}
+              wrapperStyle={{
+                left: {
+                  backgroundColor: '#E6E8E6',
+                },
+              }}
+            />
+          );
+        }}
+        user={{
+          _id: user.user_id,
+          avatar: avatar,
+        }}
+      />
+    </Layout>
   );
 };
 
