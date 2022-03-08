@@ -12,6 +12,7 @@ import {Button, Input, Avatar, Card, Layout, Text} from '@ui-kitten/components';
 import {PropTypes} from 'prop-types';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // ModifyProfile view that takes navigation props can modify user's profile including username, password, email, full name and avatar.
@@ -22,6 +23,7 @@ const ModifyProfile = ({navigation}) => {
   const [type, setType] = useState('image');
   const {postTag} = useTag();
   const {postMedia} = useMedia();
+  const [fileType, setFileType] = useState();
 
   const {
     control,
@@ -46,22 +48,51 @@ const ModifyProfile = ({navigation}) => {
       allowsEditing: true,
       quality: 0.5,
     });
-    console.log('(EditProfile)pick image result:', result);
+
     if (!result.cancelled) {
+      const {type} = result;
+      setFileType(type);
+      const fileInfo = await FileSystem.getInfoAsync(result.uri);
+
+      if (type !== 'image') {
+        alert(`Profile image must be an image`);
+        return;
+      }
+
+      if (!fileInfo?.size) {
+        Alert.alert(
+          'Failed to Select',
+          'file size is unknown, please select another file.'
+        );
+        return;
+      }
+
+      // format size correctly and check the file type then check size accordingly
+      const fileSize = fileInfo.size / 1024 / 1024;
+      if (fileSize > 5) {
+        alert(
+          `Profile image size must be smaller than 5MB, please choose another file`
+        );
+        return;
+      }
+
       setAvatar(result.uri);
       setType(result.type);
     }
   };
 
-  // submit form date by using postMedia and postTag from ApiHooks
+  // submit form data by using postMedia and postTag from ApiHooks
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
     const formData = new FormData();
+    // form data to get file extension to change it from jpg to jpeg
     formData.append('title', 'avatar');
     const filename = avatar.split('/').pop();
     let fileExtension = filename.split('.').pop();
     fileExtension = fileExtension === 'jpg' ? 'jpeg' : fileExtension;
 
+    // append fomData with correct avatar data then make
+    // a post request using postMedia function
     formData.append('file', {
       uri: avatar,
       name: filename,
@@ -70,16 +101,13 @@ const ModifyProfile = ({navigation}) => {
 
     try {
       const response = await postMedia(formData, token);
-      console.log('(EditProfile) avatar upload response:', response);
-
-      const tagResponse = await postTag(
+      await postTag(
         {
           file_id: response.file_id,
           tag: 'avatar_' + user.user_id,
         },
         token
       );
-      console.log('tag response:', tagResponse);
     } catch (error) {
       console.error(error.message);
     }

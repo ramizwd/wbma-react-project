@@ -8,13 +8,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // Register views
 const Register = ({navigation}) => {
   return (
-    <Layout
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex: 1,
-      }}
-    >
+    <Layout style={styles.container}>
       <KeyboardAwareScrollView style={{width: '100%'}}>
         <TouchableOpacity
           onPress={() => Keyboard.dismiss()}
@@ -61,8 +55,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   container: {
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
   singIn: {
     flexDirection: 'row',
