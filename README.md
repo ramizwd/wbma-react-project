@@ -11,7 +11,7 @@ git clone https://github.com/ramizwd/basicweb-project-backend.git
 ```
 npm install -g expo-cli
 ```
-- Install NodeJS v12 or higher
+- Install NodeJS v16 or higher
 	 [Node.js](https://nodejs.org/)
 	 
 - Navigate to the project and install dependencies
@@ -29,6 +29,12 @@ MESSAGING_SENDER_ID=XXXX
 APP_ID=XXXX
 PVT_APP_ID=XXXX
 ```
+- [Fix the Firebase timer warning](https://stackoverflow.com/a/58666279)
+  1. Navigate to your node_modules/react-native/Libraries/Core/Timers/JSTimers.js file.   
+  2. Look for the variable MAX_TIMER_DURATION_MS
+  3. Change its value to 10000 * 1000
+  4. Save the changes (with auto format turned off) and re-build your app.
+
 - Run the app
 ```
 npm start
