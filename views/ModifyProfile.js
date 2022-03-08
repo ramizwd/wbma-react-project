@@ -23,7 +23,6 @@ const ModifyProfile = ({navigation}) => {
   const [type, setType] = useState('image');
   const {postTag} = useTag();
   const {postMedia} = useMedia();
-  const [fileType, setFileType] = useState();
 
   const {
     control,
@@ -51,7 +50,6 @@ const ModifyProfile = ({navigation}) => {
 
     if (!result.cancelled) {
       const {type} = result;
-      setFileType(type);
       const fileInfo = await FileSystem.getInfoAsync(result.uri);
 
       if (type !== 'image') {

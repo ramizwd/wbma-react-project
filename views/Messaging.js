@@ -57,6 +57,7 @@ const Messaging = () => {
       <GiftedChat
         messages={messages}
         showAvatarForEveryMessage={true}
+        renderUsernameOnMessage={true}
         onSend={(messages) => onSend(messages)}
         renderBubble={(props) => {
           return (
@@ -72,7 +73,8 @@ const Messaging = () => {
         }}
         user={{
           _id: user.user_id,
-          avatar: avatar,
+          avatar: avatar !== undefined ? avatar : '',
+          name: user.username,
         }}
       />
     </Layout>
