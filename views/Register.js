@@ -1,12 +1,17 @@
-import React from 'react';
+import React, {createRef, useContext, useEffect} from 'react';
 import {Keyboard, StyleSheet, TouchableOpacity} from 'react-native';
 import RegisterForm from '../components/RegisterForm';
 import {Button, Layout, Text} from '@ui-kitten/components';
 import PropTypes from 'prop-types';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import LottieView from 'lottie-react-native';
 
 // Register views
 const Register = ({navigation}) => {
+  const animation = createRef();
+  useEffect(() => {
+    animation.current?.play();
+  }, []);
   return (
     <Layout
       style={{
@@ -25,6 +30,15 @@ const Register = ({navigation}) => {
             <Text style={styles.appTitle} category="h3">
               {'<Moment/>'}
             </Text>
+            <Layout style={styles.loginAnimation}>
+              <LottieView
+                ref={animation}
+                source={require('../assets/animation/jumping-balls.json')}
+                style={styles.animation}
+                loop={true}
+              />
+            </Layout>
+
             <RegisterForm
               onPress={() => {
                 navigation.navigate('Login');
@@ -76,6 +90,10 @@ const styles = StyleSheet.create({
   },
   singInBtn: {
     color: '#26A96C',
+  },
+  loginAnimation: {
+    height: 110,
+    width: '100%',
   },
 });
 
