@@ -147,7 +147,7 @@ const DrawerContent = ({navigation, state}) => {
           onPress={themeContext.toggleTheme}
           activeOpacity={0.7}
           appearance="ghost"
-          style={{top: '25%', left: '30%', height: 47}}
+          style={{marginRight: 0}}
         ></Button>
       </ImageBackground>
     </Layout>
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   profileName: {
-    marginHorizontal: 15,
+    marginHorizontal: 13,
     fontFamily: 'JetBrainsMonoReg',
   },
   backgroundImg: {
