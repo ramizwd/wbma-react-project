@@ -14,6 +14,7 @@ import CardContent from './CardContent';
 import {useLikes, useMedia, useRating} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PropTypes} from 'prop-types';
+import {baseUrl} from '../utils/variables';
 
 // Component for rending the user' activity history in tabs
 const Tabs = ({navigation, othersPosts}) => {
@@ -28,7 +29,7 @@ const Tabs = ({navigation, othersPosts}) => {
 
   // fetching user's liked, posts, and saved(rated) media files
   // then filter them to just theis app
-  const fetchLikesAndSaved = async () => {
+  const fetchMedia = async () => {
     const token = await AsyncStorage.getItem('token');
 
     try {
@@ -49,11 +50,18 @@ const Tabs = ({navigation, othersPosts}) => {
         });
       });
 
-      const media = mediaResponse.filter((x) => {
+      const mediaFiltered = mediaResponse.filter((x) => {
         return response.some((y) => {
           return x.file_id == y.file_id;
         });
       });
+
+      const media = await Promise.all(
+        mediaFiltered.map(async (item) => {
+          const response = await fetch(`${baseUrl}media/${item.file_id}`);
+          return await response.json();
+        })
+      );
 
       setFiles(media.reverse());
       setLikeList(likes.reverse());
@@ -64,7 +72,7 @@ const Tabs = ({navigation, othersPosts}) => {
   };
 
   useEffect(() => {
-    fetchLikesAndSaved();
+    fetchMedia();
   }, [likeUpdate, saveUpdate]);
 
   // return all tabs if it's owners profile or return just post history if
