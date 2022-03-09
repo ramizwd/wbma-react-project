@@ -24,7 +24,7 @@ const Tabs = ({navigation, othersPosts}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const {getPostsByLikes} = useLikes();
   const {getRatedPostByUser} = useRating();
-  const {likeUpdate, saveUpdate, user} = useContext(MainContext);
+  const {likeUpdate, saveUpdate, user, update} = useContext(MainContext);
   const {loading, getMedia, getFilesByUserId} = useMedia();
   const [filesList, setFiles] = useState();
 
@@ -74,7 +74,7 @@ const Tabs = ({navigation, othersPosts}) => {
 
   useEffect(() => {
     fetchMedia();
-  }, [likeUpdate, saveUpdate]);
+  }, [likeUpdate, saveUpdate, update]);
 
   // return all tabs if it's owners profile or return just post history if
   // it's other users' profile
