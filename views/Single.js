@@ -27,6 +27,7 @@ const Single = ({route, navigation}) => {
   const {file, openComments = false} = route.params;
   const {getCommentsByPost, postComment, commentLoad} = useComment();
   const {setUpdate, update} = useContext(MainContext);
+  const themeContext = useContext(ThemeContext);
   const animation = createRef();
   const {
     control,
@@ -121,7 +122,11 @@ const Single = ({route, navigation}) => {
         </Button>
       </Layout>
       <SwipeablePanel
-        style={{maxHeight: '70%'}}
+        style={
+          themeContext.theme === 'dark'
+            ? {maxHeight: '70%', backgroundColor: '#1A2138'}
+            : {maxHeight: '70%'}
+        }
         {...panelProps}
         isActive={isPanelActive}
       >
@@ -192,9 +197,6 @@ const Single = ({route, navigation}) => {
 
 const styles = StyleSheet.create({
   comment: {
-    fontFamily: 'JetBrainsMonoReg',
-  },
-  font: {
     fontFamily: 'JetBrainsMonoReg',
   },
   input: {
