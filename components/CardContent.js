@@ -72,6 +72,9 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
             console.log('delete', response);
             response && setUpdate(update + 1);
           } catch (error) {
+            alert(
+              'File not found, refresh view to make sure it is not deleted.'
+            );
             console.error(error);
           }
         },
