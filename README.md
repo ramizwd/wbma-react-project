@@ -43,7 +43,7 @@ npm start
   4. Save the changes (with auto format turned off) and re-build your app.
   
  
-- If you get a Firebase quota has been exceeded warning, then that means we ran out of reads or writes for the day and thus cannot use the chat. If you do not want to wait until next day then you can create your own firebase database and copy the  configuration to the ```.env``` file in the project.
+- If you get a Firebase quota has been exceeded warning, then that means we ran out of reads or writes for the day and thus cannot use the chat. If you do not want to wait until next day then you can create your own Firebase database and copy the  configuration to the ```.env``` file in the project.
 
 ## Project Structure
 The folder structure of this app is explained below:
