@@ -12,8 +12,7 @@ git clone https://github.com/ramizwd/basicweb-project-backend.git
 ```
 npm install -g expo-cli
 ```
-- Install NodeJS v16 or higher
-	 [Node.js](https://nodejs.org/)
+- Install [NodeJS](https://nodejs.org/) v16 or higher
 	 
 - Navigate to the project and install dependencies
 ```
