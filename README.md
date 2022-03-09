@@ -36,7 +36,7 @@ PVT_APP_ID=XXXX
 npm start
 ```
 ## Notes
-- If you want to get rid of the [Firebase timer warning](https://stackoverflow.com/a/58666279) follow these instructions:
+- If you want to get rid of the Firebase timer warning follow these [instructions](https://stackoverflow.com/a/58666279):
   1. Navigate to your node_modules/react-native/Libraries/Core/Timers/JSTimers.js file.   
   2. Look for the variable MAX_TIMER_DURATION_MS
   3. Change its value to 10000 * 1000
