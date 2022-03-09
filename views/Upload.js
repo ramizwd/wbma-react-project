@@ -21,7 +21,7 @@ import SelectTags from '../components/SelectTags';
 import Constants from 'expo-constants';
 
 // This view is for uploading a new post
-const Upload = ({navigation}) => {
+const Upload = ({navigation: {goBack}}) => {
   const [image, setImage] = useState();
   const [fileSelected, setFileSelected] = useState(false);
   const [type, setType] = useState('');
@@ -153,16 +153,20 @@ const Upload = ({navigation}) => {
         token
       );
       tagResponse &&
-        Alert.alert('File', 'uploaded', [
-          {
-            text: 'OK',
-            onPress: () => {
-              reset();
-              setUpdate(update + 1);
-              navigation.navigate('Home');
+        Alert.alert(
+          `${type[0].toUpperCase() + type.slice(1)} Uploaded`,
+          `Your ${type} has been uploaded!`,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                reset();
+                setUpdate(update + 1);
+                goBack();
+              },
             },
-          },
-        ]);
+          ]
+        );
     } catch (error) {
       console.log('onSubmit upload image error', error);
     }
@@ -258,9 +262,6 @@ const Upload = ({navigation}) => {
           )}
           name="description"
         />
-        <Button onPress={pickFile} style={styles.button}>
-          Pick a file
-        </Button>
         <Button
           accessoryLeft={loading && LoadingIndicator}
           onPress={handleSubmit(onSubmit)}
