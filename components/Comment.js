@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
   },
   author: {
     flexDirection: 'row',
+    marginBottom: 8,
   },
   commentAuthor: {
     marginLeft: 5,
