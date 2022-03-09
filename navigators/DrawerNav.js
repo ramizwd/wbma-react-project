@@ -106,7 +106,7 @@ const moonIcon = () => {
       name={themeContext.theme === 'light' ? 'moon-outline' : 'moon'}
       pack="ionIcons"
       style={[styles.icons, {transform: [{scaleX: -1}]}]}
-      color={themeContext.theme === 'light' ? '#000' : '#F5CB5C'}
+      color={themeContext.theme === 'light' ? '#CCCCCC' : '#F5CB5C'}
     />
   );
 };

@@ -1,5 +1,12 @@
 import React, {useState, useCallback, useContext, useEffect} from 'react';
-import {Alert, Keyboard, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Alert,
+  Keyboard,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Text,
+} from 'react-native';
 import {PropTypes} from 'prop-types';
 import {
   Button,
@@ -174,6 +181,29 @@ const Search = ({navigation, route}) => {
     setValue('title', data[index].title);
   };
 
+  const tagsArray = [
+    'help',
+    'meme',
+    'share',
+    'JavaScript',
+    'C',
+    'Java',
+    'C#',
+    'Kotlin',
+    'Ruby',
+    'Python',
+    'PHP',
+    'C++',
+    'TypeScript',
+    'GO',
+    'Swift',
+    'R',
+    'CSS',
+    'HTML',
+    'SQL',
+    'Rust',
+  ];
+
   // render components and use autocomplete if searchByTag is false
   return (
     <Layout style={styles.container}>
@@ -199,37 +229,51 @@ const Search = ({navigation, route}) => {
               }}
             />
           </OverflowMenu>
-          <Controller
-            control={control}
-            rules={{
-              required: {value: true, message: 'This is required.'},
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Autocomplete
-                onBlur={onBlur}
-                accessoryRight={searchIcon}
-                value={value}
-                autoCapitalize="none"
-                placeholder={!searchByTag ? 'Search by title' : 'Search by tag'}
-                onSelect={(i) => {
-                  onSelect(i);
-                }}
-                onChangeText={
-                  !searchByTag
-                    ? (val) => {
-                        onChange(val);
-                        setValue(val);
-                        setData(mediaArray.filter((item) => filter(item, val)));
-                      }
-                    : onChange
-                }
-                style={styles.search}
-              >
-                {!searchByTag && data.map(renderOption)}
-              </Autocomplete>
-            )}
-            name="title"
-          />
+          {!searchByTag ? (
+            <Controller
+              control={control}
+              rules={{
+                required: {value: true, message: 'This is required.'},
+              }}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Autocomplete
+                  onBlur={onBlur}
+                  accessoryRight={searchIcon}
+                  value={value}
+                  autoCapitalize="none"
+                  placeholder={
+                    !searchByTag ? 'Search by title' : 'Search by tag'
+                  }
+                  onSelect={(i) => {
+                    onSelect(i);
+                  }}
+                  onChangeText={(val) => {
+                    onChange(val);
+                    setValue(val);
+                    setData(mediaArray.filter((item) => filter(item, val)));
+                  }}
+                  style={styles.search}
+                >
+                  {data.map(renderOption)}
+                </Autocomplete>
+              )}
+              name="title"
+            />
+          ) : (
+            <ScrollView horizontal={true}>
+              {tagsArray.map((tag) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    getPostsByTag(tag);
+                  }}
+                  key={tag}
+                  style={styles.tagBg}
+                >
+                  <Text style={styles.tagText}>{tag}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
         </Layout>
       </Layout>
 
@@ -269,7 +313,19 @@ const styles = StyleSheet.create({
     width: 350,
     borderRadius: 20,
   },
-  optIcon: {},
+  tagBg: {
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  tagText: {
+    padding: 7,
+    borderRadius: 100,
+    fontSize: 13,
+    color: 'white',
+    backgroundColor: '#2684BA',
+  },
 });
 
 Search.propTypes = {
