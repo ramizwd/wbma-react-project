@@ -62,10 +62,9 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
 
   // delete the selected post
   const deletePost = () => {
-    Alert.alert('Delete', 'This file will be deleted!', [
-      {text: 'Cancel'},
+    Alert.alert('Delete Post', 'Are you sure you want to delete it?', [
       {
-        text: 'OK',
+        text: 'Delete',
         onPress: async () => {
           try {
             const token = await AsyncStorage.getItem('token');
@@ -77,6 +76,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
           }
         },
       },
+      {text: 'Cancel'},
     ]);
   };
 

@@ -121,7 +121,7 @@ const Single = ({route, navigation}) => {
         </Button>
       </Layout>
       <SwipeablePanel
-        style={{maxHeight: '80%'}}
+        style={{maxHeight: '70%'}}
         {...panelProps}
         isActive={isPanelActive}
       >

@@ -20,6 +20,7 @@ import Constants from 'expo-constants';
 import {tagDivider} from '../utils/variables';
 import {ThemeContext} from '../contexts/ThemeContext';
 import {baseUrl} from '../utils/variables';
+import PostButton from '../components/PostButton';
 
 // for filtering media array and getting media titles
 const filter = (item, query) =>
@@ -239,6 +240,11 @@ const Search = ({navigation, route}) => {
           <CardContent post={item} navigation={navigation} />
         )}
       ></List>
+      <PostButton
+        onPress={() => {
+          navigation.navigate('Upload post');
+        }}
+      />
     </Layout>
   );
 };

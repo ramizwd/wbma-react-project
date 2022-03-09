@@ -87,18 +87,6 @@ const SearchIcon = () => {
   );
 };
 
-// const SettingsIcon = () => {
-//   const themeContext = useContext(ThemeContext);
-//   return (
-//     <Icon
-//       name="settings-outline"
-//       pack="ionIcons"
-//       style={styles.icons}
-//       color={themeContext.theme === 'light' ? 'black' : '#8F9BB3'}
-//     />
-//   );
-// };
-
 const LogoutIcon = () => {
   const themeContext = useContext(ThemeContext);
   return (
@@ -282,20 +270,37 @@ const DrawerScreen = ({navigation}) => (
       headerTitleStyle: {
         fontFamily: 'IBMPlexMonoMed',
       },
-
-      headerRight: () => (
-        <Button
-          onPress={() => navigation.navigate('Explore')}
-          appearance="ghost"
-          accessoryRight={SearchIconBold}
-          style={{marginRight: 10, width: 30}}
-        />
-      ),
     }}
     drawerContent={(props) => <DrawerContent {...props} />}
   >
-    <Screen name="Home" component={Home} />
-    <Screen name="Profile" component={Profile} />
+    <Screen
+      name="Home"
+      component={Home}
+      options={{
+        headerRight: () => (
+          <Button
+            onPress={() => navigation.navigate('Explore')}
+            appearance="ghost"
+            accessoryRight={SearchIconBold}
+            style={{marginRight: 10, width: 30}}
+          />
+        ),
+      }}
+    />
+    <Screen
+      name="Profile"
+      component={Profile}
+      options={{
+        headerRight: () => (
+          <Button
+            onPress={() => navigation.navigate('Explore')}
+            appearance="ghost"
+            accessoryRight={SearchIconBold}
+            style={{marginRight: 10, width: 30}}
+          />
+        ),
+      }}
+    />
     <Screen name="Messaging" component={Messaging} />
     <Screen
       name="Explore"

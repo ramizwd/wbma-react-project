@@ -15,6 +15,7 @@ import {useLikes, useMedia, useRating} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PropTypes} from 'prop-types';
 import {baseUrl} from '../utils/variables';
+import PostButton from '../components/PostButton';
 
 // Component for rending the user' activity history in tabs
 const Tabs = ({navigation, othersPosts}) => {
@@ -151,6 +152,11 @@ const Tabs = ({navigation, othersPosts}) => {
           </Tab>
         </TabView>
       )}
+      <PostButton
+        onPress={() => {
+          navigation.navigate('Upload post');
+        }}
+      />
     </Layout>
   );
 };

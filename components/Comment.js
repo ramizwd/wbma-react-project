@@ -119,7 +119,7 @@ const Comment = ({comment, navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 8,
+    padding: 16,
   },
   content: {
     flexDirection: 'row',
