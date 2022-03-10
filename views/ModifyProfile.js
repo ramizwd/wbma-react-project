@@ -8,7 +8,15 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import {useForm, Controller} from 'react-hook-form';
-import {Button, Input, Avatar, Card, Layout, Text} from '@ui-kitten/components';
+import {
+  Button,
+  Input,
+  Avatar,
+  Layout,
+  Text,
+  TabView,
+  Tab,
+} from '@ui-kitten/components';
 import {PropTypes} from 'prop-types';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import * as ImagePicker from 'expo-image-picker';
@@ -23,6 +31,7 @@ const ModifyProfile = ({navigation}) => {
   const [type, setType] = useState('image');
   const {postTag} = useTag();
   const {postMedia} = useMedia();
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const {
     control,
@@ -82,32 +91,34 @@ const ModifyProfile = ({navigation}) => {
   // submit form data by using postMedia and postTag from ApiHooks
   const onSubmit = async (data) => {
     const token = await AsyncStorage.getItem('token');
-    const formData = new FormData();
-    // form data to get file extension to change it from jpg to jpeg
-    formData.append('title', 'avatar');
-    const filename = avatar.split('/').pop();
-    let fileExtension = filename.split('.').pop();
-    fileExtension = fileExtension === 'jpg' ? 'jpeg' : fileExtension;
+    if (avatar !== undefined) {
+      const formData = new FormData();
+      // form data to get file extension to change it from jpg to jpeg
+      formData.append('title', 'avatar');
+      const filename = avatar.split('/').pop();
+      let fileExtension = filename.split('.').pop();
+      fileExtension = fileExtension === 'jpg' ? 'jpeg' : fileExtension;
 
-    // append fomData with correct avatar data then make
-    // a post request using postMedia function
-    formData.append('file', {
-      uri: avatar,
-      name: filename,
-      type: type + '/' + fileExtension,
-    });
+      // append fomData with correct avatar data then make
+      // a post request using postMedia function
+      formData.append('file', {
+        uri: avatar,
+        name: filename,
+        type: type + '/' + fileExtension,
+      });
 
-    try {
-      const response = await postMedia(formData, token);
-      await postTag(
-        {
-          file_id: response.file_id,
-          tag: 'avatar_' + user.user_id,
-        },
-        token
-      );
-    } catch (error) {
-      console.error(error.message);
+      try {
+        const response = await postMedia(formData, token);
+        await postTag(
+          {
+            file_id: response.file_id,
+            tag: 'avatar_' + user.user_id,
+          },
+          token
+        );
+      } catch (error) {
+        console.error(error.message);
+      }
     }
 
     // delete confirm password and if password is empty then delete that
@@ -132,187 +143,221 @@ const ModifyProfile = ({navigation}) => {
 
   // return inputs layout
   return (
-    <Layout style={styles.container}>
+    <Layout style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
       <ImageBackground
         source={require('../assets/drawerBg.png')}
         style={styles.bgImage}
       />
-      <Card style={styles.content}>
-        <KeyboardAwareScrollView>
-          <TouchableOpacity onPress={pickImage}>
-            <Avatar source={{uri: avatar}} style={styles.pfImage} />
-          </TouchableOpacity>
-
-          <Controller
-            control={control}
-            rules={{
-              minLength: {
-                value: 2,
-                message: 'Full name has to be at least 2 characters long.',
-              },
-              maxLength: {
-                value: 13,
-                message: 'Full name can be maximum of 13 characters long.',
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                style={styles.input}
-                textStyle={styles.inputText}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="words"
-                placeholder="Insert full name"
-                label="Full name"
-                status={errors.full_name ? 'danger' : 'basic'}
-                caption={errors.full_name && errors.full_name.message}
-              />
-            )}
-            name="full_name"
-          />
-
-          <Controller
-            control={control}
-            rules={{
-              required: {value: true, message: 'Username is required.'},
-              pattern: {
-                value: /^.\S*$/,
-                message: 'Please remove any spaces.',
-              },
-              minLength: {
-                value: 3,
-                message: 'Username has to be at least 3 characters long.',
-              },
-              maxLength: {
-                value: 13,
-                message: 'Username can be maximum of 13 characters long.',
-              },
-              validate: async (value) => {
-                try {
-                  const available = await checkUsername(value);
-                  if (available || user.username === value) {
-                    return true;
-                  } else {
-                    return 'Username is already taken.';
+      <TabView
+        selectedIndex={selectedIndex}
+        onSelect={(index) => setSelectedIndex(index)}
+        style={{
+          height: '90%',
+          width: '85%',
+          borderRadius: 5,
+        }}
+      >
+        <Tab title="Edit User">
+          <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
+            <Layout style={[styles.tabContainer]}>
+              <TouchableOpacity onPress={pickImage}>
+                <Avatar
+                  source={
+                    avatar === undefined
+                      ? require('../assets/defaultAvatar.png')
+                      : {uri: avatar}
                   }
-                } catch (error) {
-                  throw new Error(error.message);
-                }
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                style={styles.input}
-                textStyle={styles.inputText}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                placeholder="Insert username*"
-                label="Username"
-                status={errors.username ? 'danger' : 'basic'}
-                caption={errors.username && errors.username.message}
-              />
-            )}
-            name="username"
-          />
+                  style={styles.pfImage}
+                />
+                <Text style={styles.pfpText} category="p2" appearance="hint">
+                  Click on the image to change it
+                </Text>
+              </TouchableOpacity>
 
-          <Controller
-            control={control}
-            rules={{
-              required: {value: true, message: 'Email is required.'},
-              pattern: {
-                value: /\S+@\S+\.\S+$/,
-                message: 'Email has to be valid.',
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                style={styles.input}
-                textStyle={styles.inputText}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                placeholder="Insert email*"
-                label="Email"
-                status={errors.email ? 'danger' : 'basic'}
-                caption={errors.email && errors.email.message}
+              <Controller
+                control={control}
+                rules={{
+                  minLength: {
+                    value: 2,
+                    message: 'Full name has to be at least 2 characters long.',
+                  },
+                  maxLength: {
+                    value: 13,
+                    message: 'Full name can be maximum of 13 characters long.',
+                  },
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <Input
+                    style={styles.input}
+                    textStyle={styles.inputText}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    autoCapitalize="words"
+                    placeholder="Insert full name"
+                    label="Full name"
+                    status={errors.full_name ? 'danger' : 'basic'}
+                    caption={errors.full_name && errors.full_name.message}
+                  />
+                )}
+                name="full_name"
               />
-            )}
-            name="email"
-          />
 
-          <Controller
-            control={control}
-            rules={{
-              pattern: {
-                value: /(?=.*[\p{Lu}])(?=.*[0-9]).{5,}/u,
-                message:
-                  'Password must match at least the following criteria: 5 characters, uppercase, a number.',
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                style={styles.input}
-                textStyle={styles.inputText}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                secureTextEntry={true}
-                placeholder="Insert password*"
-                label="Password"
-                status={errors.password ? 'danger' : 'basic'}
-                caption={errors.password && errors.password.message}
+              <Controller
+                control={control}
+                rules={{
+                  required: {value: true, message: 'Username is required.'},
+                  pattern: {
+                    value: /^.\S*$/,
+                    message: 'Please remove any spaces.',
+                  },
+                  minLength: {
+                    value: 3,
+                    message: 'Username has to be at least 3 characters long.',
+                  },
+                  maxLength: {
+                    value: 13,
+                    message: 'Username can be maximum of 13 characters long.',
+                  },
+                  validate: async (value) => {
+                    try {
+                      const available = await checkUsername(value);
+                      if (available || user.username === value) {
+                        return true;
+                      } else {
+                        return 'Username is already taken.';
+                      }
+                    } catch (error) {
+                      throw new Error(error.message);
+                    }
+                  },
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <Input
+                    style={styles.input}
+                    textStyle={styles.inputText}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    autoCapitalize="none"
+                    placeholder="Insert username*"
+                    label="Username"
+                    status={errors.username ? 'danger' : 'basic'}
+                    caption={errors.username && errors.username.message}
+                  />
+                )}
+                name="username"
               />
-            )}
-            name="password"
-          />
 
-          <Controller
-            control={control}
-            rules={{
-              validate: (value) => {
-                const {password} = getValues();
-                if (value === password) {
-                  return true;
-                } else {
-                  return 'Please make sure the passwords match.';
-                }
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                style={styles.input}
-                textStyle={styles.inputText}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                secureTextEntry={true}
-                placeholder="Insert password again*"
-                label="Confirm Password"
-                status={errors.confirm_password ? 'danger' : 'basic'}
-                caption={
-                  errors.confirm_password && errors.confirm_password.message
-                }
+              <Controller
+                control={control}
+                rules={{
+                  required: {value: true, message: 'Email is required.'},
+                  pattern: {
+                    value: /\S+@\S+\.\S+$/,
+                    message: 'Email has to be valid.',
+                  },
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <Input
+                    style={styles.input}
+                    textStyle={styles.inputText}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    autoCapitalize="none"
+                    placeholder="Insert email*"
+                    label="Email"
+                    status={errors.email ? 'danger' : 'basic'}
+                    caption={errors.email && errors.email.message}
+                  />
+                )}
+                name="email"
               />
-            )}
-            name="confirm_password"
-          />
 
-          <Text> </Text>
-          <Button
-            style={styles.button}
-            title="Submit"
-            onPress={handleSubmit(onSubmit)}
-          >
-            Save
-          </Button>
-        </KeyboardAwareScrollView>
-      </Card>
+              <Button
+                style={styles.button}
+                title="Submit"
+                onPress={handleSubmit(onSubmit)}
+              >
+                Save
+              </Button>
+            </Layout>
+          </KeyboardAwareScrollView>
+        </Tab>
+        <Tab title="Edit Password">
+          <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
+            <Layout style={styles.tabContainer}>
+              <Controller
+                control={control}
+                rules={{
+                  pattern: {
+                    value: /(?=.*[\p{Lu}])(?=.*[0-9]).{5,}/u,
+                    message:
+                      'Password must match at least the following criteria: 5 characters, uppercase, a number.',
+                  },
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <Input
+                    style={styles.input}
+                    textStyle={styles.inputText}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    autoCapitalize="none"
+                    secureTextEntry={true}
+                    placeholder="Insert password*"
+                    label="Password"
+                    status={errors.password ? 'danger' : 'basic'}
+                    caption={errors.password && errors.password.message}
+                  />
+                )}
+                name="password"
+              />
+
+              <Controller
+                control={control}
+                rules={{
+                  validate: (value) => {
+                    const {password} = getValues();
+                    if (value === password) {
+                      return true;
+                    } else {
+                      return 'Please make sure the passwords match.';
+                    }
+                  },
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <Input
+                    style={styles.input}
+                    textStyle={styles.inputText}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    autoCapitalize="none"
+                    secureTextEntry={true}
+                    placeholder="Insert password again*"
+                    label="Confirm Password"
+                    status={errors.confirm_password ? 'danger' : 'basic'}
+                    caption={
+                      errors.confirm_password && errors.confirm_password.message
+                    }
+                  />
+                )}
+                name="confirm_password"
+              />
+
+              <Button
+                style={styles.button}
+                title="Submit"
+                onPress={handleSubmit(onSubmit)}
+              >
+                Save
+              </Button>
+            </Layout>
+          </KeyboardAwareScrollView>
+        </Tab>
+      </TabView>
     </Layout>
   );
 };
@@ -323,8 +368,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  tabContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
   input: {
-    width: '95%',
+    width: '85%',
     borderRadius: 20,
     marginVertical: 5,
   },
@@ -333,13 +383,17 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMonoReg',
   },
   pfImage: {
-    width: '70%',
+    width: '50%',
     height: undefined,
     aspectRatio: 1,
     borderRadius: 400,
-    left: '15%',
     borderWidth: 2,
     borderColor: '#0496FF',
+  },
+  pfpText: {
+    marginRight: 'auto',
+    marginLeft: 'auto',
+    paddingBottom: 10,
   },
   bgImage: {
     top: '-25%',
@@ -352,6 +406,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   button: {
+    width: '85%',
+    marginTop: 10,
     borderRadius: 20,
     backgroundColor: '#26A96C',
   },
