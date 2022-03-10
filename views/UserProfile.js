@@ -85,7 +85,9 @@ const UserProfile = ({navigation, route}) => {
         <Text style={styles.userName}>{postOwner.username}</Text>
 
         <Layout style={styles.userInfoContainer}>
-          <Text style={styles.userInfo}>Full name: {postOwner.full_name}</Text>
+          <Text style={styles.userInfo}>
+            {postOwner.full_name && `Full name: ${postOwner.full_name}`}
+          </Text>
           <Text style={styles.userInfo}>Email: {postOwner.email}</Text>
         </Layout>
       </Layout>
