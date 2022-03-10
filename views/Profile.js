@@ -107,9 +107,9 @@ const Profile = ({navigation}) => {
         <Text style={styles.userName}>{newUser}</Text>
 
         <Layout style={styles.userInfoContainer}>
-          {user.full_name && (
-            <Text style={styles.userInfo}>Full name: {user.full_name}</Text>
-          )}
+          <Text style={styles.userInfo}>
+            {user.full_name && `Full name: ${user.full_name}`}
+          </Text>
           <Text style={styles.userInfo}>Username: {user.username}</Text>
           <Text style={styles.userInfo}>Email: {user.email}</Text>
         </Layout>
