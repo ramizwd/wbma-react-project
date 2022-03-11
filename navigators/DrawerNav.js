@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import * as eva from '@eva-design/eva';
 import {Alert, ImageBackground, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
@@ -17,11 +17,11 @@ import {
   IndexPath,
   Icon,
   Button,
+  Avatar,
 } from '@ui-kitten/components';
 import {EvilIconsPack} from '../evil-icons';
 import {IonIconsPack} from '../ion-icons';
 import Single from '../views/Single';
-import Avatar from '../components/Avatar';
 import ModifyProfile from '../views/ModifyProfile';
 import Home from '../views/Home';
 import Profile from '../views/Profile';
@@ -34,6 +34,8 @@ import ModifyPost from '../views/ModifyPost';
 import UserProfile from '../views/UserProfile';
 import {ThemeContext} from '../contexts/ThemeContext';
 import {useFonts} from 'expo-font';
+import {uploadsUrl} from '../utils/variables';
+import {useTag} from '../hooks/ApiHooks';
 
 const Stack = createNativeStackNavigator();
 const {Navigator, Screen} = createDrawerNavigator();
@@ -117,8 +119,9 @@ const SearchIconBold = (props) => (
 
 // The content of the drawer (Items and drawer header)
 const DrawerContent = ({navigation, state}) => {
-  const {setLoggedIn, user} = useContext(MainContext);
+  const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
   const themeContext = useContext(ThemeContext);
+  const {getFilesByTag} = useTag();
 
   const Header = () => (
     <Layout style={styles.header}>
@@ -126,7 +129,14 @@ const DrawerContent = ({navigation, state}) => {
         style={[styles.backgroundImg, styles.profileContainer]}
         source={require('../assets/drawerBg.png')}
       >
-        <Avatar avatarSize="giant" userAvatar={user.user_id} />
+        <Avatar
+          source={
+            avatar === undefined
+              ? require('../assets/defaultAvatar.png')
+              : {uri: avatar}
+          }
+          style={styles.pfImage}
+        />
         <Text style={styles.profileName} category="h6">
           {user.full_name ? user.full_name : user.username}
         </Text>
@@ -154,6 +164,21 @@ const DrawerContent = ({navigation, state}) => {
       },
     ]);
   };
+
+  // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
+  const fetchAvatar = async () => {
+    try {
+      const avatarArray = await getFilesByTag('avatar_' + user.user_id);
+      const avatar = avatarArray.pop();
+      setAvatar(uploadsUrl + avatar.filename);
+    } catch (error) {
+      console.log('error fetching profile', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAvatar();
+  }, []);
 
   return (
     <>
@@ -450,6 +475,10 @@ const styles = StyleSheet.create({
   drawerText: {
     fontSize: 14,
     fontFamily: 'JetBrainsMonoReg',
+  },
+  pfImage: {
+    height: 55,
+    width: 55,
   },
 });
 
