@@ -72,7 +72,7 @@ const Messaging = () => {
           );
         }}
         user={{
-          _id: user.user_id,
+          _id: user.username,
           avatar: avatar !== undefined ? avatar : '',
           name: user.username,
         }}

@@ -24,6 +24,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {uploadsUrl} from '../utils/variables';
 
 // ModifyProfile view that takes navigation props can modify user's profile including username, password, email, full name and avatar.
 const ModifyProfile = ({navigation}) => {
@@ -31,7 +32,7 @@ const ModifyProfile = ({navigation}) => {
     useContext(MainContext);
   const {checkUsername, putUser} = useUser();
   const [type, setType] = useState('image');
-  const {postTag} = useTag();
+  const {postTag, getFilesByTag} = useTag();
   const {postMedia} = useMedia();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -122,6 +123,18 @@ const ModifyProfile = ({navigation}) => {
       } catch (error) {
         console.error(error.message);
       }
+
+      // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
+      const fetchAvatar = async () => {
+        try {
+          const avatarArray = await getFilesByTag('avatar_' + user.user_id);
+          const avatar = avatarArray.pop();
+          setAvatar(uploadsUrl + avatar.filename);
+        } catch (error) {
+          console.log('error fetching profile', error);
+        }
+      };
+      fetchAvatar();
     }
 
     // delete confirm password and if password is empty then delete that
