@@ -114,7 +114,7 @@ const moonIcon = () => {
 };
 
 const SearchIconBold = (props) => (
-  <Icon {...props} name="search" pack="ionIcons" />
+  <Icon {...props} name="search" pack="ionIcons" color="#E1EFF6" />
 );
 
 // The content of the drawer (Items and drawer header)
@@ -294,7 +294,9 @@ const DrawerScreen = ({navigation}) => (
       },
       headerTitleStyle: {
         fontFamily: 'IBMPlexMonoMed',
+        color: '#E1EFF6',
       },
+      headerTintColor: '#E1EFF6',
     }}
     drawerContent={(props) => <DrawerContent {...props} />}
   >
