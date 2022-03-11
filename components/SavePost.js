@@ -88,7 +88,6 @@ const SavePost = ({file}) => {
         savedStatus ? unSave() : save();
       }}
       appearance="ghost"
-      style={styles.button}
       accessoryLeft={saveIcon}
       status="basic"
     >

@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
@@ -22,6 +23,7 @@ import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ModifyProfile view that takes navigation props can modify user's profile including username, password, email, full name and avatar.
 const ModifyProfile = ({navigation}) => {
@@ -32,6 +34,7 @@ const ModifyProfile = ({navigation}) => {
   const {postTag} = useTag();
   const {postMedia} = useMedia();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const {
     control,
@@ -140,6 +143,22 @@ const ModifyProfile = ({navigation}) => {
       console.error(error);
     }
   };
+
+  // toggle password visibility hook
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  // render the proper password icon
+  const renderIcon = (props) => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      <Icon
+        {...props}
+        name={secureTextEntry ? 'eye-off-outline' : 'eye-outline'}
+        style={{fontSize: 20}}
+      />
+    </TouchableWithoutFeedback>
+  );
 
   // return inputs layout
   return (
@@ -304,8 +323,9 @@ const ModifyProfile = ({navigation}) => {
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
+                    accessoryRight={renderIcon}
+                    secureTextEntry={secureTextEntry}
                     autoCapitalize="none"
-                    secureTextEntry={true}
                     placeholder="Insert password*"
                     label="Password"
                     status={errors.password ? 'danger' : 'basic'}
@@ -334,8 +354,9 @@ const ModifyProfile = ({navigation}) => {
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
+                    accessoryRight={renderIcon}
+                    secureTextEntry={secureTextEntry}
                     autoCapitalize="none"
-                    secureTextEntry={true}
                     placeholder="Insert password again*"
                     label="Confirm Password"
                     status={errors.confirm_password ? 'danger' : 'basic'}

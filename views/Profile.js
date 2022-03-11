@@ -3,8 +3,6 @@ import {Image, StyleSheet, ImageBackground, Alert} from 'react-native';
 import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
-import {useTag} from '../hooks/ApiHooks';
-import {uploadsUrl} from '../utils/variables';
 import {Text, Layout, Button, Icon} from '@ui-kitten/components';
 import {ThemeContext} from '../contexts/ThemeContext';
 import Tabs from '../components/Tabs';
@@ -17,11 +15,9 @@ import image5 from '../assets/banner5.jpg';
 
 // Profile view that takes navigation props can display user's general information including avatar, user full name ,user's email, and user's post history, besides user can also modify his/her profile from this view
 const Profile = ({navigation}) => {
-  const {setLoggedIn, user, avatar, setAvatar} = useContext(MainContext);
-  const {getFilesByTag} = useTag();
+  const {setLoggedIn, user, avatar} = useContext(MainContext);
   const themeContext = useContext(ThemeContext);
   const [newUser, setNewUser] = useState('');
-  // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
   const [randImage, setRandImage] = useState();
 
   const images = [image1, image2, image3, image4, image5];
@@ -49,22 +45,11 @@ const Profile = ({navigation}) => {
     }
   };
 
-  // fetching user's avatar by using getFilesByTag from ApiHooks and set the avatar with setAvatar state hook
-  const fetchAvatar = async () => {
-    try {
-      const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-      const avatar = avatarArray.pop();
-      setAvatar(uploadsUrl + avatar.filename);
-    } catch (error) {
-      console.log('error fetching profile', error);
-    }
-  };
-
   // fetch both functions on render
   useEffect(() => {
     changeImage();
     welcomeText();
-    fetchAvatar();
+    // fetchAvatar();
   }, []);
 
   // render icons
