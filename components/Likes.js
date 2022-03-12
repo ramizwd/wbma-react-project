@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Pressable} from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {useLikes} from '../hooks/ApiHooks';
@@ -6,7 +6,6 @@ import {PropTypes} from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Text} from '@ui-kitten/components';
 import LottieView from 'lottie-react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 // Component for rendering likes
 const Likes = ({file}) => {
@@ -84,14 +83,11 @@ const Likes = ({file}) => {
   }, [likeUpdate]);
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.7}
+    <Pressable
+      style={styles.likeContainer}
       onPress={() => {
         liked ? removeLike() : createLike();
       }}
-      appearance="ghost"
-      style={styles.likeContainer}
-      status="basic"
     >
       <LottieView
         ref={animation}
@@ -103,7 +99,7 @@ const Likes = ({file}) => {
       <Text style={styles.likeTxt}>
         {likes.length > 1 ? likes.length + ' likes' : likes.length + ' like'}
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -112,13 +108,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     textAlign: 'center',
     justifyContent: 'center',
-    marginTop: 7,
     marginRight: 5,
     marginLeft: 8,
   },
   likeAnimation: {
-    height: 37,
-    width: 37,
+    height: 35,
+    width: 35,
     justifyContent: 'center',
     alignSelf: 'center',
   },

@@ -313,9 +313,7 @@ const CardContent = ({navigation, post, userPost, singlePost = false}) => {
         </Layout>
 
         <Layout style={styles.feedback}>
-          <TouchableWithoutFeedback>
-            <Likes file={post} />
-          </TouchableWithoutFeedback>
+          <Likes file={post} />
           <SavePost file={post} />
           <Button
             onPress={() => {
