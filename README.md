@@ -5,7 +5,7 @@
 This is a school project for the second year third period Metropolia students. It's a React Native social media application for sharing media and chatting with others.
 
 # App demo
-[YouTube video](https://www.youtube.com/watch?v=rU5gxgc-uK8) showing the application's features.
+[YouTube video](https://www.youtube.com/watch?v=lkSOLeSqTas) showing the application's features.
 
 # Getting started
 - Clone the repository
