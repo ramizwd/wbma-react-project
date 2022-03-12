@@ -1,7 +1,11 @@
 
 
+
 # Moment - React Native project
 This is a school project for the second year third period Metropolia students. It's a React Native social media application for sharing media and chatting with others.
+
+# App demo
+[YouTube video](https://www.youtube.com/watch?v=lkSOLeSqTas) showing the application's features.
 
 # Getting started
 - Clone the repository
@@ -30,11 +34,11 @@ APP_ID=XXXX
 PVT_APP_ID=XXXX
 ```
 
-
 - Run the app
 ```
 npm start
 ```
+
 ## Notes
 - If you want to get rid of the Firebase timer warning follow these [instructions](https://stackoverflow.com/a/58666279):
   1. Navigate to your node_modules/react-native/Libraries/Core/Timers/JSTimers.js file.   
@@ -64,4 +68,24 @@ The folder structure of this app is explained below:
 | ion-icons.js                   | Converts IonIcons icon package to UI Kitten's
 | app.config.js                   | For app configuration     
 | babel.config.js                   | For converting JSX                                          
-| package.json             | Contains package names and versions with the app name                                       | 
+| package.json             | Contains package names and versions with the app name  
+                                     
+# Changes and fixes made from the feedbacks
+### Additions & changes
+- Added post button in multiple views.
+- Added more padding to comments.
+- Changed dark mode button to a lighter color for better visibility.
+- Made the user info and password modification separate.
+- Changed tag search from typing the tags to selecting them.
+- Confusion with the navigation header search icon in Messages view - now it's only in Home and Profile views.
+- Confusion with pick a file button in Upload view - now it's removed and choosing a file can only happen through pressing the file itself.
+- Confusion with the alert message after uploading a file - now it specifies which type of file is uploaded.
+- Added toggle password visibility button in modify profile as well.
+- Drawer icon color to be lighter color instead of black for better visibility.
+
+### Bugs fixed
+- Profile view crashing for some users.
+- Profile image doesn't update in drawer navigation header after it's changed.
+- SwipeablePanel color fix in dark mode.
+- SwipeablePanel input field popping behind navigation header.
+- Messages view crash when a new use update their profile picture and open chat.
