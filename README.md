@@ -84,9 +84,9 @@ The folder structure of this app is explained below:
 - Drawer icon color to be lighter color instead of black for better visibility.
 
 ### Bugs fixed
-- Profile view crashing for some users.
+- Profile view crash with users without full name.
 - Profile image doesn't update in drawer navigation header after it's changed.
 - SwipeablePanel color fix in dark mode.
 - SwipeablePanel input field popping behind navigation header.
-- Messages view crash when a new use update their profile picture and open chat.
+- Messages view crash when a new use update their profile picture and send a message.
 - Like button not working in Single view.
