@@ -89,3 +89,4 @@ The folder structure of this app is explained below:
 - SwipeablePanel color fix in dark mode.
 - SwipeablePanel input field popping behind navigation header.
 - Messages view crash when a new use update their profile picture and open chat.
+- Like button not working in Single view.
